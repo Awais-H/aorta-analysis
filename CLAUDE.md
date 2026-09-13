@@ -14,7 +14,6 @@ The challenge PDF is docs/Branchseed_challenge.pdf. SPEC.md wins if they conflic
 ## Data
 - data/subjectNNN/origN.nii and maskN.nii. Some are gzipped despite the extension. Subject 24 has a non-orthonormal header.
 - atlas_all.csv has per-case stats; expected wall-patch counts are in the wall_patches column.
-- Draft reference annotations for cases 19 to 23 are in docs/references/case_NN/annotations.json; the per-case daughter label volumes are data/subjectNNN/daughtersNN_draft.nii.gz.
 - Reference annotations for cases 19-23 are in docs/references/case_XX/annotations.json
   (SimpleITK LPS mm; schema is a superset of the required output). Read docs/references/README.md
   for the annotation policy: 2.0 mm minimum origin diameter, ostium on the supplied mask boundary,
