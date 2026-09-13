@@ -1,0 +1,656 @@
+Perturbation-stability check, commit be05e89, 2026-09-13 06:29
+Each case is run unperturbed (baseline) and with the mask eroded or dilated by one native voxel, or the threshold shifted by
+-/+10 HU; the perturbed prediction is matched to the baseline at the 5 mm cutoff. On the labelled cases the
+reference matches are re-counted per perturbation. A measurement of fragility, not a tuning set (SPEC section 3).
+
+== subject001: baseline 6 kept of 14 patches, threshold 247 HU
+  -- mask_erode1: 12 kept of 55 patches, threshold 259 HU
+  matched 5, lost 1, gained 7
+    LOST baseline branch_002 (patch 3, diam 8.23, wall 191 vox, flags []): merged: mask_erode1 patch 2 touches the baseline ostium (0.0 mm) and was kept, unmatched; its own ostium is 6.5 mm away
+    GAINED mask_erode1 branch_001 (patch 2, diam 5.59, wall 402 vox, trace march/max, flags ['radius_inscribed_fallback', 'no_departure', 'elongated_patch', 'section_merged', 'area_growth']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 7.2 mm)
+    GAINED mask_erode1 branch_003 (patch 4, diam 6.35, wall 293 vox, trace march/max, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): baseline patch 9 at 1.1 mm was REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+    GAINED mask_erode1 branch_004 (patch 5, diam 6.96, wall 270 vox, trace march/max, flags ['radius_inscribed_fallback', 'no_departure', 'tangential', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 10.6 mm)
+    GAINED mask_erode1 branch_005 (patch 6, diam 5.67, wall 107 vox, trace march/vanished, flags ['radius_inscribed_fallback', 'near_cut_face', 'large_patch_at_cut', 'no_departure', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 17.3 mm)
+    GAINED mask_erode1 branch_006 (patch 7, diam 7.56, wall 75 vox, trace march/vanished, flags ['radius_inscribed_fallback', 'no_departure', 'tangential', 'section_merged']): baseline patch 7 at 0.8 mm was REJECTED min_trace_mm (wall 19 vox, diam None, path 2.0)
+    GAINED mask_erode1 branch_007 (patch 8, diam 7.02, wall 74 vox, trace march/vanished, flags ['radius_inscribed_fallback', 'no_departure', 'tangential', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 10.9 mm)
+    GAINED mask_erode1 branch_008 (patch 9, diam 5.92, wall 65 vox, trace march/vanished, flags ['radius_inscribed_fallback', 'no_departure', 'tangential', 'section_merged']): baseline patch 13 at 2.4 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 3.0)
+  mask_erode1 invariants: 2 violation(s): branch_001: radius 0.79 mm outside [1.0, 8.0]; branch_011: radius 0.90 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 9 kept of 50 patches, threshold 190 HU
+  matched 6, lost 0, gained 3
+    GAINED mask_dilate1 branch_005 (patch 6, diam 10.33, wall 36 vox, trace march/max, flags []): baseline patch 8 at 0.8 mm was REJECTED min_trace_mm (wall 17 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_008 (patch 10, diam 2.54, wall 10 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 19.0 mm)
+    GAINED mask_dilate1 branch_009 (patch 27, diam 8.21, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 4.9 mm)
+  mask_dilate1 invariants: 2 violation(s): branch_005: radius 0.87 mm outside [1.0, 8.0]; branch_008: radius 0.93 mm outside [1.0, 8.0] (plus 7 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 6 kept of 14 patches, threshold 237 HU
+  matched 6, lost 0, gained 0
+  thr_minus invariants: clean (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 10 patches, threshold 257 HU
+  matched 4, lost 2, gained 1
+    LOST baseline branch_005 (patch 11, diam 4.19, wall 11 vox, flags ['area_growth']): contact erased: no thr_plus wall voxel within 3 mm of the baseline ostium (nearest 12.1 mm)
+    LOST baseline branch_006 (patch 12, diam 2.19, wall 8 vox, flags ['borderline_diameter']): thr_plus patch 10 at 0.0 mm REJECTED origin_diameter_mm (wall 6 vox, diam 1.95, path 10.0)
+    GAINED thr_plus branch_001 (patch 1, diam 6.42, wall 251 vox, trace march/max, flags ['near_cut_face', 'large_patch_at_cut', 'section_merged']): baseline patch 1 at 0.0 mm was REJECTED end_face (wall 285 vox, diam 7.12, path 10.0)
+  thr_plus invariants: 1 violation(s): branch_001: seed voxel is not bright (252 HU) (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject002: baseline 5 kept of 16 patches, threshold 206 HU
+  -- mask_erode1: 4 kept of 8 patches, threshold 280 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_005 (patch 5, diam 2.85, wall 74 vox, flags ['no_departure', 'tangential', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 52.3 mm)
+  mask_erode1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 7 kept of 49 patches, threshold 157 HU
+  matched 4, lost 1, gained 3
+    LOST baseline branch_005 (patch 5, diam 2.85, wall 74 vox, flags ['no_departure', 'tangential', 'elongated_patch']): mask_dilate1 patch 13 at 0.7 mm REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_005 (patch 6, diam 4.55, wall 58 vox, trace march/max, flags ['no_departure', 'elongated_patch']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 6.0 mm)
+    GAINED mask_dilate1 branch_006 (patch 9, diam 4.04, wall 17 vox, trace march/edge, flags ['near_cut_face', 'no_departure']): baseline patch 10 at 1.6 mm was REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_007 (patch 21, diam 6.13, wall 5 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.5 mm)
+  mask_dilate1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 5 kept of 14 patches, threshold 196 HU
+  matched 5, lost 0, gained 0
+  thr_minus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 14 patches, threshold 216 HU
+  matched 5, lost 0, gained 0
+  thr_plus invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject003: baseline 4 kept of 8 patches, threshold 224 HU
+  -- mask_erode1: 4 kept of 16 patches, threshold 266 HU
+  matched 4, lost 0, gained 0
+  mask_erode1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 7 kept of 23 patches, threshold 156 HU
+  matched 4, lost 0, gained 3
+    GAINED mask_dilate1 branch_005 (patch 6, diam 9.5, wall 29 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 21.6 mm)
+    GAINED mask_dilate1 branch_006 (patch 7, diam 4.11, wall 26 vox, trace march/max, flags ['near_cut_face']): baseline patch 5 at 0.7 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_007 (patch 9, diam 2.03, wall 7 vox, trace march/max, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 29.7 mm)
+  mask_dilate1 invariants: 1 violation(s): branch_007: radius 0.91 mm outside [1.0, 8.0] (plus 7 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 4 kept of 11 patches, threshold 214 HU
+  matched 4, lost 0, gained 0
+  thr_minus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 6 patches, threshold 234 HU
+  matched 4, lost 0, gained 0
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject004: baseline 9 kept of 27 patches, threshold 263 HU
+  -- mask_erode1: 4 kept of 8 patches, threshold 363 HU
+  matched 4, lost 5, gained 0
+    LOST baseline branch_005 (patch 5, diam 9.34, wall 57 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 8.9 mm)
+    LOST baseline branch_006 (patch 6, diam 3.17, wall 52 vox, flags ['no_departure', 'elongated_patch']): mask_erode1 patch 5 at 1.9 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+    LOST baseline branch_007 (patch 7, diam 6.26, wall 15 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 18.6 mm)
+    LOST baseline branch_008 (patch 8, diam 2.13, wall 11 vox, flags ['borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 15.8 mm)
+    LOST baseline branch_009 (patch 11, diam 7.74, wall 5 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 4.6 mm)
+  mask_erode1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 11 kept of 38 patches, threshold 205 HU
+  matched 7, lost 2, gained 4
+    LOST baseline branch_007 (patch 7, diam 6.26, wall 15 vox, flags []): merged: mask_dilate1 patch 1 touches the baseline ostium (0.9 mm) and was kept, unmatched; its own ostium is 7.9 mm away
+    LOST baseline branch_009 (patch 11, diam 7.74, wall 5 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch']): mask_dilate1 patch 2 at 5.0 mm was kept but matched another baseline branch
+    GAINED mask_dilate1 branch_001 (patch 1, diam 5.85, wall 562 vox, trace march/max, flags ['no_departure', 'tangential']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 6.6 mm)
+    GAINED mask_dilate1 branch_008 (patch 9, diam 5.61, wall 48 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): baseline patch 12 at 0.6 mm was REJECTED min_trace_mm (wall 5 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_009 (patch 10, diam 3.9, wall 28 vox, trace march/vanished, flags ['no_departure']): baseline patch 18 at 0.6 mm was REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_011 (patch 17, diam 10.58, wall 6 vox, trace march/max, flags ['radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.3 mm)
+  mask_dilate1 invariants: clean (plus 10 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 10 kept of 34 patches, threshold 253 HU
+  matched 8, lost 1, gained 2
+    LOST baseline branch_009 (patch 11, diam 7.74, wall 5 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch']): thr_minus patch 10 at 0.0 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 0.0)
+    GAINED thr_minus branch_008 (patch 8, diam 3.17, wall 14 vox, trace march/max, flags ['no_departure', 'tangential']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 11.4 mm)
+    GAINED thr_minus branch_010 (patch 11, diam 3.85, wall 5 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): baseline patch 12 at 0.0 mm was REJECTED min_trace_mm (wall 5 vox, diam None, path 0.0)
+  thr_minus invariants: 1 violation(s): branch_008: radius 0.85 mm outside [1.0, 8.0] (plus 8 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 8 kept of 24 patches, threshold 273 HU
+  matched 7, lost 2, gained 1
+    LOST baseline branch_008 (patch 8, diam 2.13, wall 11 vox, flags ['borderline_diameter']): thr_plus patch 7 at 0.0 mm REJECTED origin_diameter_mm (wall 11 vox, diam 1.99, path 10.0)
+    LOST baseline branch_009 (patch 11, diam 7.74, wall 5 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch']): thr_plus patch 10 at 0.0 mm REJECTED min_trace_mm (wall 3 vox, diam None, path 0.0)
+    GAINED thr_plus branch_008 (patch 9, diam 3.81, wall 5 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 12 at 0.0 mm was REJECTED min_trace_mm (wall 5 vox, diam None, path 0.0)
+  thr_plus invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject005: baseline 5 kept of 14 patches, threshold 191 HU
+  -- mask_erode1: 6 kept of 41 patches, threshold 219 HU
+  matched 5, lost 0, gained 1
+    GAINED mask_erode1 branch_004 (patch 4, diam 5.73, wall 138 vox, trace march/max, flags ['no_departure', 'tangential', 'section_merged']): baseline patch 8 at 1.0 mm was REJECTED min_trace_mm (wall 32 vox, diam None, path 2.0)
+  mask_erode1 invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 10 kept of 25 patches, threshold 130 HU
+  matched 5, lost 0, gained 5
+    GAINED mask_dilate1 branch_006 (patch 7, diam 5.4, wall 71 vox, trace march/vanished, flags ['no_departure', 'tangential']): baseline patch 6 at 1.2 mm was REJECTED min_trace_mm (wall 48 vox, diam None, path 1.0)
+    GAINED mask_dilate1 branch_007 (patch 10, diam 3.23, wall 28 vox, trace march/max, flags []): baseline patch 13 at 1.1 mm was REJECTED origin_diameter_mm (wall 7 vox, diam 1.72, path 10.0)
+    GAINED mask_dilate1 branch_008 (patch 14, diam 2.51, wall 16 vox, trace march/bifurcation, flags ['bifurcation']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 34.5 mm)
+    GAINED mask_dilate1 branch_009 (patch 16, diam 2.22, wall 14 vox, trace march/max, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 35.6 mm)
+    GAINED mask_dilate1 branch_010 (patch 23, diam 2.29, wall 6 vox, trace march/vanished, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 29.3 mm)
+  mask_dilate1 invariants: 2 violation(s): branch_009: radius 0.98 mm outside [1.0, 8.0]; branch_010: radius 0.82 mm outside [1.0, 8.0] (plus 8 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 7 kept of 19 patches, threshold 181 HU
+  matched 5, lost 0, gained 2
+    GAINED thr_minus branch_004 (patch 4, diam 6.39, wall 138 vox, trace march/vanished, flags ['no_departure', 'tangential', 'section_merged']): baseline patch 7 at 1.1 mm was REJECTED min_trace_mm (wall 42 vox, diam None, path 2.0)
+    GAINED thr_minus branch_007 (patch 12, diam 2.01, wall 7 vox, trace march/max, flags ['borderline_diameter']): baseline patch 13 at 0.0 mm was REJECTED origin_diameter_mm (wall 7 vox, diam 1.72, path 10.0)
+  thr_minus invariants: 1 violation(s): branch_007: radius 0.75 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 10 patches, threshold 201 HU
+  matched 5, lost 0, gained 0
+  thr_plus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject006: baseline 6 kept of 7 patches, threshold 203 HU
+  -- mask_erode1: 5 kept of 20 patches, threshold 234 HU
+  matched 5, lost 1, gained 0
+    LOST baseline branch_006 (patch 6, diam 4.32, wall 30 vox, flags ['near_cut_face']): mask_erode1 patch 9 at 1.7 mm REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 5 kept of 16 patches, threshold 142 HU
+  matched 5, lost 1, gained 0
+    LOST baseline branch_006 (patch 6, diam 4.32, wall 30 vox, flags ['near_cut_face']): mask_dilate1 patch 6 at 1.1 mm REJECTED min_trace_mm (wall 79 vox, diam None, path 3.0)
+  mask_dilate1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 5 kept of 7 patches, threshold 193 HU
+  matched 5, lost 1, gained 0
+    LOST baseline branch_005 (patch 5, diam 4.32, wall 117 vox, flags ['near_cut_face', 'no_departure']): thr_minus patch 5 at 0.8 mm REJECTED path_at_image_edge (wall 131 vox, diam 3.89, path 10.0)
+  thr_minus invariants: 1 violation(s): branch_005: radius 0.98 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 6 patches, threshold 213 HU
+  matched 5, lost 1, gained 0
+    LOST baseline branch_006 (patch 6, diam 4.32, wall 30 vox, flags ['near_cut_face']): thr_plus patch 6 at 1.1 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 1.0)
+  thr_plus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject007: baseline 5 kept of 12 patches, threshold 184 HU
+  -- mask_erode1: 3 kept of 16 patches, threshold 218 HU
+  matched 3, lost 2, gained 0
+    LOST baseline branch_004 (patch 4, diam 8.34, wall 44 vox, flags ['section_merged']): mask_erode1 patch 4 at 0.7 mm REJECTED min_trace_mm (wall 28 vox, diam None, path 3.0)
+    LOST baseline branch_005 (patch 11, diam 6.52, wall 7 vox, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 13.4 mm)
+  mask_erode1 invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 6 kept of 25 patches, threshold 121 HU
+  matched 2, lost 3, gained 4
+    LOST baseline branch_001 (patch 1, diam 7.52, wall 244 vox, flags ['axis_fallback']): merged: mask_dilate1 patch 1 touches the baseline ostium (1.1 mm) and was kept, matched to baseline branch_002; its own ostium is 11.5 mm away
+    LOST baseline branch_004 (patch 4, diam 8.34, wall 44 vox, flags ['section_merged']): mask_dilate1 patch 2 at 2.8 mm REJECTED end_face (wall 270 vox, diam 7.79, path 10.0)
+    LOST baseline branch_005 (patch 11, diam 6.52, wall 7 vox, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): mask_dilate1 patch 3 at 3.2 mm REJECTED proximal_volume_ml (wall 196 vox, diam 11.09, path 10.0)
+    GAINED mask_dilate1 branch_003 (patch 5, diam 7.19, wall 74 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 8 at 2.5 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 1.0)
+    GAINED mask_dilate1 branch_004 (patch 6, diam 5.66, wall 64 vox, trace march/bifurcation, flags ['bifurcation', 'section_merged']): baseline patch 7 at 0.9 mm was REJECTED min_trace_mm (wall 11 vox, diam None, path 4.0)
+    GAINED mask_dilate1 branch_005 (patch 8, diam 3.78, wall 37 vox, trace axis/bifurcation, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 13.2 mm)
+    GAINED mask_dilate1 branch_006 (patch 14, diam 8.52, wall 6 vox, trace march/max, flags ['radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 6.1 mm)
+  mask_dilate1 invariants: clean (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 7 kept of 12 patches, threshold 174 HU
+  matched 4, lost 1, gained 3
+    LOST baseline branch_004 (patch 4, diam 8.34, wall 44 vox, flags ['section_merged']): merged: thr_minus patch 4 touches the baseline ostium (0.8 mm) and was kept, unmatched; its own ostium is 8.9 mm away
+    GAINED thr_minus branch_004 (patch 4, diam 7.97, wall 122 vox, trace march/max, flags ['elongated_patch', 'section_merged']): baseline patch 9 at 1.1 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 1.0)
+    GAINED thr_minus branch_005 (patch 6, diam 3.29, wall 24 vox, trace march/vanished, flags []): baseline patch 7 at 1.1 mm was REJECTED min_trace_mm (wall 11 vox, diam None, path 4.0)
+    GAINED thr_minus branch_006 (patch 7, diam 8.06, wall 23 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 6 at 0.0 mm was REJECTED blob_at_seed (wall 18 vox, diam 7.57, path 10.0)
+  thr_minus invariants: 1 violation(s): branch_005: radius 0.73 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 6 kept of 12 patches, threshold 194 HU
+  matched 5, lost 0, gained 1
+    GAINED thr_plus branch_005 (patch 6, diam 8.04, wall 9 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 6 at 0.8 mm was REJECTED blob_at_seed (wall 18 vox, diam 7.57, path 10.0)
+  thr_plus invariants: 1 violation(s): branch_004: radius 0.80 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject008: baseline 8 kept of 32 patches, threshold 252 HU
+  -- mask_erode1: 6 kept of 34 patches, threshold 275 HU
+  matched 5, lost 3, gained 1
+    LOST baseline branch_005 (patch 6, diam 8.28, wall 37 vox, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): mask_erode1 patch 25 at 4.0 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    LOST baseline branch_006 (patch 7, diam 4.42, wall 17 vox, flags ['no_departure']): mask_erode1 patch 23 at 0.2 mm REJECTED min_trace_mm (wall 10 vox, diam None, path 1.0)
+    LOST baseline branch_008 (patch 9, diam 2.07, wall 14 vox, flags ['borderline_diameter']): mask_erode1 patch 15 at 0.7 mm REJECTED origin_diameter_mm (wall 19 vox, diam 1.95, path 10.0)
+    GAINED mask_erode1 branch_003 (patch 3, diam 6.21, wall 214 vox, trace march/max, flags ['near_cut_face', 'large_patch_at_cut', 'no_departure', 'tangential', 'section_merged']): baseline patch 10 at 1.0 mm was REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+  mask_erode1 invariants: 1 violation(s): branch_006: radius 0.72 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 11 kept of 46 patches, threshold 202 HU
+  matched 7, lost 1, gained 4
+    LOST baseline branch_005 (patch 6, diam 8.28, wall 37 vox, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): mask_dilate1 patch 1 at 3.6 mm REJECTED min_trace_mm (wall 618 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_004 (patch 5, diam 6.04, wall 104 vox, trace march/max, flags ['tangential']): baseline patch 27 at 0.2 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_007 (patch 9, diam 2.55, wall 22 vox, trace march/vanished, flags ['elongated_patch']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 3.6 mm)
+    GAINED mask_dilate1 branch_010 (patch 14, diam 2.26, wall 11 vox, trace march/max, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 7.0 mm)
+    GAINED mask_dilate1 branch_011 (patch 19, diam 6.53, wall 3 vox, trace march/vanished, flags ['elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 7.0 mm)
+  mask_dilate1 invariants: clean (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 10 kept of 38 patches, threshold 242 HU
+  matched 7, lost 1, gained 3
+    LOST baseline branch_005 (patch 6, diam 8.28, wall 37 vox, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): thr_minus patch 31 at 4.1 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_minus branch_001 (patch 1, diam 8.98, wall 268 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 22 at 0.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_minus branch_009 (patch 14, diam 4.37, wall 7 vox, trace march/max, flags []): baseline patch 13 at 0.0 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    GAINED thr_minus branch_010 (patch 22, diam None, wall 3 vox, trace march/max, flags ['radius_inscribed_fallback', 'area_growth', 'origin_no_cross_section']): baseline patch 27 at 0.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  thr_minus invariants: 3 violation(s): branch_006: radius 0.96 mm outside [1.0, 8.0]; branch_007: radius 0.96 mm outside [1.0, 8.0]; branch_009: radius 0.88 mm outside [1.0, 8.0] (plus 9 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 7 kept of 31 patches, threshold 262 HU
+  matched 6, lost 2, gained 1
+    LOST baseline branch_005 (patch 6, diam 8.28, wall 37 vox, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): thr_plus patch 23 at 1.8 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    LOST baseline branch_008 (patch 9, diam 2.07, wall 14 vox, flags ['borderline_diameter']): thr_plus patch 7 at 0.0 mm REJECTED origin_diameter_mm (wall 14 vox, diam 1.93, path 10.0)
+    GAINED thr_plus branch_005 (patch 5, diam 8.57, wall 16 vox, trace march/max, flags ['area_growth']): baseline patch 22 at 1.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  thr_plus invariants: 1 violation(s): branch_007: radius 0.82 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+
+== subject009: baseline 4 kept of 4 patches, threshold 296 HU
+  -- mask_erode1: 3 kept of 5 patches, threshold 362 HU
+  matched 3, lost 1, gained 0
+    LOST baseline branch_004 (patch 4, diam 2.46, wall 19 vox, flags ['borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 19.1 mm)
+  mask_erode1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 9 kept of 27 patches, threshold 184 HU
+  matched 4, lost 0, gained 5
+    GAINED mask_dilate1 branch_005 (patch 5, diam 8.35, wall 36 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'near_cut_face', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 24.6 mm)
+    GAINED mask_dilate1 branch_006 (patch 6, diam 5.58, wall 31 vox, trace march/vanished, flags ['no_departure']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 62.9 mm)
+    GAINED mask_dilate1 branch_007 (patch 7, diam 5.63, wall 24 vox, trace march/vanished, flags ['no_departure', 'elongated_patch']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 58.4 mm)
+    GAINED mask_dilate1 branch_008 (patch 9, diam 3.49, wall 17 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 56.7 mm)
+    GAINED mask_dilate1 branch_009 (patch 10, diam 2.55, wall 14 vox, trace axis/bifurcation, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 61.1 mm)
+  mask_dilate1 invariants: 2 violation(s): branch_005: seed voxel is not bright (181 HU); branch_009: seed voxel is not bright (65 HU) (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 4 kept of 4 patches, threshold 286 HU
+  matched 4, lost 0, gained 0
+  thr_minus invariants: 1 violation(s): branch_004: radius 0.61 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 3 kept of 4 patches, threshold 306 HU
+  matched 3, lost 1, gained 0
+    LOST baseline branch_004 (patch 4, diam 2.46, wall 19 vox, flags ['borderline_diameter']): thr_plus patch 4 at 0.0 mm REJECTED min_trace_mm (wall 15 vox, diam None, path 2.0)
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject010: baseline 4 kept of 7 patches, threshold 282 HU
+  -- mask_erode1: 4 kept of 7 patches, threshold 319 HU
+  matched 4, lost 0, gained 0
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 4 kept of 27 patches, threshold 193 HU
+  matched 4, lost 0, gained 0
+  mask_dilate1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 4 kept of 7 patches, threshold 272 HU
+  matched 4, lost 0, gained 0
+  thr_minus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 6 patches, threshold 292 HU
+  matched 4, lost 0, gained 0
+  thr_plus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject011: baseline 5 kept of 23 patches, threshold 277 HU
+  -- mask_erode1: 4 kept of 4 patches, threshold 392 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_005 (patch 6, diam 2.11, wall 7 vox, flags ['borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 64.4 mm)
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 6 kept of 21 patches, threshold 198 HU
+  matched 5, lost 0, gained 1
+    GAINED mask_dilate1 branch_005 (patch 6, diam 2.68, wall 37 vox, trace march/vanished, flags ['no_departure', 'tangential', 'elongated_patch']): baseline patch 7 at 4.9 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+  mask_dilate1 invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 5 kept of 25 patches, threshold 267 HU
+  matched 5, lost 0, gained 0
+  thr_minus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 20 patches, threshold 287 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_005 (patch 6, diam 2.11, wall 7 vox, flags ['borderline_diameter']): thr_plus patch 6 at 0.0 mm REJECTED origin_diameter_mm (wall 7 vox, diam 1.91, path 10.0)
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject012: baseline 5 kept of 8 patches, threshold 194 HU
+  -- mask_erode1: 5 kept of 10 patches, threshold 224 HU
+  matched 5, lost 0, gained 0
+  mask_erode1 invariants: 1 violation(s): branch_005: radius 0.95 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 10 kept of 18 patches, threshold 119 HU
+  matched 5, lost 0, gained 5
+    GAINED mask_dilate1 branch_005 (patch 5, diam 2.82, wall 97 vox, trace march/max, flags ['no_departure', 'tangential', 'elongated_patch']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 18.3 mm)
+    GAINED mask_dilate1 branch_006 (patch 7, diam 2.74, wall 22 vox, trace march/max, flags []): baseline patch 7 at 0.8 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_007 (patch 8, diam 2.68, wall 19 vox, trace march/max, flags []): baseline patch 5 at 0.8 mm was REJECTED origin_diameter_mm (wall 7 vox, diam 1.99, path 5.0)
+    GAINED mask_dilate1 branch_009 (patch 11, diam 2.71, wall 10 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 13.7 mm)
+    GAINED mask_dilate1 branch_010 (patch 12, diam 2.27, wall 9 vox, trace march/max, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 11.0 mm)
+  mask_dilate1 invariants: 1 violation(s): branch_010: radius 0.89 mm outside [1.0, 8.0] (plus 9 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 6 kept of 11 patches, threshold 184 HU
+  matched 5, lost 0, gained 1
+    GAINED thr_minus branch_006 (patch 6, diam 2.09, wall 10 vox, trace march/max, flags ['borderline_diameter']): baseline patch 5 at 0.0 mm was REJECTED origin_diameter_mm (wall 7 vox, diam 1.99, path 5.0)
+  thr_minus invariants: 1 violation(s): branch_006: radius 0.50 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 5 patches, threshold 204 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_005 (patch 6, diam 2.43, wall 7 vox, flags ['borderline_diameter']): contact erased: no thr_plus wall voxel within 3 mm of the baseline ostium (nearest 33.8 mm)
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject013: baseline 5 kept of 5 patches, threshold 231 HU
+  -- mask_erode1: 6 kept of 11 patches, threshold 248 HU
+  matched 5, lost 0, gained 1
+    GAINED mask_erode1 branch_002 (patch 2, diam 3.98, wall 58 vox, trace march/vanished, flags ['no_departure', 'tangential', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 72.9 mm)
+  mask_erode1 invariants: 2 violation(s): branch_004: radius 0.77 mm outside [1.0, 8.0]; branch_006: radius 0.97 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 8 kept of 13 patches, threshold 171 HU
+  matched 5, lost 0, gained 3
+    GAINED mask_dilate1 branch_006 (patch 6, diam 2.55, wall 16 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 61.6 mm)
+    GAINED mask_dilate1 branch_007 (patch 7, diam 2.65, wall 12 vox, trace axis/vanished, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 42.4 mm)
+    GAINED mask_dilate1 branch_008 (patch 9, diam 2.38, wall 10 vox, trace march/bifurcation, flags ['bifurcation', 'borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.6 mm)
+  mask_dilate1 invariants: 2 violation(s): branch_007: radius 0.56 mm outside [1.0, 8.0]; branch_007: seed voxel is not bright (111 HU) (plus 7 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 5 kept of 7 patches, threshold 221 HU
+  matched 5, lost 0, gained 0
+  thr_minus invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 5 patches, threshold 241 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_002 (patch 2, diam 4.45, wall 44 vox, flags []): thr_plus patch 2 at 0.0 mm REJECTED min_trace_mm (wall 32 vox, diam None, path 3.0)
+  thr_plus invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject014: baseline 4 kept of 9 patches, threshold 296 HU
+  -- mask_erode1: 4 kept of 6 patches, threshold 374 HU
+  matched 4, lost 0, gained 0
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 6 kept of 25 patches, threshold 193 HU
+  matched 4, lost 0, gained 2
+    GAINED mask_dilate1 branch_005 (patch 9, diam 3.1, wall 15 vox, trace march/max, flags []): baseline patch 9 at 4.2 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_006 (patch 10, diam 2.17, wall 10 vox, trace march/max, flags ['borderline_diameter']): baseline patch 5 at 1.2 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 3.0)
+  mask_dilate1 invariants: 1 violation(s): branch_006: radius 0.79 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 4 kept of 8 patches, threshold 286 HU
+  matched 4, lost 0, gained 0
+  thr_minus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 8 patches, threshold 306 HU
+  matched 4, lost 0, gained 0
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject015: baseline 5 kept of 15 patches, threshold 311 HU
+  -- mask_erode1: 4 kept of 4 patches, threshold 386 HU
+  matched 4, lost 1, gained 0
+    LOST baseline branch_005 (patch 5, diam 3.57, wall 29 vox, flags ['no_departure', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 63.0 mm)
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 14 kept of 65 patches, threshold 199 HU
+  matched 5, lost 0, gained 9
+    GAINED mask_dilate1 branch_006 (patch 6, diam 12.03, wall 85 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 4.6 mm)
+    GAINED mask_dilate1 branch_007 (patch 8, diam 9.04, wall 39 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch', 'section_merged']): baseline patch 8 at 4.9 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_008 (patch 9, diam 9.69, wall 37 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 9.0 mm)
+    GAINED mask_dilate1 branch_009 (patch 10, diam 7.39, wall 33 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 15.6 mm)
+    GAINED mask_dilate1 branch_010 (patch 13, diam 12.17, wall 17 vox, trace march/max, flags ['radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 14.4 mm)
+    GAINED mask_dilate1 branch_011 (patch 14, diam 2.79, wall 13 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 16.5 mm)
+    GAINED mask_dilate1 branch_012 (patch 17, diam 5.59, wall 11 vox, trace march/max, flags ['section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 11.7 mm)
+    GAINED mask_dilate1 branch_013 (patch 18, diam 3.01, wall 11 vox, trace march/max, flags ['section_merged', 'area_growth']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 9.9 mm)
+    GAINED mask_dilate1 branch_014 (patch 19, diam 2.54, wall 10 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 33.4 mm)
+  mask_dilate1 invariants: clean (plus 14 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 5 kept of 20 patches, threshold 301 HU
+  matched 5, lost 0, gained 0
+  thr_minus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 13 patches, threshold 321 HU
+  matched 5, lost 0, gained 0
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject016: baseline 7 kept of 42 patches, threshold 104 HU
+  -- mask_erode1: 6 kept of 34 patches, threshold 134 HU
+  matched 4, lost 3, gained 2
+    LOST baseline branch_004 (patch 4, diam 3.51, wall 41 vox, flags ['tangential']): mask_erode1 patch 31 at 1.5 mm REJECTED min_trace_mm (wall 3 vox, diam None, path 0.0)
+    LOST baseline branch_006 (patch 10, diam 3.05, wall 11 vox, flags ['bifurcation']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 6.3 mm)
+    LOST baseline branch_007 (patch 12, diam 3.04, wall 8 vox, flags ['axis_fallback']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 11.5 mm)
+    GAINED mask_erode1 branch_004 (patch 12, diam 3.39, wall 16 vox, trace march/bifurcation, flags ['bifurcation', 'no_departure']): baseline patch 6 at 4.6 mm was REJECTED min_trace_mm (wall 25 vox, diam None, path 3.0)
+    GAINED mask_erode1 branch_006 (patch 30, diam 2.19, wall 5 vox, trace march/vanished, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 9.0 mm)
+  mask_erode1 invariants: 2 violation(s): branch_002: seed voxel is not bright (89 HU); branch_006: radius 0.83 mm outside [1.0, 8.0] (plus 6 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 8 kept of 65 patches, threshold 100 HU
+  matched 6, lost 1, gained 2
+    LOST baseline branch_005 (patch 8, diam 3.19, wall 13 vox, flags []): mask_dilate1 patch 15 at 1.5 mm REJECTED origin_diameter_mm (wall 19 vox, diam 1.74, path 7.0)
+    GAINED mask_dilate1 branch_005 (patch 17, diam 4.1, wall 17 vox, trace march/vanished, flags ['no_departure']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.7 mm)
+    GAINED mask_dilate1 branch_008 (patch 28, diam 2.95, wall 9 vox, trace march/max, flags []): baseline patch 33 at 1.5 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  mask_dilate1 invariants: 3 violation(s): branch_005: radius 1.00 mm outside [1.0, 8.0]; branch_007: radius 1.00 mm outside [1.0, 8.0]; branch_008: radius 0.81 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 8 kept of 53 patches, threshold 94 HU
+  matched 6, lost 1, gained 2
+    LOST baseline branch_004 (patch 4, diam 3.51, wall 41 vox, flags ['tangential']): merged: thr_minus patch 4 touches the baseline ostium (0.8 mm) and was kept, unmatched; its own ostium is 6.2 mm away
+    GAINED thr_minus branch_004 (patch 4, diam 3.24, wall 75 vox, trace march/max, flags ['no_departure', 'tangential', 'elongated_patch']): baseline patch 7 at 0.0 mm was REJECTED min_trace_mm (wall 24 vox, diam None, path 3.0)
+    GAINED thr_minus branch_007 (patch 9, diam 2.44, wall 11 vox, trace march/max, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 9.8 mm)
+  thr_minus invariants: 1 violation(s): branch_008: radius 0.83 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 5 kept of 37 patches, threshold 114 HU
+  matched 5, lost 2, gained 0
+    LOST baseline branch_005 (patch 8, diam 3.19, wall 13 vox, flags []): thr_plus patch 11 at 0.0 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 3.0)
+    LOST baseline branch_006 (patch 10, diam 3.05, wall 11 vox, flags ['bifurcation']): contact erased: no thr_plus wall voxel within 3 mm of the baseline ostium (nearest 7.9 mm)
+  thr_plus invariants: 1 violation(s): branch_005: radius 0.69 mm outside [1.0, 8.0] (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject017: baseline 1 kept of 10 patches, threshold 229 HU
+  -- mask_erode1: 1 kept of 2 patches, threshold 449 HU
+  matched 0, lost 1, gained 1
+    LOST baseline branch_001 (patch 2, diam 6.06, wall 23 vox, flags ['no_departure']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 28.1 mm)
+    GAINED mask_erode1 branch_001 (patch 1, diam 6.31, wall 94 vox, trace march/max, flags ['radius_inscribed_fallback', 'near_cut_face', 'large_patch_at_cut']): baseline patch 1 touches the mask_erode1 ostium (2.3 mm) but was REJECTED end_face,iliac_division (wall 293 vox, diam 8.46, path 10.0)
+  mask_erode1 invariants: clean (plus 1 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 2 kept of 16 patches, threshold 184 HU
+  matched 0, lost 1, gained 2
+    LOST baseline branch_001 (patch 2, diam 6.06, wall 23 vox, flags ['no_departure']): contact erased: no mask_dilate1 wall voxel within 3 mm of the baseline ostium (nearest 3.8 mm)
+    GAINED mask_dilate1 branch_001 (patch 3, diam 3.12, wall 149 vox, trace march/max, flags ['near_cut_face', 'large_patch_at_cut', 'no_departure', 'tangential', 'elongated_patch']): baseline patch 5 at 2.8 mm was REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_002 (patch 8, diam 5.04, wall 22 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 12.0 mm)
+  mask_dilate1 invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 3 kept of 9 patches, threshold 219 HU
+  matched 1, lost 0, gained 2
+    GAINED thr_minus branch_002 (patch 5, diam 3.05, wall 9 vox, trace march/max, flags ['near_cut_face']): baseline patch 5 at 0.0 mm was REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+    GAINED thr_minus branch_003 (patch 6, diam 6.95, wall 9 vox, trace march/vanished, flags ['elongated_patch']): baseline patch 9 at 0.0 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  thr_minus invariants: clean (plus 1 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 1 kept of 11 patches, threshold 239 HU
+  matched 0, lost 1, gained 1
+    LOST baseline branch_001 (patch 2, diam 6.06, wall 23 vox, flags ['no_departure']): thr_plus patch 2 at 0.0 mm REJECTED min_trace_mm (wall 22 vox, diam None, path 2.0)
+    GAINED thr_plus branch_001 (patch 3, diam 3.04, wall 9 vox, trace march/vanished, flags ['tangential']): baseline patch 3 at 0.0 mm was REJECTED duplicate (wall 14 vox, diam 7.06, path 10.0)
+  thr_plus invariants: clean
+
+== subject018: baseline 7 kept of 141 patches, threshold 100 HU
+  -- mask_erode1: 9 kept of 152 patches, threshold 100 HU
+  matched 3, lost 4, gained 6
+    LOST baseline branch_001 (patch 7, diam 2.85, wall 84 vox, flags ['axis_fallback', 'radius_no_cross_section', 'no_departure', 'tangential', 'elongated_patch']): mask_erode1 patch 116 at 1.7 mm REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 4.0)
+    LOST baseline branch_003 (patch 23, diam 3.49, wall 24 vox, flags []): mask_erode1 patch 27 at 1.4 mm REJECTED min_trace_mm (wall 22 vox, diam None, path 3.0)
+    LOST baseline branch_005 (patch 38, diam 3.05, wall 10 vox, flags ['axis_fallback', 'near_cut_face']): mask_erode1 patch 69 at 2.7 mm REJECTED min_trace_mm (wall 8 vox, diam None, path 3.0)
+    LOST baseline branch_007 (patch 53, diam 4.36, wall 7 vox, flags ['no_departure']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 9.3 mm)
+    GAINED mask_erode1 branch_002 (patch 20, diam 4.98, wall 24 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 7.0 mm)
+    GAINED mask_erode1 branch_003 (patch 21, diam 3.39, wall 23 vox, trace march/bifurcation, flags ['bifurcation']): baseline patch 34 at 2.0 mm was REJECTED min_trace_mm (wall 11 vox, diam None, path 3.0)
+    GAINED mask_erode1 branch_004 (patch 33, diam 5.56, wall 19 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_no_cross_section']): baseline patch 16 at 1.8 mm was REJECTED min_trace_mm (wall 33 vox, diam None, path 4.0)
+    GAINED mask_erode1 branch_005 (patch 50, diam 2.57, wall 12 vox, trace march/vanished, flags ['near_cut_face']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 6.9 mm)
+    GAINED mask_erode1 branch_006 (patch 60, diam 7.4, wall 11 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 5 at 4.7 mm was REJECTED min_trace_mm (wall 127 vox, diam None, path 4.0)
+    GAINED mask_erode1 branch_007 (patch 66, diam 4.62, wall 10 vox, trace march/vanished, flags ['radius_no_cross_section', 'no_departure']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 7.0 mm)
+  mask_erode1 invariants: 6 violation(s): branch_001: seed voxel is not bright (88 HU); branch_004: radius 0.50 mm outside [1.0, 8.0]; branch_004: seed voxel is not bright (-1 HU); branch_005: radius 0.80 mm outside [1.0, 8.0]; branch_007: radius 0.50 mm outside [1.0, 8.0]; branch_007: seed voxel is not bright (-3 HU) (plus 8 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 16 kept of 196 patches, threshold 100 HU
+  matched 4, lost 3, gained 12
+    LOST baseline branch_001 (patch 7, diam 2.85, wall 84 vox, flags ['axis_fallback', 'radius_no_cross_section', 'no_departure', 'tangential', 'elongated_patch']): mask_dilate1 patch 15 at 1.5 mm REJECTED min_trace_mm (wall 35 vox, diam None, path 3.0)
+    LOST baseline branch_003 (patch 23, diam 3.49, wall 24 vox, flags []): mask_dilate1 patch 24 at 3.1 mm REJECTED min_trace_mm (wall 19 vox, diam None, path 3.0)
+    LOST baseline branch_004 (patch 31, diam 2.74, wall 12 vox, flags ['bifurcation']): mask_dilate1 patch 32 at 2.9 mm REJECTED min_trace_mm (wall 14 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_002 (patch 16, diam 4.11, wall 32 vox, trace axis/bifurcation, flags ['axis_fallback', 'near_cut_face']): baseline patch 25 at 1.7 mm was REJECTED min_trace_mm (wall 22 vox, diam None, path 4.0)
+    GAINED mask_dilate1 branch_004 (patch 28, diam 3.49, wall 16 vox, trace march/vanished, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 6.7 mm)
+    GAINED mask_dilate1 branch_007 (patch 48, diam 3.35, wall 10 vox, trace march/bifurcation, flags ['bifurcation']): baseline patch 91 at 2.3 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_008 (patch 49, diam 2.41, wall 9 vox, trace march/vanished, flags ['borderline_diameter']): baseline patch 16 at 1.7 mm was REJECTED min_trace_mm (wall 33 vox, diam None, path 4.0)
+    GAINED mask_dilate1 branch_009 (patch 59, diam 2.54, wall 7 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 72 at 1.5 mm was REJECTED tiny_patch (wall 2 vox, diam 2.38, path 6.0)
+    GAINED mask_dilate1 branch_010 (patch 61, diam 10.51, wall 7 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_no_cross_section']): baseline patch 5 touches the mask_dilate1 ostium (2.7 mm) but was REJECTED min_trace_mm (wall 127 vox, diam None, path 4.0)
+    GAINED mask_dilate1 branch_011 (patch 75, diam 2.41, wall 6 vox, trace axis/vanished, flags ['axis_fallback', 'borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.0 mm)
+    GAINED mask_dilate1 branch_012 (patch 80, diam 2.57, wall 5 vox, trace march/vanished, flags ['near_cut_face']): baseline patch 88 at 1.5 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_013 (patch 84, diam 4.73, wall 5 vox, trace march/vanished, flags ['no_departure', 'elongated_patch']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.9 mm)
+    GAINED mask_dilate1 branch_014 (patch 86, diam 2.52, wall 5 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 129 at 1.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_015 (patch 90, diam 3.92, wall 4 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 102 at 3.4 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_016 (patch 94, diam 2.74, wall 3 vox, trace march/vanished, flags []): baseline patch 53 at 4.0 mm was kept but matched another mask_dilate1 branch
+  mask_dilate1 invariants: 11 violation(s): branch_006: radius 0.91 mm outside [1.0, 8.0]; branch_006: seed voxel is not bright (93 HU); branch_007: radius 0.90 mm outside [1.0, 8.0]; branch_007: seed voxel is not bright (50 HU); branch_009: seed voxel is not bright (29 HU); branch_010: radius 0.50 mm outside [1.0, 8.0]; branch_010: seed voxel is not bright (47 HU); branch_011: radius 0.81 mm outside [1.0, 8.0]; branch_011: seed voxel is not bright (72 HU); branch_014: radius 0.96 mm outside [1.0, 8.0]; branch_014: seed voxel is not bright (87 HU) (plus 7 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 13 kept of 185 patches, threshold 90 HU
+  matched 4, lost 3, gained 9
+    LOST baseline branch_001 (patch 7, diam 2.85, wall 84 vox, flags ['axis_fallback', 'radius_no_cross_section', 'no_departure', 'tangential', 'elongated_patch']): thr_minus patch 10 at 0.0 mm REJECTED min_trace_mm (wall 99 vox, diam None, path 4.0)
+    LOST baseline branch_002 (patch 8, diam 6.9, wall 77 vox, flags ['axis_fallback']): thr_minus patch 9 at 0.0 mm REJECTED bone (wall 104 vox, diam 6.82, path 10.0)
+    LOST baseline branch_007 (patch 53, diam 4.36, wall 7 vox, flags ['no_departure']): thr_minus patch 61 at 0.0 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 3.0)
+    GAINED thr_minus branch_001 (patch 5, diam 11.5, wall 158 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 5 at 0.0 mm was REJECTED min_trace_mm (wall 127 vox, diam None, path 4.0)
+    GAINED thr_minus branch_002 (patch 11, diam 5.02, wall 66 vox, trace march/bifurcation, flags ['bifurcation', 'no_departure', 'tangential']): baseline patch 15 at 1.1 mm was REJECTED min_trace_mm (wall 36 vox, diam None, path 3.0)
+    GAINED thr_minus branch_006 (patch 26, diam 7.11, wall 18 vox, trace march/vanished, flags []): baseline patch 16 touches the thr_minus ostium (2.8 mm) but was REJECTED min_trace_mm (wall 33 vox, diam None, path 4.0)
+    GAINED thr_minus branch_007 (patch 29, diam 6.71, wall 17 vox, trace march/bifurcation, flags ['bifurcation']): baseline patch 101 at 0.0 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_minus branch_009 (patch 32, diam 2.13, wall 14 vox, trace march/max, flags ['borderline_diameter']): baseline patch 29 at 0.0 mm was REJECTED origin_diameter_mm (wall 14 vox, diam 1.97, path 9.0)
+    GAINED thr_minus branch_010 (patch 50, diam 2.44, wall 7 vox, trace march/vanished, flags ['near_cut_face', 'borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 4.4 mm)
+    GAINED thr_minus branch_011 (patch 55, diam 2.69, wall 7 vox, trace march/bifurcation, flags ['bifurcation', 'area_growth']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 5.6 mm)
+    GAINED thr_minus branch_012 (patch 75, diam 3.3, wall 5 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 100 at 0.0 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_minus branch_013 (patch 86, diam 5.84, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_no_cross_section']): baseline patch 76 at 0.8 mm was REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 4.0)
+  thr_minus invariants: 9 violation(s): branch_001: radius 0.91 mm outside [1.0, 8.0]; branch_001: seed voxel is not bright (62 HU); branch_004: seed voxel is not bright (86 HU); branch_008: seed voxel is not bright (70 HU); branch_009: seed voxel is not bright (68 HU); branch_011: seed voxel is not bright (50 HU); branch_012: seed voxel is not bright (64 HU); branch_013: radius 0.50 mm outside [1.0, 8.0]; branch_013: seed voxel is not bright (70 HU) (plus 8 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 6 kept of 139 patches, threshold 110 HU
+  matched 2, lost 5, gained 4
+    LOST baseline branch_001 (patch 7, diam 2.85, wall 84 vox, flags ['axis_fallback', 'radius_no_cross_section', 'no_departure', 'tangential', 'elongated_patch']): thr_plus patch 13 at 0.8 mm REJECTED min_trace_mm (wall 44 vox, diam None, path 3.0)
+    LOST baseline branch_002 (patch 8, diam 6.9, wall 77 vox, flags ['axis_fallback']): thr_plus patch 9 at 0.0 mm REJECTED min_trace_mm (wall 60 vox, diam None, path 4.0)
+    LOST baseline branch_004 (patch 31, diam 2.74, wall 12 vox, flags ['bifurcation']): thr_plus patch 52 at 0.0 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+    LOST baseline branch_006 (patch 52, diam 7.56, wall 7 vox, flags ['axis_fallback']): contact erased: no thr_plus wall voxel within 3 mm of the baseline ostium (nearest 5.3 mm)
+    LOST baseline branch_007 (patch 53, diam 4.36, wall 7 vox, flags ['no_departure']): thr_plus patch 65 at 0.0 mm REJECTED min_trace_mm (wall 4 vox, diam None, path 3.0)
+    GAINED thr_plus branch_001 (patch 6, diam 7.95, wall 68 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 5 at 0.0 mm was REJECTED min_trace_mm (wall 127 vox, diam None, path 4.0)
+    GAINED thr_plus branch_002 (patch 26, diam 2.78, wall 17 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 16 at 0.8 mm was REJECTED min_trace_mm (wall 33 vox, diam None, path 4.0)
+    GAINED thr_plus branch_005 (patch 39, diam 4.26, wall 7 vox, trace axis/vanished, flags ['axis_fallback', 'near_cut_face']): baseline patch 25 at 1.6 mm was REJECTED min_trace_mm (wall 22 vox, diam None, path 4.0)
+    GAINED thr_plus branch_006 (patch 71, diam 2.76, wall 3 vox, trace march/bifurcation, flags ['bifurcation', 'near_cut_face']): baseline patch 66 at 0.0 mm was REJECTED iliac_division (wall 4 vox, diam 7.51, path 5.0)
+  thr_plus invariants: 5 violation(s): branch_002: seed voxel is not bright (65 HU); branch_003: radius 0.89 mm outside [1.0, 8.0]; branch_003: seed voxel is not bright (96 HU); branch_004: radius 0.50 mm outside [1.0, 8.0]; branch_005: radius 0.82 mm outside [1.0, 8.0] (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject019: baseline 2 kept of 7 patches, threshold 249 HU, 2 of 3 references matched
+  -- mask_erode1: 0 kept of 9 patches, threshold 416 HU; references matched 0, TRUE POSITIVES LOST: branch_001, branch_003
+  matched 0, lost 2, gained 0
+    LOST baseline branch_001 (patch 2, diam 4.46, wall 24 vox, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 11.3 mm)
+    LOST baseline branch_002 (patch 4, diam 3.0, wall 9 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 4.4 mm)
+  mask_erode1 invariants: clean
+  -- mask_dilate1: 6 kept of 13 patches, threshold 241 HU; references matched 3, references newly matched: branch_002
+  matched 2, lost 0, gained 4
+    GAINED mask_dilate1 branch_003 (patch 5, diam 5.81, wall 14 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 14.9 mm)
+    GAINED mask_dilate1 branch_004 (patch 6, diam 2.34, wall 13 vox, trace march/max, flags ['borderline_diameter']): baseline patch 7 at 1.7 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 4.0)
+    GAINED mask_dilate1 branch_005 (patch 8, diam 2.84, wall 5 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 7.5 mm)
+    GAINED mask_dilate1 branch_006 (patch 10, diam 6.59, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'near_cut_face', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 20.5 mm)
+  mask_dilate1 invariants: 1 violation(s): branch_002: seed voxel is not bright (216 HU) (plus 6 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 2 kept of 9 patches, threshold 239 HU; references matched 2
+  matched 2, lost 0, gained 0
+  thr_minus invariants: clean (plus 1 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 2 kept of 4 patches, threshold 259 HU; references matched 2
+  matched 2, lost 0, gained 0
+  thr_plus invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+
+== subject020: baseline 4 kept of 6 patches, threshold 217 HU, 4 of 4 references matched
+  -- mask_erode1: 0 kept of 4 patches, threshold 412 HU; references matched 0, TRUE POSITIVES LOST: branch_001, branch_002, branch_003, branch_004
+  matched 0, lost 4, gained 0
+    LOST baseline branch_001 (patch 2, diam 2.69, wall 123 vox, flags ['no_departure', 'tangential', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 28.7 mm)
+    LOST baseline branch_002 (patch 3, diam 3.31, wall 28 vox, flags ['elongated_patch', 'area_growth']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 26.8 mm)
+    LOST baseline branch_003 (patch 5, diam 2.78, wall 21 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 20.6 mm)
+    LOST baseline branch_004 (patch 6, diam 2.51, wall 11 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 27.4 mm)
+  mask_erode1 invariants: clean
+  -- mask_dilate1: 3 kept of 16 patches, threshold 194 HU; references matched 2, TRUE POSITIVES LOST: branch_001, branch_003
+  matched 2, lost 2, gained 1
+    LOST baseline branch_001 (patch 2, diam 2.69, wall 123 vox, flags ['no_departure', 'tangential', 'elongated_patch']): contact erased: no mask_dilate1 wall voxel within 3 mm of the baseline ostium (nearest 6.0 mm)
+    LOST baseline branch_004 (patch 6, diam 2.51, wall 11 vox, flags []): mask_dilate1 patch 6 at 1.7 mm REJECTED min_trace_mm (wall 24 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_001 (patch 2, diam 2.81, wall 120 vox, trace march/max, flags ['no_departure', 'tangential', 'elongated_patch', 'area_growth']): split: baseline patch 2 touches the mask_dilate1 ostium (0.2 mm) and was kept, unmatched; its own ostium is 12.1 mm away
+  mask_dilate1 invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 4 kept of 6 patches, threshold 207 HU; references matched 4
+  matched 4, lost 0, gained 0
+  thr_minus invariants: 1 violation(s): branch_004: radius 0.96 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 4 kept of 8 patches, threshold 227 HU; references matched 3, TRUE POSITIVES LOST: branch_004
+  matched 3, lost 1, gained 1
+    LOST baseline branch_002 (patch 3, diam 3.31, wall 28 vox, flags ['elongated_patch', 'area_growth']): thr_plus patch 3 at 0.8 mm REJECTED min_trace_mm (wall 27 vox, diam None, path 3.0)
+    GAINED thr_plus branch_004 (patch 8, diam 3.76, wall 6 vox, trace march/max, flags ['elongated_patch']): split: baseline patch 2 touches the thr_plus ostium (1.8 mm) and was kept, matched to thr_plus branch_001; its own ostium is 17.0 mm away
+  thr_plus invariants: 1 violation(s): branch_003: radius 0.80 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject021: baseline 10 kept of 45 patches, threshold 253 HU, 3 of 3 references matched
+  -- mask_erode1: 4 kept of 16 patches, threshold 380 HU; references matched 3
+  matched 3, lost 7, gained 1
+    LOST baseline branch_003 (patch 4, diam 3.8, wall 106 vox, flags ['no_departure', 'tangential', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 6.1 mm)
+    LOST baseline branch_004 (patch 5, diam 8.14, wall 73 vox, flags ['elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 4.0 mm)
+    LOST baseline branch_005 (patch 7, diam 2.96, wall 48 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 15.9 mm)
+    LOST baseline branch_006 (patch 8, diam 8.51, wall 39 vox, flags ['bifurcation', 'near_cut_face', 'section_merged']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 4.1 mm)
+    LOST baseline branch_007 (patch 10, diam 8.33, wall 20 vox, flags ['no_departure']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 8.5 mm)
+    LOST baseline branch_008 (patch 12, diam 2.85, wall 16 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 13.0 mm)
+    LOST baseline branch_010 (patch 14, diam 2.96, wall 12 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 13.0 mm)
+    GAINED mask_erode1 branch_004 (patch 10, diam 2.52, wall 10 vox, trace march/vanished, flags ['near_cut_face']): baseline patch 6 at 2.4 mm was REJECTED min_trace_mm (wall 54 vox, diam None, path 3.0)
+  mask_erode1 invariants: 2 violation(s): branch_003: radius 0.50 mm outside [1.0, 8.0]; branch_004: radius 0.80 mm outside [1.0, 8.0] (plus 3 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 9 kept of 35 patches, threshold 240 HU; references matched 3
+  matched 4, lost 6, gained 5
+    LOST baseline branch_004 (patch 5, diam 8.14, wall 73 vox, flags ['elongated_patch']): mask_dilate1 patch 27 at 4.8 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    LOST baseline branch_005 (patch 7, diam 2.96, wall 48 vox, flags []): mask_dilate1 patch 18 at 0.9 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    LOST baseline branch_006 (patch 8, diam 8.51, wall 39 vox, flags ['bifurcation', 'near_cut_face', 'section_merged']): mask_dilate1 patch 1 at 2.6 mm REJECTED min_trace_mm (wall 794 vox, diam None, path 0.0)
+    LOST baseline branch_007 (patch 10, diam 8.33, wall 20 vox, flags ['no_departure']): mask_dilate1 patch 1 touches the baseline ostium (1.6 mm) but was REJECTED min_trace_mm (wall 794 vox, diam None, path 0.0)
+    LOST baseline branch_008 (patch 12, diam 2.85, wall 16 vox, flags []): mask_dilate1 patch 14 at 3.8 mm REJECTED min_trace_mm (wall 21 vox, diam None, path 3.0)
+    LOST baseline branch_010 (patch 14, diam 2.96, wall 12 vox, flags []): mask_dilate1 patch 20 at 3.7 mm REJECTED origin_diameter_mm (wall 6 vox, diam 1.83, path 10.0)
+    GAINED mask_dilate1 branch_004 (patch 6, diam 5.84, wall 48 vox, trace march/max, flags ['near_cut_face']): split: baseline patch 3 touches the mask_dilate1 ostium (1.8 mm) and was kept, matched to mask_dilate1 branch_003; its own ostium is 6.7 mm away
+    GAINED mask_dilate1 branch_005 (patch 8, diam 2.48, wall 32 vox, trace march/max, flags ['near_cut_face', 'borderline_diameter']): baseline patch 6 at 1.5 mm was REJECTED min_trace_mm (wall 54 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_006 (patch 9, diam 3.53, wall 28 vox, trace march/vanished, flags ['no_departure']): baseline patch 9 at 3.0 mm was REJECTED min_trace_mm (wall 25 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_007 (patch 12, diam 6.81, wall 22 vox, trace march/vanished, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 4.6 mm)
+    GAINED mask_dilate1 branch_008 (patch 16, diam 10.03, wall 11 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 20.3 mm)
+  mask_dilate1 invariants: 1 violation(s): branch_006: radius 0.96 mm outside [1.0, 8.0] (plus 7 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 13 kept of 39 patches, threshold 243 HU; references matched 3
+  matched 10, lost 0, gained 3
+    GAINED thr_minus branch_007 (patch 9, diam 7.67, wall 26 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 11 at 0.8 mm was REJECTED min_trace_mm (wall 16 vox, diam None, path 0.0)
+    GAINED thr_minus branch_010 (patch 13, diam 5.25, wall 16 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 15 at 0.0 mm was REJECTED min_trace_mm (wall 8 vox, diam None, path 4.0)
+    GAINED thr_minus branch_013 (patch 16, diam 5.25, wall 11 vox, trace march/vanished, flags ['near_cut_face']): baseline patch 16 at 0.8 mm was REJECTED min_trace_mm (wall 8 vox, diam None, path 3.0)
+  thr_minus invariants: 1 violation(s): branch_005: radius 0.72 mm outside [1.0, 8.0] (plus 10 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 10 kept of 40 patches, threshold 263 HU; references matched 3
+  matched 8, lost 2, gained 2
+    LOST baseline branch_005 (patch 7, diam 2.96, wall 48 vox, flags []): thr_plus patch 7 at 0.0 mm REJECTED min_trace_mm (wall 39 vox, diam None, path 1.0)
+    LOST baseline branch_010 (patch 14, diam 2.96, wall 12 vox, flags []): thr_plus patch 13 at 0.8 mm REJECTED min_trace_mm (wall 9 vox, diam None, path 3.0)
+    GAINED thr_plus branch_008 (patch 12, diam 6.86, wall 15 vox, trace march/bifurcation, flags ['bifurcation', 'elongated_patch', 'section_merged', 'area_growth']): baseline patch 11 at 0.0 mm was REJECTED min_trace_mm (wall 16 vox, diam None, path 0.0)
+    GAINED thr_plus branch_010 (patch 18, diam 3.59, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 15 at 1.1 mm was REJECTED min_trace_mm (wall 8 vox, diam None, path 4.0)
+  thr_plus invariants: 1 violation(s): branch_007: radius 0.90 mm outside [1.0, 8.0] (plus 8 watershed regions reaching over 15 mm, information only)
+
+== subject022: baseline 11 kept of 65 patches, threshold 105 HU, 6 of 6 references matched
+  -- mask_erode1: 5 kept of 14 patches, threshold 182 HU; references matched 5, TRUE POSITIVES LOST: branch_001
+  matched 5, lost 6, gained 0
+    LOST baseline branch_005 (patch 11, diam 4.5, wall 66 vox, flags ['bifurcation']): mask_erode1 patch 9 at 2.4 mm REJECTED min_trace_mm (wall 15 vox, diam None, path 4.0)
+    LOST baseline branch_007 (patch 15, diam 2.44, wall 38 vox, flags ['borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 8.6 mm)
+    LOST baseline branch_008 (patch 23, diam 3.18, wall 12 vox, flags []): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 14.9 mm)
+    LOST baseline branch_009 (patch 26, diam 2.01, wall 8 vox, flags ['borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 10.9 mm)
+    LOST baseline branch_010 (patch 28, diam 5.47, wall 7 vox, flags ['elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 14.8 mm)
+    LOST baseline branch_011 (patch 30, diam 2.19, wall 7 vox, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged', 'borderline_diameter']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 9.0 mm)
+  mask_erode1 invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 24 kept of 113 patches, threshold 100 HU; references matched 6
+  matched 8, lost 3, gained 16
+    LOST baseline branch_008 (patch 23, diam 3.18, wall 12 vox, flags []): mask_dilate1 patch 46 at 1.9 mm REJECTED origin_diameter_mm (wall 7 vox, diam 1.76, path 10.0)
+    LOST baseline branch_009 (patch 26, diam 2.01, wall 8 vox, flags ['borderline_diameter']): mask_dilate1 patch 50 at 1.5 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+    LOST baseline branch_010 (patch 28, diam 5.47, wall 7 vox, flags ['elongated_patch']): merged: mask_dilate1 patch 8 touches the baseline ostium (1.3 mm) and was kept, unmatched; its own ostium is 11.4 mm away
+    GAINED mask_dilate1 branch_002 (patch 8, diam 3.87, wall 217 vox, trace march/max, flags ['near_cut_face', 'large_patch_at_cut', 'no_departure', 'tangential', 'elongated_patch']): baseline patch 24 at 1.8 mm was REJECTED iliac_division (wall 11 vox, diam 5.34, path 10.0)
+    GAINED mask_dilate1 branch_007 (patch 22, diam 16.02, wall 61 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 48 at 2.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_008 (patch 23, diam 7.18, wall 53 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 56 at 2.3 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_011 (patch 28, diam 9.7, wall 31 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.6 mm)
+    GAINED mask_dilate1 branch_012 (patch 32, diam 11.41, wall 21 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.0 mm)
+    GAINED mask_dilate1 branch_013 (patch 35, diam 7.36, wall 19 vox, trace axis/bifurcation, flags ['axis_fallback', 'section_merged']): baseline patch 52 at 1.1 mm was REJECTED tiny_patch (wall 1 vox, diam 3.01, path 6.0)
+    GAINED mask_dilate1 branch_014 (patch 36, diam 6.98, wall 16 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.6 mm)
+    GAINED mask_dilate1 branch_016 (patch 39, diam 10.98, wall 14 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_no_cross_section']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.5 mm)
+    GAINED mask_dilate1 branch_017 (patch 41, diam 2.71, wall 11 vox, trace march/max, flags []): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.0 mm)
+    GAINED mask_dilate1 branch_018 (patch 44, diam 2.09, wall 9 vox, trace march/max, flags ['borderline_diameter']): baseline patch 25 at 1.5 mm was REJECTED duplicate (wall 10 vox, diam 2.22, path 10.0)
+    GAINED mask_dilate1 branch_019 (patch 45, diam 12.3, wall 7 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 22 at 3.7 mm was REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+    GAINED mask_dilate1 branch_020 (patch 53, diam 8.24, wall 5 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 8.8 mm)
+    GAINED mask_dilate1 branch_021 (patch 54, diam 12.17, wall 4 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.7 mm)
+    GAINED mask_dilate1 branch_022 (patch 61, diam 13.88, wall 3 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): baseline patch 19 at 4.2 mm was REJECTED min_trace_mm (wall 18 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_023 (patch 62, diam 12.86, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 3.4 mm)
+    GAINED mask_dilate1 branch_024 (patch 63, diam 5.37, wall 3 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.3 mm)
+  mask_dilate1 invariants: 6 violation(s): branch_013: seed voxel is not bright (88 HU); branch_015: radius 0.63 mm outside [1.0, 8.0]; branch_016: radius 0.50 mm outside [1.0, 8.0]; branch_016: seed voxel is not bright (48 HU); branch_017: radius 0.95 mm outside [1.0, 8.0]; branch_020: seed voxel is not bright (96 HU) (plus 21 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 19 kept of 79 patches, threshold 95 HU; references matched 6
+  matched 11, lost 0, gained 8
+    GAINED thr_minus branch_004 (patch 8, diam 6.37, wall 112 vox, trace march/max, flags ['radius_inscribed_fallback', 'elongated_patch', 'section_merged']): baseline patch 16 at 0.8 mm was REJECTED bone (wall 31 vox, diam 9.04, path 10.0)
+    GAINED thr_minus branch_009 (patch 17, diam 11.56, wall 43 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged']): baseline patch 38 at 0.0 mm was REJECTED min_trace_mm (wall 3 vox, diam None, path 3.0)
+    GAINED thr_minus branch_010 (patch 19, diam 9.68, wall 28 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 50 at 3.0 mm was REJECTED tiny_patch (wall 1 vox, diam 2.99, path 6.0)
+    GAINED thr_minus branch_011 (patch 20, diam 4.4, wall 25 vox, trace march/bifurcation, flags ['bifurcation', 'radius_inscribed_fallback', 'section_merged', 'area_growth']): baseline patch 22 at 0.0 mm was REJECTED min_trace_mm (wall 12 vox, diam None, path 2.0)
+    GAINED thr_minus branch_014 (patch 34, diam 3.59, wall 9 vox, trace march/vanished, flags []): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 8.8 mm)
+    GAINED thr_minus branch_016 (patch 36, diam 5.79, wall 8 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 9.8 mm)
+    GAINED thr_minus branch_018 (patch 42, diam 10.9, wall 6 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 19 at 3.6 mm was REJECTED min_trace_mm (wall 18 vox, diam None, path 3.0)
+    GAINED thr_minus branch_019 (patch 47, diam 12.28, wall 4 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): baseline patch 55 at 0.0 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  thr_minus invariants: 1 violation(s): branch_012: radius 0.87 mm outside [1.0, 8.0] (plus 16 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 10 kept of 46 patches, threshold 115 HU; references matched 6
+  matched 8, lost 3, gained 2
+    LOST baseline branch_008 (patch 23, diam 3.18, wall 12 vox, flags []): thr_plus patch 23 at 2.4 mm REJECTED min_trace_mm (wall 7 vox, diam None, path 0.0)
+    LOST baseline branch_009 (patch 26, diam 2.01, wall 8 vox, flags ['borderline_diameter']): thr_plus patch 44 at 0.8 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 3.0)
+    LOST baseline branch_011 (patch 30, diam 2.19, wall 7 vox, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged', 'borderline_diameter']): contact erased: no thr_plus wall voxel within 3 mm of the baseline ostium (nearest 9.7 mm)
+    GAINED thr_plus branch_004 (patch 6, diam 7.97, wall 72 vox, trace march/bifurcation, flags ['bifurcation', 'elongated_patch', 'area_growth']): baseline patch 7 at 0.8 mm was REJECTED blob_at_seed,bone,proximal_volume_ml (wall 83 vox, diam 6.16, path 9.0)
+    GAINED thr_plus branch_009 (patch 20, diam 4.97, wall 8 vox, trace march/max, flags ['near_cut_face', 'elongated_patch', 'area_growth']): baseline patch 24 at 0.0 mm was REJECTED iliac_division (wall 11 vox, diam 5.34, path 10.0)
+  thr_plus invariants: 1 violation(s): branch_008: radius 0.79 mm outside [1.0, 8.0] (plus 9 watershed regions reaching over 15 mm, information only)
+
+== subject023: baseline 2 kept of 6 patches, threshold 164 HU, 2 of 3 references matched
+  -- mask_erode1: 0 kept of 5 patches, threshold 310 HU; references matched 0, TRUE POSITIVES LOST: branch_001, branch_003
+  matched 0, lost 2, gained 0
+    LOST baseline branch_001 (patch 2, diam 3.8, wall 195 vox, flags ['no_departure', 'tangential', 'elongated_patch']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 15.7 mm)
+    LOST baseline branch_002 (patch 3, diam 3.41, wall 54 vox, flags ['area_growth']): contact erased: no mask_erode1 wall voxel within 3 mm of the baseline ostium (nearest 13.5 mm)
+  mask_erode1 invariants: clean
+  -- mask_dilate1: 2 kept of 16 patches, threshold 146 HU; references matched 0, TRUE POSITIVES LOST: branch_001, branch_003
+  matched 0, lost 2, gained 2
+    LOST baseline branch_001 (patch 2, diam 3.8, wall 195 vox, flags ['no_departure', 'tangential', 'elongated_patch']): mask_dilate1 patch 1 at 1.0 mm REJECTED end_face (wall 1020 vox, diam 3.0, path 10.0)
+    LOST baseline branch_002 (patch 3, diam 3.41, wall 54 vox, flags ['area_growth']): mask_dilate1 patch 6 at 3.9 mm REJECTED bone (wall 35 vox, diam 4.21, path 10.0)
+    GAINED mask_dilate1 branch_001 (patch 4, diam 2.86, wall 81 vox, trace march/bifurcation, flags ['bifurcation', 'near_cut_face', 'no_departure', 'tangential', 'elongated_patch']): baseline patch 4 at 2.4 mm was REJECTED min_trace_mm (wall 45 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_002 (patch 7, diam 3.45, wall 29 vox, trace march/max, flags []): baseline patch 5 touches the mask_dilate1 ostium (0.4 mm) but was REJECTED iliac_division (wall 40 vox, diam 7.15, path 10.0)
+  mask_dilate1 invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 2 kept of 5 patches, threshold 154 HU; references matched 2
+  matched 2, lost 0, gained 0
+  thr_minus invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 3 kept of 6 patches, threshold 174 HU; references matched 2, TRUE POSITIVES LOST: branch_003, references newly matched: branch_002
+  matched 2, lost 0, gained 1
+    GAINED thr_plus branch_003 (patch 4, diam 3.9, wall 37 vox, trace march/max, flags ['near_cut_face']): baseline patch 5 at 1.1 mm was REJECTED iliac_division (wall 40 vox, diam 7.15, path 10.0)
+  thr_plus invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject024: baseline 8 kept of 64 patches, threshold 100 HU
+  -- mask_erode1: 9 kept of 85 patches, threshold 100 HU
+  matched 3, lost 5, gained 6
+    LOST baseline branch_002 (patch 5, diam 7.18, wall 30 vox, flags ['near_cut_face']): mask_erode1 patch 74 at 2.3 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 3.0)
+    LOST baseline branch_003 (patch 6, diam 4.06, wall 29 vox, flags ['axis_fallback']): mask_erode1 patch 18 at 1.1 mm REJECTED min_trace_mm (wall 18 vox, diam None, path 3.0)
+    LOST baseline branch_004 (patch 8, diam 6.6, wall 26 vox, flags ['bifurcation']): mask_erode1 patch 73 at 1.7 mm REJECTED tiny_patch (wall 2 vox, diam 2.88, path 5.0)
+    LOST baseline branch_006 (patch 10, diam 4.4, wall 23 vox, flags ['bifurcation']): mask_erode1 patch 82 at 1.7 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    LOST baseline branch_008 (patch 22, diam 2.59, wall 8 vox, flags []): mask_erode1 patch 70 at 0.9 mm REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 0.0)
+    GAINED mask_erode1 branch_001 (patch 3, diam 4.24, wall 48 vox, trace march/bifurcation, flags ['bifurcation']): baseline patch 14 at 4.1 mm was REJECTED min_trace_mm (wall 17 vox, diam None, path 1.0)
+    GAINED mask_erode1 branch_002 (patch 5, diam 3.51, wall 36 vox, trace axis/bifurcation, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 6.5 mm)
+    GAINED mask_erode1 branch_003 (patch 8, diam 5.19, wall 33 vox, trace march/bifurcation, flags ['bifurcation', 'no_departure', 'area_growth']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 5.4 mm)
+    GAINED mask_erode1 branch_006 (patch 13, diam 9.62, wall 24 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 27 at 1.3 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+    GAINED mask_erode1 branch_007 (patch 27, diam 5.08, wall 14 vox, trace march/vanished, flags []): baseline patch 49 at 4.7 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_erode1 branch_008 (patch 45, diam 5.13, wall 7 vox, trace axis/bifurcation, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_erode1 ostium (nearest 3.3 mm)
+  mask_erode1 invariants: 4 violation(s): branch_002: radius 0.75 mm outside [1.0, 8.0]; branch_002: seed voxel is not bright (52 HU); branch_005: radius 0.75 mm outside [1.0, 8.0]; branch_006: radius 0.83 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- mask_dilate1: 12 kept of 94 patches, threshold 100 HU
+  matched 5, lost 3, gained 7
+    LOST baseline branch_003 (patch 6, diam 4.06, wall 29 vox, flags ['axis_fallback']): mask_dilate1 patch 43 at 4.0 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 2.0)
+    LOST baseline branch_005 (patch 9, diam 4.39, wall 24 vox, flags ['axis_fallback', 'radius_no_cross_section']): mask_dilate1 patch 26 at 1.5 mm REJECTED min_trace_mm (wall 12 vox, diam None, path 0.0)
+    LOST baseline branch_008 (patch 22, diam 2.59, wall 8 vox, flags []): mask_dilate1 patch 31 at 1.8 mm REJECTED min_trace_mm (wall 9 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_004 (patch 13, diam 4.97, wall 21 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 53 at 1.7 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_005 (patch 14, diam 7.31, wall 20 vox, trace march/vanished, flags []): baseline patch 36 at 1.6 mm was REJECTED bone (wall 3 vox, diam 5.12, path 5.0)
+    GAINED mask_dilate1 branch_007 (patch 22, diam 2.93, wall 14 vox, trace march/vanished, flags ['no_departure']): baseline patch 3 at 1.7 mm was REJECTED min_trace_mm (wall 45 vox, diam None, path 3.0)
+    GAINED mask_dilate1 branch_009 (patch 28, diam 7.87, wall 11 vox, trace march/max, flags []): baseline patch 38 at 0.9 mm was REJECTED min_trace_mm,tiny_patch (wall 2 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_010 (patch 41, diam 5.04, wall 6 vox, trace march/max, flags ['area_growth']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 5.1 mm)
+    GAINED mask_dilate1 branch_011 (patch 48, diam 3.35, wall 5 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 50 at 3.5 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED mask_dilate1 branch_012 (patch 54, diam 3.15, wall 4 vox, trace axis/vanished, flags ['axis_fallback']): new contact: no baseline wall voxel within 3 mm of the mask_dilate1 ostium (nearest 7.3 mm)
+  mask_dilate1 invariants: 5 violation(s): branch_002: radius 0.50 mm outside [1.0, 8.0]; branch_002: seed voxel is not bright (91 HU); branch_004: radius 0.66 mm outside [1.0, 8.0]; branch_004: seed voxel is not bright (22 HU); branch_012: seed voxel is not bright (85 HU) (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_minus: 12 kept of 87 patches, threshold 90 HU
+  matched 7, lost 1, gained 5
+    LOST baseline branch_007 (patch 15, diam 4.17, wall 16 vox, flags ['axis_fallback']): thr_minus patch 12 at 0.0 mm REJECTED min_trace_mm (wall 24 vox, diam None, path 4.0)
+    GAINED thr_minus branch_005 (patch 10, diam 5.45, wall 26 vox, trace march/bifurcation, flags ['bifurcation']): baseline patch 13 at 0.8 mm was REJECTED min_trace_mm (wall 18 vox, diam None, path 4.0)
+    GAINED thr_minus branch_007 (patch 20, diam 3.52, wall 14 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 19 at 0.0 mm was REJECTED duplicate (wall 13 vox, diam 3.04, path 5.0)
+    GAINED thr_minus branch_008 (patch 23, diam 3.86, wall 13 vox, trace march/bifurcation, flags ['bifurcation', 'area_growth']): baseline patch 53 at 0.8 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_minus branch_011 (patch 39, diam 2.33, wall 7 vox, trace march/vanished, flags ['borderline_diameter']): new contact: no baseline wall voxel within 3 mm of the thr_minus ostium (nearest 5.1 mm)
+    GAINED thr_minus branch_012 (patch 45, diam 2.29, wall 6 vox, trace march/vanished, flags ['borderline_diameter']): baseline patch 36 at 3.6 mm was REJECTED bone (wall 3 vox, diam 5.12, path 5.0)
+  thr_minus invariants: 5 violation(s): branch_004: radius 0.65 mm outside [1.0, 8.0]; branch_004: seed voxel is not bright (71 HU); branch_007: radius 0.50 mm outside [1.0, 8.0]; branch_009: seed voxel is not bright (62 HU); branch_011: radius 0.50 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+  -- thr_plus: 9 kept of 55 patches, threshold 110 HU
+  matched 7, lost 1, gained 2
+    LOST baseline branch_006 (patch 10, diam 4.4, wall 23 vox, flags ['bifurcation']): thr_plus patch 45 at 0.0 mm REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED thr_plus branch_005 (patch 19, diam 3.3, wall 10 vox, trace axis/bifurcation, flags ['axis_fallback']): baseline patch 4 at 0.8 mm was REJECTED min_trace_mm (wall 38 vox, diam None, path 3.0)
+    GAINED thr_plus branch_008 (patch 32, diam 2.57, wall 5 vox, trace axis/vanished, flags ['axis_fallback']): baseline patch 18 at 0.0 mm was REJECTED bone (wall 14 vox, diam 2.99, path 5.0)
+  thr_plus invariants: 5 violation(s): branch_004: radius 0.50 mm outside [1.0, 8.0]; branch_006: radius 0.77 mm outside [1.0, 8.0]; branch_006: seed voxel is not bright (92 HU); branch_009: radius 0.50 mm outside [1.0, 8.0]; branch_009: seed voxel is not bright (45 HU) (plus 3 watershed regions reaching over 15 mm, information only)
+
+AGGREGATE over 24 cases: 132 baseline branches
+  labelled cases baseline: 17 of 19 references matched, 12 false positives
+  mask_erode1: baseline branches kept 82 of 132, lost 50, gained 26; ostium moved 1.51 mm mean, 4.82 max, over 2 mm on 18; direction moved 16.6 deg mean, over 30 deg on 10
+      lost because: contact_erased 33, min_trace_mm 10, min_trace_mm,tiny_patch 4, merged_into_kept 1, origin_diameter_mm 1, tiny_patch 1; gained from: new_contact 12, min_trace_mm 12, end_face,iliac_division 1, min_trace_mm,tiny_patch 1
+      labelled cases: 8 references matched, 1 false positives; true positives lost: 19/branch_001, 19/branch_003, 20/branch_001, 20/branch_002, 20/branch_003, 20/branch_004, 22/branch_001, 23/branch_001, 23/branch_003
+  mask_dilate1: baseline branches kept 103 of 132, lost 29, gained 102; ostium moved 1.56 mm mean, 4.29 max, over 2 mm on 24; direction moved 17.5 deg mean, over 30 deg on 14
+      lost because: min_trace_mm 15, merged_into_kept 3, origin_diameter_mm 3, end_face 2, contact_erased 2, kept_elsewhere 1, proximal_volume_ml 1, min_trace_mm,tiny_patch 1, bone 1; gained from: new_contact 56, min_trace_mm 19, min_trace_mm,tiny_patch 16, origin_diameter_mm 2, tiny_patch 2, split_from_kept 2, iliac_division 2, kept_elsewhere 1, duplicate 1, bone 1
+      labelled cases: 14 references matched, 30 false positives; true positives lost: 20/branch_001, 20/branch_003, 23/branch_001, 23/branch_003; newly matched: 19/branch_002
+  thr_minus: baseline branches kept 123 of 132, lost 9, gained 40; ostium moved 0.33 mm mean, 4.87 max, over 2 mm on 6; direction moved 7.9 deg mean, over 30 deg on 7
+      lost because: min_trace_mm 4, merged_into_kept 2, path_at_image_edge 1, min_trace_mm,tiny_patch 1, bone 1; gained from: min_trace_mm 17, min_trace_mm,tiny_patch 8, new_contact 7, origin_diameter_mm 3, bone 2, blob_at_seed 1, tiny_patch 1, duplicate 1
+      labelled cases: 17 references matched, 23 false positives; no true positive lost
+  thr_plus: baseline branches kept 106 of 132, lost 26, gained 17; ostium moved 0.35 mm mean, 3.58 max, over 2 mm on 7; direction moved 8.8 deg mean, over 30 deg on 7
+      lost because: min_trace_mm 14, contact_erased 5, origin_diameter_mm 4, min_trace_mm,tiny_patch 3; gained from: min_trace_mm 7, iliac_division 3, end_face 1, blob_at_seed 1, min_trace_mm,tiny_patch 1, duplicate 1, split_from_kept 1, blob_at_seed,bone,proximal_volume_ml 1, bone 1
+      labelled cases: 16 references matched, 13 false positives; true positives lost: 20/branch_004, 23/branch_003; newly matched: 23/branch_002
+  cases with no flip under any perturbation: [10]
+  cases with flips (perturbation -lost/+gained): 1: mask_erode1 -1/+7, mask_dilate1 -0/+3, thr_plus -2/+1; 2: mask_erode1 -1/+0, mask_dilate1 -1/+3; 3: mask_dilate1 -0/+3; 4: mask_erode1 -5/+0, mask_dilate1 -2/+4, thr_minus -1/+2, thr_plus -2/+1; 5: mask_erode1 -0/+1, mask_dilate1 -0/+5, thr_minus -0/+2; 6: mask_erode1 -1/+0, mask_dilate1 -1/+0, thr_minus -1/+0, thr_plus -1/+0; 7: mask_erode1 -2/+0, mask_dilate1 -3/+4, thr_minus -1/+3, thr_plus -0/+1; 8: mask_erode1 -3/+1, mask_dilate1 -1/+4, thr_minus -1/+3, thr_plus -2/+1; 9: mask_erode1 -1/+0, mask_dilate1 -0/+5, thr_plus -1/+0; 11: mask_erode1 -1/+0, mask_dilate1 -0/+1, thr_plus -1/+0; 12: mask_dilate1 -0/+5, thr_minus -0/+1, thr_plus -1/+0; 13: mask_erode1 -0/+1, mask_dilate1 -0/+3, thr_plus -1/+0; 14: mask_dilate1 -0/+2; 15: mask_erode1 -1/+0, mask_dilate1 -0/+9; 16: mask_erode1 -3/+2, mask_dilate1 -1/+2, thr_minus -1/+2, thr_plus -2/+0; 17: mask_erode1 -1/+1, mask_dilate1 -1/+2, thr_minus -0/+2, thr_plus -1/+1; 18: mask_erode1 -4/+6, mask_dilate1 -3/+12, thr_minus -3/+9, thr_plus -5/+4; 19: mask_erode1 -2/+0, mask_dilate1 -0/+4; 20: mask_erode1 -4/+0, mask_dilate1 -2/+1, thr_plus -1/+1; 21: mask_erode1 -7/+1, mask_dilate1 -6/+5, thr_minus -0/+3, thr_plus -2/+2; 22: mask_erode1 -6/+0, mask_dilate1 -3/+16, thr_minus -0/+8, thr_plus -3/+2; 23: mask_erode1 -2/+0, mask_dilate1 -2/+2, thr_plus -0/+1; 24: mask_erode1 -5/+6, mask_dilate1 -3/+7, thr_minus -1/+5, thr_plus -1/+2

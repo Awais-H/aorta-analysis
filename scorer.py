@@ -414,7 +414,7 @@ def reference_ledger(cases: list, data_dir: str = DATA_DIR, reference_dir: str =
     import io_utils
     import ostium
     import tracing
-    keys = ("wall_voxels", "wall_area_mm2", "proximal_ml", "path_mm", "departure_mm", "origin_diameter_mm",
+    keys = ("wall_voxels", "wall_area_mm2", "proximal_ml", "path_mm", "image_edge_mm", "departure_mm", "origin_diameter_mm",
             "area_growth", "end_face_height_mm", "end_face_angle_deg", "area_ratio", "tangency_deg", "aspect_ratio")
     lines = [f"Reference ledger, commit {_git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
              "For each reference branch: nearest wall patch by ostium distance, kept or rejected (rule = value), measurements, flags.",

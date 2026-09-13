@@ -1,10 +1,10 @@
-1.5 mm pseudo-labelled check, commit 2d6e17b, 2026-09-13 05:55
+1.5 mm pseudo-labelled check, commit be05e89, 2026-09-13 06:29
 Each fine case is resampled to 1.5 mm isotropic (CT linear, mask nearest neighbour, same physical frame) and the
 coarse predictions are matched to the native predictions (pseudo-references) with the scorer at the 5 mm cutoff.
 The native predictions are not ground truth: a branch 'lost' may be a native false positive and one 'gained' may be real.
 This is a measurement of the resolution regime of the hidden set, not a tuning set (SPEC section 3).
 
-== subject001: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 6 kept of 14 patches (0.8 s), coarse 5 kept of 21 patches (0.7 s); threshold 247 -> 218 HU
+== subject001: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 6 kept of 14 patches (0.6 s), coarse 5 kept of 21 patches (0.3 s); threshold 247 -> 218 HU
   matched 4, lost 2, gained 1
     branch_001 <- native branch_001 (patch 2, diam 7.87): ostium 0.84 mm, direction 8 deg, radius 3.25 vs 2.69, seed 0.33 mm apart, seed in native region yes  flags ['radius_inscribed_fallback']
     branch_002 <- native branch_002 (patch 3, diam 8.23): ostium 2.86 mm, direction 46 deg, radius 2.57 vs 2.76, seed 0.70 mm apart, seed in native region yes  flags ['radius_inscribed_fallback']
@@ -15,7 +15,7 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     GAINED coarse branch_005 (patch 11, diam 8.98, wall 3 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 12.6 mm)
   coarse invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
 
-== subject002: native 0.69x0.69x0.80 mm -> 1.5 mm iso; native 5 kept of 16 patches (1.0 s), coarse 5 kept of 18 patches (1.1 s); threshold 206 -> 179 HU
+== subject002: native 0.69x0.69x0.80 mm -> 1.5 mm iso; native 5 kept of 16 patches (0.6 s), coarse 5 kept of 18 patches (0.5 s); threshold 206 -> 179 HU
   matched 4, lost 1, gained 1
     branch_001 <- native branch_001 (patch 1, diam 6.74): ostium 0.86 mm, direction 15 deg, radius 3.21 vs 2.96, seed 0.68 mm apart, seed in native region yes
     branch_002 <- native branch_003 (patch 3, diam 6.23): ostium 1.02 mm, direction 5 deg, radius 2.81 vs 2.66, seed 0.93 mm apart, seed in native region yes
@@ -25,7 +25,7 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     GAINED coarse branch_005 (patch 5, diam 5.16, wall 55 vox, trace march/max, flags ['no_departure', 'elongated_patch']): split: native patch 5 touches the coarse ostium (0.8 mm) and was kept, unmatched; its own ostium is 5.6 mm away
   coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
 
-== subject003: native 0.73x0.73x0.80 mm -> 1.5 mm iso; native 4 kept of 8 patches (2.3 s), coarse 4 kept of 14 patches (1.4 s); threshold 224 -> 206 HU
+== subject003: native 0.73x0.73x0.80 mm -> 1.5 mm iso; native 4 kept of 8 patches (1.1 s), coarse 4 kept of 14 patches (0.9 s); threshold 224 -> 206 HU
   matched 4, lost 0, gained 0
     branch_001 <- native branch_001 (patch 1, diam 9.05): ostium 1.42 mm, direction 13 deg, radius 2.69 vs 2.59, seed 1.04 mm apart, seed in native region yes
     branch_002 <- native branch_002 (patch 2, diam 7.13): ostium 0.52 mm, direction 6 deg, radius 2.98 vs 3.02, seed 0.52 mm apart, seed in native region yes
@@ -60,13 +60,13 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     GAINED coarse branch_005 (patch 5, diam 4.78, wall 90 vox, trace march/vanished, flags ['no_departure']): native patch 7 at 0.3 mm was REJECTED min_trace_mm (wall 42 vox, diam None, path 2.0)
   coarse invariants: 1 violation(s): branch_006: radius 0.81 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
 
-== subject006: native 0.77x0.77x0.80 mm -> 1.5 mm iso; native 6 kept of 7 patches (0.9 s), coarse 5 kept of 7 patches (0.8 s); threshold 203 -> 184 HU
-  matched 5, lost 1, gained 0
+== subject006: native 0.77x0.77x0.80 mm -> 1.5 mm iso; native 6 kept of 7 patches (1.0 s), coarse 4 kept of 7 patches (0.9 s); threshold 203 -> 184 HU
+  matched 4, lost 2, gained 0
     branch_001 <- native branch_001 (patch 1, diam 9.84): ostium 0.89 mm, direction 8 deg, radius 3.39 vs 3.37, seed 0.63 mm apart, seed in native region yes
     branch_002 <- native branch_002 (patch 2, diam 6.57): ostium 3.67 mm, direction 27 deg, radius 2.31 vs 3.19, seed 3.30 mm apart, seed in native region yes
     branch_003 <- native branch_003 (patch 3, diam 7.89): ostium 2.04 mm, direction 41 deg, radius 3.06 vs 2.68, seed 1.29 mm apart, seed in native region yes
     branch_004 <- native branch_004 (patch 4, diam 10.47): ostium 1.07 mm, direction 12 deg, radius 2.46 vs 2.38, seed 0.49 mm apart, seed in native region yes
-    branch_005 <- native branch_005 (patch 5, diam 4.32): ostium 0.75 mm, direction 1 deg, radius 2.36 vs 2.48, seed 0.73 mm apart, seed in native region yes  flags ['near_cut_face', 'no_departure', 'elongated_patch']
+    LOST native branch_005 (patch 5, diam 4.32, wall 117 vox, flags ['near_cut_face', 'no_departure']): coarse patch 5 at 0.8 mm REJECTED path_at_image_edge (wall 83 vox, diam 4.32, path 10.0)
     LOST native branch_006 (patch 6, diam 4.32, wall 30 vox, flags ['near_cut_face']): coarse patch 6 at 1.2 mm REJECTED min_trace_mm (wall 54 vox, diam None, path 2.0)
   coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
 
@@ -95,7 +95,7 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     GAINED coarse branch_006 (patch 7, diam 6.19, wall 41 vox, trace march/vanished, flags ['no_departure', 'elongated_patch']): native patch 21 at 1.6 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
   coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
 
-== subject009: native 0.85x0.85x0.80 mm -> 1.5 mm iso; native 4 kept of 4 patches (0.8 s), coarse 3 kept of 8 patches (0.7 s); threshold 296 -> 266 HU
+== subject009: native 0.85x0.85x0.80 mm -> 1.5 mm iso; native 4 kept of 4 patches (0.7 s), coarse 3 kept of 8 patches (0.6 s); threshold 296 -> 266 HU
   matched 3, lost 1, gained 0
     branch_001 <- native branch_001 (patch 1, diam 5.51): ostium 0.87 mm, direction 13 deg, radius 2.05 vs 2.06, seed 0.36 mm apart, seed in native region yes
     branch_002 <- native branch_002 (patch 2, diam 4.68): ostium 1.18 mm, direction 15 deg, radius 2.14 vs 2.14, seed 0.13 mm apart, seed in native region yes
@@ -121,7 +121,7 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     GAINED coarse branch_005 (patch 6, diam 5.12, wall 13 vox, trace march/vanished, flags ['no_departure']): native patch 7 at 1.8 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
   coarse invariants: 2 violation(s): branch_005: radius 0.69 mm outside [1.0, 8.0]; branch_006: radius 0.94 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
 
-== subject012: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 5 kept of 8 patches (0.7 s), coarse 4 kept of 7 patches (0.5 s); threshold 194 -> 165 HU
+== subject012: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 5 kept of 8 patches (0.8 s), coarse 4 kept of 7 patches (0.5 s); threshold 194 -> 165 HU
   matched 4, lost 1, gained 0
     branch_001 <- native branch_001 (patch 1, diam 7.21): ostium 1.02 mm, direction 4 deg, radius 3.47 vs 3.39, seed 1.17 mm apart, seed in native region yes
     branch_002 <- native branch_002 (patch 2, diam 6.66): ostium 0.37 mm, direction 4 deg, radius 2.84 vs 2.90, seed 0.36 mm apart, seed in native region yes
@@ -130,7 +130,7 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
     LOST native branch_005 (patch 6, diam 2.43, wall 7 vox, flags ['borderline_diameter']): contact erased: no coarse wall voxel within 3 mm of the native ostium (nearest 26.2 mm)
   coarse invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
 
-== subject013: native 0.86x0.86x0.80 mm -> 1.5 mm iso; native 5 kept of 5 patches (0.6 s), coarse 5 kept of 5 patches (0.4 s); threshold 231 -> 213 HU
+== subject013: native 0.86x0.86x0.80 mm -> 1.5 mm iso; native 5 kept of 5 patches (0.6 s), coarse 5 kept of 5 patches (0.5 s); threshold 231 -> 213 HU
   matched 5, lost 0, gained 0
     branch_001 <- native branch_001 (patch 1, diam 5.46): ostium 1.24 mm, direction 15 deg, radius 2.26 vs 2.22, seed 1.13 mm apart, seed in native region yes
     branch_002 <- native branch_004 (patch 4, diam 3.58): ostium 0.92 mm, direction 8 deg, radius 1.47 vs 1.36, seed 0.94 mm apart, seed in native region yes
@@ -160,14 +160,14 @@ This is a measurement of the resolution regime of the hidden set, not a tuning s
   coarse invariants: clean (plus 8 watershed regions reaching over 15 mm, information only)
 
 AGGREGATE over 15 cases (coarse vs native, 5 mm cutoff)
-  matched 66, lost 14, gained 15: precision 0.81, recall 0.82, F1 0.82
-  matched branches: ostium error mean 1.36 mm (median 1.10, max 3.77); direction error mean 17.5 deg (median 14.2, over 30 deg: 9); radius abs error mean 0.24 mm; seed-to-seed mean 1.07 mm; coarse seed inside the native branch region 62/66
-  per case (matched/lost/gained): 1: 4/2/1, 2: 4/1/1, 3: 4/0/0, 4: 6/3/4, 5: 5/0/1, 6: 5/1/0, 7: 4/1/2, 8: 4/4/2, 9: 3/1/0, 10: 4/0/0, 11: 5/0/1, 12: 4/1/0, 13: 5/0/0, 14: 4/0/0, 15: 5/0/3
+  matched 65, lost 15, gained 15: precision 0.81, recall 0.81, F1 0.81
+  matched branches: ostium error mean 1.37 mm (median 1.12, max 3.77); direction error mean 17.8 deg (median 14.3, over 30 deg: 9); radius abs error mean 0.25 mm; seed-to-seed mean 1.08 mm; coarse seed inside the native branch region 61/65
+  per case (matched/lost/gained): 1: 4/2/1, 2: 4/1/1, 3: 4/0/0, 4: 6/3/4, 5: 5/0/1, 6: 4/2/0, 7: 4/1/2, 8: 4/4/2, 9: 3/1/0, 10: 4/0/0, 11: 5/0/1, 12: 4/1/0, 13: 5/0/0, 14: 4/0/0, 15: 5/0/3
   native origin diameter (mm) of matched vs lost branches:
        0-2.5: matched   2, lost   4  (67% lost)
      2.5-3.5: matched   1, lost   2  (67% lost)
-       3.5-5: matched  11, lost   3  (21% lost)
+       3.5-5: matched  10, lost   4  (29% lost)
          >=5: matched  52, lost   5  (9% lost)
-  why a native branch is lost at 1.5 mm (fate of the nearest coarse wall patch): merged_into_kept 5, contact_erased 4, min_trace_mm 3, proximal_volume_ml 1, origin_diameter_mm 1
+  why a native branch is lost (fate of the nearest coarse wall patch): merged_into_kept 5, contact_erased 4, min_trace_mm 3, proximal_volume_ml 1, path_at_image_edge 1, origin_diameter_mm 1
   where a coarse-only branch comes from (fate of the nearest native wall patch): new_contact 7, min_trace_mm 3, min_trace_mm,tiny_patch 2, split_from_kept 1, tiny_patch 1, bone,tiny_patch 1
   coarse invariant violations: 8

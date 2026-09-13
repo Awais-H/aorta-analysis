@@ -1,8 +1,8 @@
-D7 invariant checks on 25 cases, commit 8e8d2c7, 2026-09-13 04:49
+D7 invariant checks on 25 cases, commit be05e89, 2026-09-13 06:28
 Runtime is run.py wall time including interpreter start-up; peak is the run.py process's peak resident memory (cap 4 GB, D10).
 Region-reach violations are the raw watershed basin flooding neighbouring bright tissue (information only; rule 4 uses the proximal 10 mm).
 
-subject001: rc=0 wall=2.1 s pipeline=1.035 s peak=501 MB daughters=6 wall_patches=14  6 violation(s)
+subject001: rc=0 wall=1.6 s pipeline=0.705 s peak=501 MB daughters=6 wall_patches=14  6 violation(s)
    - branch_006: radius 0.97 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 112.3 mm from its ostium
    - branch_002: watershed region reaches 36.1 mm from its ostium
@@ -10,18 +10,18 @@ subject001: rc=0 wall=2.1 s pipeline=1.035 s peak=501 MB daughters=6 wall_patche
    - branch_005: watershed region reaches 16.7 mm from its ostium
    - branch_006: watershed region reaches 17.8 mm from its ostium
 
-subject002: rc=0 wall=1.7 s pipeline=0.595 s peak=244 MB daughters=5 wall_patches=16  4 violation(s)
+subject002: rc=0 wall=1.6 s pipeline=0.606 s peak=246 MB daughters=5 wall_patches=16  4 violation(s)
    - branch_001: watershed region reaches 16.3 mm from its ostium
    - branch_002: watershed region reaches 16.9 mm from its ostium
    - branch_003: watershed region reaches 27.3 mm from its ostium
    - branch_004: watershed region reaches 16.7 mm from its ostium
 
-subject003: rc=0 wall=2.3 s pipeline=1.299 s peak=575 MB daughters=4 wall_patches=8  3 violation(s)
+subject003: rc=0 wall=2.3 s pipeline=1.317 s peak=575 MB daughters=4 wall_patches=8  3 violation(s)
    - branch_001: watershed region reaches 26.6 mm from its ostium
    - branch_002: watershed region reaches 24.8 mm from its ostium
    - branch_003: watershed region reaches 18.2 mm from its ostium
 
-subject004: rc=0 wall=1.6 s pipeline=0.675 s peak=269 MB daughters=9 wall_patches=27  6 violation(s)
+subject004: rc=0 wall=1.6 s pipeline=0.687 s peak=269 MB daughters=9 wall_patches=27  6 violation(s)
    - branch_001: watershed region reaches 33.7 mm from its ostium
    - branch_002: watershed region reaches 54.7 mm from its ostium
    - branch_003: watershed region reaches 23.6 mm from its ostium
@@ -29,26 +29,26 @@ subject004: rc=0 wall=1.6 s pipeline=0.675 s peak=269 MB daughters=9 wall_patche
    - branch_008: watershed region reaches 17.1 mm from its ostium
    - branch_009: watershed region reaches 37.2 mm from its ostium
 
-subject005: rc=0 wall=1.7 s pipeline=0.733 s peak=274 MB daughters=5 wall_patches=14  4 violation(s)
+subject005: rc=0 wall=1.7 s pipeline=0.742 s peak=273 MB daughters=5 wall_patches=14  4 violation(s)
    - branch_001: watershed region reaches 19.3 mm from its ostium
    - branch_002: watershed region reaches 17.9 mm from its ostium
    - branch_003: watershed region reaches 15.3 mm from its ostium
    - branch_004: watershed region reaches 18.6 mm from its ostium
 
-subject006: rc=0 wall=2.0 s pipeline=1.035 s peak=370 MB daughters=6 wall_patches=7  5 violation(s)
+subject006: rc=0 wall=2.0 s pipeline=1.033 s peak=370 MB daughters=6 wall_patches=7  5 violation(s)
    - branch_006: radius 0.56 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 21.9 mm from its ostium
    - branch_002: watershed region reaches 26.2 mm from its ostium
    - branch_003: watershed region reaches 18.5 mm from its ostium
    - branch_004: watershed region reaches 28.9 mm from its ostium
 
-subject007: rc=0 wall=1.5 s pipeline=0.56 s peak=258 MB daughters=5 wall_patches=12  4 violation(s)
+subject007: rc=0 wall=1.5 s pipeline=0.567 s peak=258 MB daughters=5 wall_patches=12  4 violation(s)
    - branch_001: watershed region reaches 24.4 mm from its ostium
    - branch_002: watershed region reaches 20.6 mm from its ostium
    - branch_003: watershed region reaches 27.9 mm from its ostium
    - branch_005: watershed region reaches 17.0 mm from its ostium
 
-subject008: rc=0 wall=2.4 s pipeline=1.478 s peak=1210 MB daughters=8 wall_patches=32  8 violation(s)
+subject008: rc=0 wall=2.4 s pipeline=1.457 s peak=1209 MB daughters=8 wall_patches=32  8 violation(s)
    - branch_007: radius 0.86 mm outside [1.0, 8.0]
    - branch_008: radius 0.86 mm outside [1.0, 8.0]
    - warning: mask has 2 components, 80 voxels discarded
@@ -58,50 +58,50 @@ subject008: rc=0 wall=2.4 s pipeline=1.478 s peak=1210 MB daughters=8 wall_patch
    - branch_007: watershed region reaches 24.0 mm from its ostium
    - branch_008: watershed region reaches 19.4 mm from its ostium
 
-subject009: rc=0 wall=1.7 s pipeline=0.811 s peak=302 MB daughters=4 wall_patches=4  5 violation(s)
+subject009: rc=0 wall=1.8 s pipeline=0.823 s peak=302 MB daughters=4 wall_patches=4  5 violation(s)
    - branch_004: radius 0.50 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 41.4 mm from its ostium
    - branch_002: watershed region reaches 15.9 mm from its ostium
    - branch_003: watershed region reaches 29.6 mm from its ostium
    - branch_004: watershed region reaches 22.2 mm from its ostium
 
-subject010: rc=0 wall=4.3 s pipeline=1.836 s peak=797 MB daughters=4 wall_patches=7  5 violation(s)
+subject010: rc=0 wall=2.3 s pipeline=1.162 s peak=797 MB daughters=4 wall_patches=7  5 violation(s)
    - warning: mask has 13 components, 27 voxels discarded
    - branch_001: watershed region reaches 22.0 mm from its ostium
    - branch_002: watershed region reaches 21.0 mm from its ostium
    - branch_003: watershed region reaches 17.1 mm from its ostium
    - branch_004: watershed region reaches 17.3 mm from its ostium
 
-subject011: rc=0 wall=2.9 s pipeline=0.605 s peak=320 MB daughters=5 wall_patches=23  4 violation(s)
+subject011: rc=0 wall=1.5 s pipeline=0.615 s peak=320 MB daughters=5 wall_patches=23  4 violation(s)
    - branch_001: watershed region reaches 19.1 mm from its ostium
    - branch_003: watershed region reaches 17.6 mm from its ostium
    - branch_004: watershed region reaches 19.4 mm from its ostium
    - branch_005: watershed region reaches 15.1 mm from its ostium
 
-subject012: rc=0 wall=1.8 s pipeline=0.896 s peak=521 MB daughters=5 wall_patches=8  4 violation(s)
+subject012: rc=0 wall=1.9 s pipeline=0.9 s peak=521 MB daughters=5 wall_patches=8  4 violation(s)
    - branch_001: watershed region reaches 15.3 mm from its ostium
    - branch_003: watershed region reaches 18.1 mm from its ostium
    - branch_004: watershed region reaches 15.2 mm from its ostium
    - branch_005: watershed region reaches 19.6 mm from its ostium
 
-subject013: rc=0 wall=1.7 s pipeline=0.745 s peak=467 MB daughters=5 wall_patches=5  5 violation(s)
+subject013: rc=0 wall=1.7 s pipeline=0.755 s peak=467 MB daughters=5 wall_patches=5  5 violation(s)
    - branch_001: watershed region reaches 17.3 mm from its ostium
    - branch_002: watershed region reaches 15.5 mm from its ostium
    - branch_003: watershed region reaches 16.4 mm from its ostium
    - branch_004: watershed region reaches 18.9 mm from its ostium
    - branch_005: watershed region reaches 17.0 mm from its ostium
 
-subject014: rc=0 wall=1.7 s pipeline=0.799 s peak=447 MB daughters=4 wall_patches=9  3 violation(s)
+subject014: rc=0 wall=1.8 s pipeline=0.802 s peak=447 MB daughters=4 wall_patches=9  3 violation(s)
    - branch_001: watershed region reaches 112.8 mm from its ostium
    - branch_003: watershed region reaches 18.4 mm from its ostium
    - branch_004: watershed region reaches 16.3 mm from its ostium
 
-subject015: rc=0 wall=2.5 s pipeline=1.596 s peak=1160 MB daughters=5 wall_patches=15  3 violation(s)
+subject015: rc=0 wall=2.5 s pipeline=1.578 s peak=1160 MB daughters=5 wall_patches=15  3 violation(s)
    - warning: mask has 2 components, 1 voxels discarded
    - branch_001: watershed region reaches 30.2 mm from its ostium
    - branch_004: watershed region reaches 17.8 mm from its ostium
 
-subject016: rc=0 wall=2.2 s pipeline=1.29 s peak=390 MB daughters=7 wall_patches=42  6 violation(s)
+subject016: rc=0 wall=2.3 s pipeline=1.321 s peak=390 MB daughters=7 wall_patches=42  6 violation(s)
    - branch_007: radius 0.97 mm outside [1.0, 8.0]
    - branch_007: seed voxel is not bright (83 HU)
    - branch_001: watershed region reaches 17.4 mm from its ostium
@@ -109,9 +109,9 @@ subject016: rc=0 wall=2.2 s pipeline=1.29 s peak=390 MB daughters=7 wall_patches
    - branch_003: watershed region reaches 17.8 mm from its ostium
    - branch_004: watershed region reaches 22.0 mm from its ostium
 
-subject017: rc=0 wall=1.3 s pipeline=0.334 s peak=223 MB daughters=1 wall_patches=10  OK
+subject017: rc=0 wall=1.3 s pipeline=0.344 s peak=223 MB daughters=1 wall_patches=10  OK
 
-subject018: rc=0 wall=5.4 s pipeline=4.485 s peak=920 MB daughters=7 wall_patches=141  11 violation(s)
+subject018: rc=0 wall=5.5 s pipeline=4.571 s peak=920 MB daughters=7 wall_patches=141  11 violation(s)
    - branch_001: radius 0.50 mm outside [1.0, 8.0]
    - branch_001: seed voxel is not bright (1 HU)
    - branch_001: direction does not point away from the aorta
@@ -124,20 +124,19 @@ subject018: rc=0 wall=5.4 s pipeline=4.485 s peak=920 MB daughters=7 wall_patche
    - branch_005: watershed region reaches 17.9 mm from its ostium
    - branch_006: watershed region reaches 23.9 mm from its ostium
 
-subject019: rc=0 wall=1.3 s pipeline=0.36 s peak=190 MB daughters=2 wall_patches=7  2 violation(s)
+subject019: rc=0 wall=1.3 s pipeline=0.372 s peak=191 MB daughters=2 wall_patches=7  2 violation(s)
    - branch_001: watershed region reaches 77.3 mm from its ostium
    - branch_002: watershed region reaches 15.1 mm from its ostium
 
-subject020: rc=0 wall=1.4 s pipeline=0.485 s peak=247 MB daughters=5 wall_patches=6  7 violation(s)
+subject020: rc=0 wall=1.5 s pipeline=0.494 s peak=247 MB daughters=4 wall_patches=6  6 violation(s)
    - branch_002: seed voxel is not bright (196 HU)
-   - branch_005: radius 0.93 mm outside [1.0, 8.0]
+   - branch_004: radius 0.93 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 46.1 mm from its ostium
    - branch_002: watershed region reaches 26.8 mm from its ostium
-   - branch_003: watershed region reaches 23.9 mm from its ostium
-   - branch_004: watershed region reaches 15.7 mm from its ostium
-   - branch_005: watershed region reaches 20.0 mm from its ostium
+   - branch_003: watershed region reaches 15.7 mm from its ostium
+   - branch_004: watershed region reaches 20.0 mm from its ostium
 
-subject021: rc=0 wall=1.6 s pipeline=0.678 s peak=240 MB daughters=10 wall_patches=45  10 violation(s)
+subject021: rc=0 wall=1.6 s pipeline=0.678 s peak=239 MB daughters=10 wall_patches=45  10 violation(s)
    - branch_005: radius 0.53 mm outside [1.0, 8.0]
    - branch_008: radius 0.98 mm outside [1.0, 8.0]
    - branch_010: radius 0.99 mm outside [1.0, 8.0]
@@ -149,7 +148,7 @@ subject021: rc=0 wall=1.6 s pipeline=0.678 s peak=240 MB daughters=10 wall_patch
    - branch_009: watershed region reaches 16.1 mm from its ostium
    - branch_010: watershed region reaches 19.1 mm from its ostium
 
-subject022: rc=0 wall=2.3 s pipeline=1.404 s peak=361 MB daughters=11 wall_patches=65  11 violation(s)
+subject022: rc=0 wall=2.4 s pipeline=1.453 s peak=359 MB daughters=11 wall_patches=65  11 violation(s)
    - branch_007: radius 1.00 mm outside [1.0, 8.0]
    - branch_008: radius 0.65 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 28.6 mm from its ostium
@@ -162,19 +161,19 @@ subject022: rc=0 wall=2.3 s pipeline=1.404 s peak=361 MB daughters=11 wall_patch
    - branch_009: watershed region reaches 22.5 mm from its ostium
    - branch_011: watershed region reaches 19.5 mm from its ostium
 
-subject023: rc=0 wall=1.4 s pipeline=0.451 s peak=354 MB daughters=2 wall_patches=6  3 violation(s)
+subject023: rc=0 wall=1.4 s pipeline=0.459 s peak=354 MB daughters=2 wall_patches=6  3 violation(s)
    - warning: mask has 4 components, 17 voxels discarded
    - branch_001: watershed region reaches 23.0 mm from its ostium
    - branch_002: watershed region reaches 22.2 mm from its ostium
 
-subject024: rc=0 wall=2.2 s pipeline=1.289 s peak=369 MB daughters=8 wall_patches=64  5 violation(s)
+subject024: rc=0 wall=2.2 s pipeline=1.243 s peak=370 MB daughters=8 wall_patches=64  5 violation(s)
    - branch_005: radius 0.50 mm outside [1.0, 8.0]
    - branch_005: seed voxel is not bright (71 HU)
    - branch_008: radius 0.96 mm outside [1.0, 8.0]
    - branch_003: watershed region reaches 33.6 mm from its ostium
    - branch_005: watershed region reaches 18.8 mm from its ostium
 
-subject025: rc=0 wall=6.3 s pipeline=5.365 s peak=1108 MB daughters=14 wall_patches=152  12 violation(s)
+subject025: rc=0 wall=6.3 s pipeline=5.389 s peak=1105 MB daughters=14 wall_patches=152  12 violation(s)
    - branch_001: watershed region reaches 23.7 mm from its ostium
    - branch_002: watershed region reaches 41.8 mm from its ostium
    - branch_003: watershed region reaches 136.5 mm from its ostium
@@ -208,11 +207,11 @@ SUMMARY
   subject017: OK
   subject018: 11 violations
   subject019: 2 violations
-  subject020: 7 violations
+  subject020: 6 violations
   subject021: 10 violations
   subject022: 11 violations
   subject023: 3 violations
   subject024: 5 violations
   subject025: 12 violations
-  peak memory: max 1210 MB (subject008), median 369 MB over 25 cases; cap 4096 MB
-  wall time: max 6.3 s (subject025), mean 2.3 s; organiser target 60 s average
+  peak memory: max 1209 MB (subject008), median 370 MB over 25 cases; cap 4096 MB
+  wall time: max 6.3 s (subject025), mean 2.2 s; organiser target 60 s average
