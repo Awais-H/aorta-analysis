@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devar</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; background: #FFFFFF; color: #0E0E0E;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+
+/* ---------- top bar ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 20; background: #FFFFFF;
+  border-bottom: 1px solid #E6E6E6; display: flex; align-items: center; gap: 20px;
+  padding: 0 24px; height: 64px;
+}
+.brand { margin-right: auto; }
+.brand h1 { font-size: 30px; font-weight: 750; margin: 0; letter-spacing: -0.03em; color: #55C6DE; }
+
+.picker { display: flex; align-items: center; gap: 8px; }
+.picker label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; }
+
+/* searchable patient combobox */
+.combo { position: relative; }
+.combo input {
+  font: inherit; font-size: 14px; font-weight: 550; color: #0E0E0E;
+  background: #FFFFFF; border: 1.5px solid #0E0E0E; border-radius: 8px;
+  padding: 9px 34px 9px 36px; width: 280px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><circle cx='6' cy='6' r='4.4' fill='none' stroke='%236B6B6B' stroke-width='1.6'/><path d='M9.4 9.4 12.6 12.6' stroke='%236B6B6B' stroke-width='1.6' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat; background-position: left 12px center;
+}
+.combo input::placeholder { color: #6B6B6B; font-weight: 450; }
+.combo input:focus { outline: none; border-color: #55C6DE; box-shadow: 0 0 0 3px rgba(85,198,222,0.28); }
+.combo .caret {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; color: #6B6B6B;
+}
+.options {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 40;
+  background: #FFFFFF; border: 1px solid #E6E6E6; border-radius: 10px; padding: 4px;
+  max-height: 320px; overflow-y: auto; box-shadow: 0 10px 28px rgba(0,0,0,0.13);
+}
+.options.open { display: block; }
+.opt {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 9px 11px; border-radius: 7px; font-size: 13px; cursor: pointer;
+}
+.opt .n { font-size: 11.5px; color: #6B6B6B; white-space: nowrap; }
+.opt.active { background: #55C6DE; }
+.opt.active .n { color: #0E0E0E; }
+.opt mark { background: transparent; color: inherit; font-weight: 750; text-decoration: underline; }
+.opt.current .name { font-weight: 700; }
+.options .none { padding: 14px 12px; text-align: center; font-size: 12.5px; color: #6B6B6B; }
+.stepper { display: flex; }
+.stepper button {
+  font: inherit; background: #FFFFFF; color: #0E0E0E; border: 1.5px solid #0E0E0E;
+  width: 38px; height: 38px; cursor: pointer; display: grid; place-items: center;
+}
+.stepper button:first-child { border-radius: 8px 0 0 8px; border-right-width: 0.75px; }
+.stepper button:last-child { border-radius: 0 8px 8px 0; border-left-width: 0.75px; }
+.stepper button:hover:not(:disabled) { background: #55C6DE; border-color: #55C6DE; }
+.stepper button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* ---------- case header ---------- */
+.casebar {
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+  padding: 22px 24px 18px; border-bottom: 1px solid #E6E6E6;
+}
+.casebar h2 { margin: 0; font-size: 26px; font-weight: 680; letter-spacing: -0.02em; }
+.pill {
+  background: #55C6DE; color: #0E0E0E; border-radius: 999px;
+  padding: 5px 13px; font-size: 13px; font-weight: 600;
+}
+.pill.zero { background: #FFFFFF; border: 1.5px solid #E6E6E6; color: #6B6B6B; }
+.stats { display: flex; gap: 26px; margin-left: auto; flex-wrap: wrap; }
+.stat .n { display: block; font-size: 17px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.stat .l { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B6B6B; margin-top: 2px; }
+.ghost {
+  text-decoration: none; font-size: 13px; font-weight: 550; border: 1.5px solid #0E0E0E;
+  border-radius: 8px; padding: 8px 14px; white-space: nowrap;
+}
+.ghost:hover { background: #55C6DE; border-color: #55C6DE; }
+
+/* ---------- layout ---------- */
+.layout { display: grid; grid-template-columns: minmax(0,1fr) 372px; gap: 0; align-items: start; }
+@media (max-width: 1080px) { .layout { grid-template-columns: minmax(0,1fr); } }
+
+.viewer { padding: 20px 24px 40px; min-width: 0; }
+.segmented {
+  display: inline-flex; background: #F4F4F4; border-radius: 9px; padding: 3px; margin-bottom: 16px;
+}
+.segmented button {
+  font: inherit; font-size: 13px; font-weight: 550; border: 0; background: transparent; color: #6B6B6B;
+  padding: 7px 16px; border-radius: 7px; cursor: pointer;
+}
+.segmented button[aria-selected="true"] { background: #FFFFFF; color: #0E0E0E; box-shadow: 0 1px 2px rgba(0,0,0,0.14); }
+.frame {
+  border: 1px solid #E6E6E6; border-radius: 12px; overflow: hidden; background: #FFFFFF;
+  display: grid; place-items: center; padding: 8px;
+}
+.frame img { display: block; max-width: 100%; max-height: 74vh; object-fit: contain; }
+.frame .empty { padding: 64px 24px; text-align: center; color: #6B6B6B; font-size: 13px; }
+.frame .loading { padding: 64px 24px; text-align: center; color: #6B6B6B; font-size: 13px; }
+.frame .loading .spin {
+  display: block; width: 22px; height: 22px; margin: 0 auto 12px; border-radius: 50%;
+  border: 2.5px solid #E6E6E6; border-top-color: #55C6DE; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.frame.is3d { display: block; padding: 0; }
+#plot3d { width: 100%; height: 72vh; min-height: 440px; }
+.caption { font-size: 12px; color: #6B6B6B; margin: 10px 2px 0; line-height: 1.55; }
+
+/* ---------- branch panel ---------- */
+.panel { border-left: 1px solid #E6E6E6; padding: 20px 24px 40px; min-height: 60vh; }
+.panel h3 {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; color: #6B6B6B;
+  margin: 0 0 14px; font-weight: 650;
+}
+.branch { border: 1px solid #E6E6E6; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+.branch > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px; user-select: none;
+}
+.branch > summary::-webkit-details-marker { display: none; }
+.branch:hover { border-color: #55C6DE; }
+.branch[open] { border-color: #0E0E0E; }
+.branch .idx {
+  width: 26px; height: 26px; border-radius: 50%; background: #55C6DE; color: #0E0E0E; flex: none;
+  display: grid; place-items: center; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.branch .label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.branch .name { font-size: 13px; font-weight: 600; }
+.branch .sub { font-size: 11px; color: #6B6B6B; }
+.branch .arrowslot { margin-left: auto; flex: none; display: flex; opacity: 0.85; }
+.branch .chev { flex: none; transition: transform 0.15s ease; }
+.branch[open] .chev { transform: rotate(180deg); }
+.branch .body { border-top: 1px solid #E6E6E6; padding: 12px 14px; }
+.kv { display: grid; grid-template-columns: 74px 1fr; gap: 6px 10px; font-size: 12px; }
+.kv dt { color: #6B6B6B; }
+.kv dd {
+  margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px; font-variant-numeric: tabular-nums;
+}
+.note {
+  font-size: 11.5px; color: #6B6B6B; line-height: 1.6; margin-top: 16px;
+  border-top: 1px solid #E6E6E6; padding-top: 14px;
+}
+.empty-branches {
+  border: 1px dashed #E6E6E6; border-radius: 10px; padding: 22px 16px; text-align: center;
+  font-size: 12.5px; color: #6B6B6B;
+}
+</style></head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><h1>Devar</h1></div>
+  <div class="picker">
+    <label for="patientSearch">Patient</label>
+    <div class="combo">
+      <input id="patientSearch" type="text" role="combobox" aria-expanded="false"
+             aria-controls="patientList" aria-autocomplete="list" autocomplete="off"
+             spellcheck="false" placeholder="Search patients&hellip;">
+      <span class="caret">
+        <svg width="12" height="8" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5 11 1.5"
+          fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div id="patientList" class="options" role="listbox"></div>
+    </div>
+    <div class="stepper">
+      <button id="prev" title="Previous patient (&larr;)" aria-label="Previous patient">
+        <svg width="8" height="12" viewBox="0 0 8 12"><path d="M6.5 1 1.5 6l5 5" fill="none"
+          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="next" title="Next patient (&rarr;)" aria-label="Next patient">
+        <svg width="8" height="12" viewBox="0 0 8 12"><path d="M1.5 1l5 5-5 5" fill="none"
+          stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="casebar">
+  <h2 id="caseName"></h2>
+  <span id="casePill" class="pill"></span>
+  <div class="stats">
+    <div class="stat"><span class="n" id="statRadius"></span><span class="l">radius range</span></div>
+    <div class="stat"><span class="n" id="statCase"></span><span class="l">case</span></div>
+  </div>
+  <a id="reportLink" class="ghost" href="#">Full report &rarr;</a>
+</div>
+
+<div class="layout">
+  <div class="viewer">
+    <div class="segmented" role="tablist">
+      <button data-view="3d" role="tab" aria-selected="true">3D view</button>
+      <button data-view="clock" role="tab" aria-selected="false">Clock map</button>
+      <button data-view="check" role="tab" aria-selected="false">Projections</button>
+    </div>
+    <div class="frame" id="frame"></div>
+    <p class="caption" id="caption"></p>
+  </div>
+
+  <aside class="panel">
+    <h3 id="branchCount">Detected branches</h3>
+    <div id="branches"></div>
+  </aside>
+</div>
+
+<script>
+const CASES = [{"case_id":"subject001","daughters":[{"id":"branch_001","radius_mm":2.693,"ostium":[16.619,31.443,-975.24],"seed":[14.807,27.619,-977.126],"direction":[-0.3911,-0.8254,-0.4071]},{"id":"branch_002","radius_mm":2.757,"ostium":[9.581,31.443,-986.44],"seed":[7.106,28.994,-989.467],"direction":[-0.5365,-0.5308,-0.6561]},{"id":"branch_003","radius_mm":1.285,"ostium":[18.965,28.315,-1059.24],"seed":[20.981,26.743,-1062.717],"direction":[0.4672,-0.3643,-0.8056]},{"id":"branch_004","radius_mm":1.669,"ostium":[20.529,35.353,-994.44],"seed":[24.614,35.854,-996.483],"direction":[0.889,0.109,-0.4447]},{"id":"branch_005","radius_mm":1.293,"ostium":[17.401,38.481,-1052.84],"seed":[19.252,41.225,-1051.726],"direction":[0.5299,0.7857,0.319]},{"id":"branch_006","radius_mm":0.967,"ostium":[20.529,29.097,-1030.44],"seed":[24.977,30.424,-1031.01],"direction":[0.9511,0.2837,-0.1218]}],"clock_png":"subject001_clock.png","check_png":"subject001_check.png","report":"subject001_report.html","fig_js":"subject001_3d.js"},{"case_id":"subject002","daughters":[{"id":"branch_001","radius_mm":2.962,"ostium":[-5.015,12.67,1557.19],"seed":[-4.279,9.146,1554.705],"direction":[0.1683,-0.8056,-0.5681]},{"id":"branch_002","radius_mm":2.62,"ostium":[-2.615,9.47,1517.19],"seed":[1.424,12.033,1516.443],"direction":[0.8342,0.5294,-0.1542]},{"id":"branch_003","radius_mm":2.661,"ostium":[-7.415,7.87,1540.39],"seed":[-7.664,3.692,1538.651],"direction":[-0.0549,-0.9218,-0.3837]},{"id":"branch_004","radius_mm":2.593,"ostium":[-16.215,9.47,1524.39],"seed":[-20.284,7.703,1523.263],"direction":[-0.889,-0.386,-0.2463]},{"id":"branch_005","radius_mm":1.41,"ostium":[-2.615,-12.93,1467.59],"seed":[-0.837,-13.603,1463.305],"direction":[0.3794,-0.1436,-0.914]}],"clock_png":"subject002_clock.png","check_png":"subject002_check.png","report":"subject002_report.html","fig_js":"subject002_3d.js"},{"case_id":"subject003","daughters":[{"id":"branch_001","radius_mm":2.589,"ostium":[-0.551,3.038,1506.26],"seed":[-4.316,0.905,1506.213],"direction":[-0.87,-0.493,-0.0109]},{"id":"branch_002","radius_mm":3.022,"ostium":[20.249,3.838,1526.26],"seed":[20.52,-0.361,1524.249],"direction":[0.0581,-0.9004,-0.4311]},{"id":"branch_003","radius_mm":2.778,"ostium":[13.849,8.638,1503.06],"seed":[15.859,10.273,1499.264],"direction":[0.4373,0.3557,-0.826]},{"id":"branch_004","radius_mm":2.27,"ostium":[26.649,10.238,1550.26],"seed":[25.732,6.247,1548.149],"direction":[-0.199,-0.8663,-0.4581]}],"clock_png":"subject003_clock.png","check_png":"subject003_check.png","report":"subject003_report.html","fig_js":"subject003_3d.js"},{"case_id":"subject004","daughters":[{"id":"branch_001","radius_mm":3.341,"ostium":[17.275,19.111,1641.42],"seed":[18.151,15.98,1639.106],"direction":[0.2195,-0.7845,-0.5799]},{"id":"branch_002","radius_mm":3.909,"ostium":[12.475,15.911,1627.02],"seed":[13.341,12.086,1624.906],"direction":[0.1944,-0.8585,-0.4745]},{"id":"branch_003","radius_mm":2.706,"ostium":[3.675,17.511,1612.62],"seed":[0.052,16.769,1609.837],"direction":[-0.7828,-0.1602,-0.6013]},{"id":"branch_004","radius_mm":2.643,"ostium":[16.475,19.911,1607.02],"seed":[21.009,21.167,1607.9],"direction":[0.9473,0.2624,0.1838]},{"id":"branch_005","radius_mm":1.82,"ostium":[11.675,11.111,1604.62],"seed":[10.21,9.171,1607.906],"direction":[-0.3584,-0.4746,0.8039]},{"id":"branch_006","radius_mm":1.246,"ostium":[10.075,-2.489,1551.82],"seed":[11.98,-4.288,1548.008],"direction":[0.4119,-0.389,-0.824]},{"id":"branch_007","radius_mm":2.102,"ostium":[15.675,16.711,1587.02],"seed":[19.483,18.986,1587.321],"direction":[0.8565,0.5117,0.0678]},{"id":"branch_008","radius_mm":1.155,"ostium":[11.675,7.111,1540.62],"seed":[15.309,10.048,1541.362],"direction":[0.7682,0.6208,0.1568]},{"id":"branch_009","radius_mm":2.85,"ostium":[15.675,13.511,1605.42],"seed":[18.42,11.778,1607.909],"direction":[0.6711,-0.4236,0.6084]}],"clock_png":"subject004_clock.png","check_png":"subject004_check.png","report":"subject004_report.html","fig_js":"subject004_3d.js"},{"case_id":"subject005","daughters":[{"id":"branch_001","radius_mm":4.09,"ostium":[46.834,11.6,1526.58],"seed":[46.277,7.166,1525.596],"direction":[-0.1217,-0.969,-0.215]},{"id":"branch_002","radius_mm":3.54,"ostium":[44.434,6.0,1512.18],"seed":[42.818,1.883,1510.573],"direction":[-0.3434,-0.8749,-0.3415]},{"id":"branch_003","radius_mm":3.323,"ostium":[51.634,15.6,1498.58],"seed":[55.8,15.687,1496.413],"direction":[0.8871,0.0186,-0.4613]},{"id":"branch_004","radius_mm":2.616,"ostium":[32.434,11.6,1504.18],"seed":[28.095,12.354,1502.902],"direction":[-0.9462,0.1645,-0.2786]},{"id":"branch_005","radius_mm":1.128,"ostium":[31.634,8.4,1493.78],"seed":[27.529,6.473,1492.955],"direction":[-0.8906,-0.4181,-0.179]}],"clock_png":"subject005_clock.png","check_png":"subject005_check.png","report":"subject005_report.html","fig_js":"subject005_3d.js"},{"case_id":"subject006","daughters":[{"id":"branch_001","radius_mm":3.373,"ostium":[28.975,-17.629,1606.12],"seed":[30.146,-21.466,1604.322],"direction":[0.2663,-0.8728,-0.409]},{"id":"branch_002","radius_mm":3.192,"ostium":[8.851,-19.177,1585.32],"seed":[6.094,-22.258,1585.365],"direction":[-0.6668,-0.7452,0.0109]},{"id":"branch_003","radius_mm":2.684,"ostium":[22.783,-15.307,1582.12],"seed":[25.25,-14.417,1578.243],"direction":[0.527,0.19,-0.8283]},{"id":"branch_004","radius_mm":2.385,"ostium":[37.489,-11.437,1630.12],"seed":[37.506,-15.291,1628.061],"direction":[0.0038,-0.8819,-0.4714]},{"id":"branch_005","radius_mm":2.479,"ostium":[17.365,-32.335,1480.52],"seed":[13.621,-33.801,1479.857],"direction":[-0.9188,-0.3598,-0.1627]},{"id":"branch_006","radius_mm":0.564,"ostium":[18.139,-19.951,1483.72],"seed":[13.874,-18.394,1483.321],"direction":[-0.9358,0.3415,-0.0875]}],"clock_png":"subject006_clock.png","check_png":"subject006_check.png","report":"subject006_report.html","fig_js":"subject006_3d.js"},{"case_id":"subject007","daughters":[{"id":"branch_001","radius_mm":3.265,"ostium":[19.196,-7.185,-1157.27],"seed":[19.196,-12.151,-1157.856],"direction":[0.0,-0.9931,-0.1172]},{"id":"branch_002","radius_mm":3.523,"ostium":[23.196,-3.185,-1137.27],"seed":[23.389,-5.827,-1141.113],"direction":[0.0413,-0.566,-0.8234]},{"id":"branch_003","radius_mm":3.523,"ostium":[25.596,-3.185,-1165.27],"seed":[29.132,-6.721,-1165.27],"direction":[0.7071,-0.7071,0.0]},{"id":"branch_004","radius_mm":2.287,"ostium":[15.196,-19.185,-1215.67],"seed":[15.477,-23.08,-1217.553],"direction":[0.0648,-0.8985,-0.4342]},{"id":"branch_005","radius_mm":5.5,"ostium":[19.996,13.615,-1127.67],"seed":[18.788,18.314,-1128.878],"direction":[-0.2417,0.9398,-0.2417]}],"clock_png":"subject007_clock.png","check_png":"subject007_check.png","report":"subject007_report.html","fig_js":"subject007_3d.js"},{"case_id":"subject008","daughters":[{"id":"branch_001","radius_mm":3.536,"ostium":[5.843,7.1,1508.65],"seed":[4.399,3.738,1505.782],"direction":[-0.3106,-0.7232,-0.6168]},{"id":"branch_002","radius_mm":3.362,"ostium":[8.243,9.5,1523.85],"seed":[9.702,6.83,1520.035],"direction":[0.2991,-0.5471,-0.7818]},{"id":"branch_003","radius_mm":2.782,"ostium":[-6.157,7.9,1493.45],"seed":[-9.509,6.375,1490.553],"direction":[-0.7154,-0.3254,-0.6183]},{"id":"branch_004","radius_mm":2.877,"ostium":[6.643,9.5,1487.85],"seed":[11.267,10.447,1487.444],"direction":[0.976,0.2,-0.0857]},{"id":"branch_005","radius_mm":2.25,"ostium":[-0.557,9.5,1472.65],"seed":[-0.273,10.583,1469.616],"direction":[0.0878,0.3348,-0.9382]},{"id":"branch_006","radius_mm":1.85,"ostium":[-0.557,-12.9,1435.05],"seed":[0.243,-16.236,1432.379],"direction":[0.1839,-0.7673,-0.6144]},{"id":"branch_007","radius_mm":0.858,"ostium":[2.643,0.7,1451.85],"seed":[5.193,3.733,1451.981],"direction":[0.6431,0.7651,0.0329]},{"id":"branch_008","radius_mm":0.858,"ostium":[0.243,-4.9,1422.25],"seed":[3.598,-1.5,1422.595],"direction":[0.7005,0.71,0.0721]}],"clock_png":"subject008_clock.png","check_png":"subject008_check.png","report":"subject008_report.html","fig_js":"subject008_3d.js"},{"case_id":"subject009","daughters":[{"id":"branch_001","radius_mm":2.059,"ostium":[22.927,0.376,1494.24],"seed":[23.593,-3.531,1492.64],"direction":[0.1558,-0.9141,-0.3743]},{"id":"branch_002","radius_mm":2.144,"ostium":[19.727,2.776,1467.84],"seed":[23.531,3.442,1464.833],"direction":[0.7772,0.1361,-0.6144]},{"id":"branch_003","radius_mm":2.76,"ostium":[31.727,11.576,1515.04],"seed":[32.117,7.656,1512.88],"direction":[0.0868,-0.8726,-0.4807]},{"id":"branch_004","radius_mm":0.5,"ostium":[4.527,-1.224,1479.84],"seed":[0.39,-2.309,1478.806],"direction":[-0.9402,-0.2465,-0.2351]}],"clock_png":"subject009_clock.png","check_png":"subject009_check.png","report":"subject009_report.html","fig_js":"subject009_3d.js"},{"case_id":"subject010","daughters":[{"id":"branch_001","radius_mm":3.232,"ostium":[4.809,-16.388,-1017.17],"seed":[5.756,-19.729,-1016.658],"direction":[0.2699,-0.9518,0.1459]},{"id":"branch_002","radius_mm":2.343,"ostium":[6.409,-10.788,-1004.37],"seed":[6.778,-14.892,-1004.846],"direction":[0.0889,-0.9894,-0.1147]},{"id":"branch_003","radius_mm":3.281,"ostium":[-3.191,-17.988,-1032.37],"seed":[-7.068,-18.217,-1034.915],"direction":[-0.8349,-0.0494,-0.5482]},{"id":"branch_004","radius_mm":2.771,"ostium":[14.409,-13.188,-1043.57],"seed":[18.45,-12.286,-1045.46],"direction":[0.8879,0.1982,-0.4153]}],"clock_png":"subject010_clock.png","check_png":"subject010_check.png","report":"subject010_report.html","fig_js":"subject010_3d.js"},{"case_id":"subject011","daughters":[{"id":"branch_001","radius_mm":2.88,"ostium":[10.958,-8.153,1626.59],"seed":[7.443,-8.491,1623.731],"direction":[-0.7735,-0.0744,-0.6294]},{"id":"branch_002","radius_mm":3.097,"ostium":[26.06,-2.28,1662.59],"seed":[25.522,-6.601,1660.801],"direction":[-0.1143,-0.9179,-0.38]},{"id":"branch_003","radius_mm":2.562,"ostium":[24.382,-6.475,1624.99],"seed":[28.623,-7.534,1623.36],"direction":[0.9091,-0.227,-0.3494]},{"id":"branch_004","radius_mm":2.778,"ostium":[20.187,-5.636,1649.79],"seed":[19.211,-10.018,1648.306],"direction":[-0.2064,-0.9268,-0.3138]},{"id":"branch_005","radius_mm":1.027,"ostium":[2.568,-4.797,1560.19],"seed":[-1.16,-1.89,1559.649],"direction":[-0.7835,0.6109,-0.1137]}],"clock_png":"subject011_clock.png","check_png":"subject011_check.png","report":"subject011_report.html","fig_js":"subject011_3d.js"},{"case_id":"subject012","daughters":[{"id":"branch_001","radius_mm":3.388,"ostium":[8.017,22.108,1469.45],"seed":[8.469,17.309,1469.087],"direction":[0.0936,-0.9928,-0.0751]},{"id":"branch_002","radius_mm":2.904,"ostium":[18.183,24.454,1438.25],"seed":[22.782,24.795,1436.599],"direction":[0.9389,0.0697,-0.3371]},{"id":"branch_003","radius_mm":2.918,"ostium":[6.453,16.634,1451.85],"seed":[6.679,12.201,1450.342],"direction":[0.0481,-0.9456,-0.3217]},{"id":"branch_004","radius_mm":2.684,"ostium":[-1.367,22.108,1440.65],"seed":[-5.505,21.405,1438.544],"direction":[-0.8812,-0.1497,-0.4485]},{"id":"branch_005","radius_mm":1.18,"ostium":[6.453,18.98,1371.85],"seed":[9.147,22.395,1371.8],"direction":[0.6193,0.785,-0.0115]}],"clock_png":"subject012_clock.png","check_png":"subject012_check.png","report":"subject012_report.html","fig_js":"subject012_3d.js"},{"case_id":"subject013","daughters":[{"id":"branch_001","radius_mm":2.217,"ostium":[3.128,12.214,1588.13],"seed":[2.803,7.527,1588.735],"direction":[-0.0686,-0.9894,0.1278]},{"id":"branch_002","radius_mm":1.479,"ostium":[-10.472,17.014,1580.13],"seed":[-14.258,15.152,1578.663],"direction":[-0.8476,-0.4167,-0.3284]},{"id":"branch_003","radius_mm":1.403,"ostium":[7.128,24.214,1580.93],"seed":[11.335,24.906,1578.694],"direction":[0.8739,0.1437,-0.4644]},{"id":"branch_004","radius_mm":1.36,"ostium":[-0.072,17.014,1600.93],"seed":[0.227,12.725,1600.015],"direction":[0.068,-0.9758,-0.208]},{"id":"branch_005","radius_mm":1.698,"ostium":[7.928,18.614,1600.93],"seed":[7.806,13.835,1601.032],"direction":[-0.0254,-0.9994,0.0213]}],"clock_png":"subject013_clock.png","check_png":"subject013_check.png","report":"subject013_report.html","fig_js":"subject013_3d.js"},{"case_id":"subject014","daughters":[{"id":"branch_001","radius_mm":2.487,"ostium":[8.95,4.896,1489.46],"seed":[10.222,1.637,1486.358],"direction":[0.272,-0.6971,-0.6634]},{"id":"branch_002","radius_mm":2.527,"ostium":[8.95,6.496,1510.26],"seed":[9.289,2.35,1507.874],"direction":[0.0708,-0.8646,-0.4975]},{"id":"branch_003","radius_mm":2.252,"ostium":[-3.05,7.296,1476.66],"seed":[-6.78,6.551,1474.078],"direction":[-0.8114,-0.162,-0.5616]},{"id":"branch_004","radius_mm":2.063,"ostium":[11.35,10.496,1465.46],"seed":[16.019,11.089,1464.265],"direction":[0.9615,0.1222,-0.2462]}],"clock_png":"subject014_clock.png","check_png":"subject014_check.png","report":"subject014_report.html","fig_js":"subject014_3d.js"},{"case_id":"subject015","daughters":[{"id":"branch_001","radius_mm":3.911,"ostium":[17.699,13.858,1548.83],"seed":[18.988,10.137,1546.302],"direction":[0.2754,-0.7951,-0.5403]},{"id":"branch_002","radius_mm":3.469,"ostium":[20.899,14.658,1562.43],"seed":[21.971,11.279,1559.122],"direction":[0.221,-0.6969,-0.6823]},{"id":"branch_003","radius_mm":3.353,"ostium":[10.499,17.858,1540.03],"seed":[7.082,16.089,1537.423],"direction":[-0.7352,-0.3806,-0.5609]},{"id":"branch_004","radius_mm":3.135,"ostium":[28.099,23.458,1536.83],"seed":[31.168,25.041,1533.615],"direction":[0.6506,0.3354,-0.6813]},{"id":"branch_005","radius_mm":1.277,"ostium":[16.899,-10.142,1480.83],"seed":[19.305,-10.483,1477.041],"direction":[0.5344,-0.0758,-0.8418]}],"clock_png":"subject015_clock.png","check_png":"subject015_check.png","report":"subject015_report.html","fig_js":"subject015_3d.js"},{"case_id":"subject016","daughters":[{"id":"branch_001","radius_mm":4.393,"ostium":[18.832,-167.468,377.2],"seed":[17.416,-171.698,376.881],"direction":[-0.3166,-0.9459,-0.0714]},{"id":"branch_002","radius_mm":2.897,"ostium":[5.232,-168.268,355.6],"seed":[1.245,-168.68,353.39],"direction":[-0.871,-0.0901,-0.4829]},{"id":"branch_003","radius_mm":3.87,"ostium":[16.432,-159.468,398.8],"seed":[16.63,-163.87,398.875],"direction":[0.0448,-0.9989,0.017]},{"id":"branch_004","radius_mm":1.128,"ostium":[24.432,-112.268,451.6],"seed":[24.939,-108.656,454.049],"direction":[0.1153,0.8221,0.5575]},{"id":"branch_005","radius_mm":1.12,"ostium":[18.032,-136.268,391.6],"seed":[19.151,-132.661,393.619],"direction":[0.2613,0.8423,0.4715]},{"id":"branch_006","radius_mm":1.519,"ostium":[10.032,-151.468,358.8],"seed":[6.792,-150.577,361.291],"direction":[-0.7747,0.213,0.5955]},{"id":"branch_007","radius_mm":0.967,"ostium":[-1.168,-130.668,423.6],"seed":[-5.385,-129.24,425.875],"direction":[-0.8434,0.2856,0.4551]}],"clock_png":"subject016_clock.png","check_png":"subject016_check.png","report":"subject016_report.html","fig_js":"subject016_3d.js"},{"case_id":"subject017","daughters":[{"id":"branch_001","radius_mm":1.513,"ostium":[14.478,-139.822,201.7],"seed":[15.743,-141.878,199.05],"direction":[0.3528,-0.5735,-0.7393]}],"clock_png":"subject017_clock.png","check_png":"subject017_check.png","report":"subject017_report.html","fig_js":"subject017_3d.js"},{"case_id":"subject018","daughters":[{"id":"branch_001","radius_mm":0.5,"ostium":[36.712,-128.588,1038.5],"seed":[35.07,-127.03,1042.958],"direction":[-0.3283,0.3118,0.8917]},{"id":"branch_002","radius_mm":2.385,"ostium":[23.912,-180.588,915.3],"seed":[21.783,-185.079,915.848],"direction":[-0.4257,-0.8982,0.1097]},{"id":"branch_003","radius_mm":1.102,"ostium":[31.912,-128.588,1040.1],"seed":[31.997,-127.49,1035.886],"direction":[0.0195,0.2522,-0.9675]},{"id":"branch_004","radius_mm":1.331,"ostium":[27.912,-198.188,843.3],"seed":[28.851,-202.027,841.463],"direction":[0.2156,-0.8808,-0.4216]},{"id":"branch_005","radius_mm":1.526,"ostium":[2.312,-185.388,804.1],"seed":[2.541,-185.62,809.089],"direction":[0.0459,-0.0464,0.9979]},{"id":"branch_006","radius_mm":1.438,"ostium":[22.312,-165.388,940.9],"seed":[18.776,-168.924,940.9],"direction":[-0.7071,-0.7071,0.0]},{"id":"branch_007","radius_mm":1.093,"ostium":[32.712,-166.988,963.3],"seed":[35.341,-167.859,966.304],"direction":[0.6436,-0.213,0.7351]}],"clock_png":"subject018_clock.png","check_png":"subject018_check.png","report":"subject018_report.html","fig_js":"subject018_3d.js"},{"case_id":"subject019","daughters":[{"id":"branch_001","radius_mm":2.761,"ostium":[18.434,-181.466,304.4],"seed":[21.969,-185.002,304.4],"direction":[0.7071,-0.7071,0.0]},{"id":"branch_002","radius_mm":1.577,"ostium":[5.634,-172.666,283.6],"seed":[3.963,-169.239,282.113],"direction":[-0.4082,0.8375,-0.3633]}],"clock_png":"subject019_clock.png","check_png":"subject019_check.png","report":"subject019_report.html","fig_js":"subject019_3d.js"},{"case_id":"subject020","daughters":[{"id":"branch_001","radius_mm":1.519,"ostium":[21.562,-144.838,349.2],"seed":[22.919,-145.455,344.787],"direction":[0.2913,-0.1326,-0.9474]},{"id":"branch_002","radius_mm":1.308,"ostium":[12.762,-127.237,355.6],"seed":[13.041,-123.588,357.928],"direction":[0.0643,0.8413,0.5367]},{"id":"branch_003","radius_mm":1.698,"ostium":[10.362,-135.238,338.8],"seed":[7.628,-133.998,335.507],"direction":[-0.6137,0.2782,-0.7389]},{"id":"branch_004","radius_mm":0.925,"ostium":[8.762,-127.237,355.6],"seed":[4.056,-127.44,356.101],"direction":[-0.9935,-0.0427,0.1058]}],"clock_png":"subject020_clock.png","check_png":"subject020_check.png","report":"subject020_report.html","fig_js":"subject020_3d.js"},{"case_id":"subject021","daughters":[{"id":"branch_001","radius_mm":3.232,"ostium":[15.782,-161.818,402.4],"seed":[12.656,-161.858,398.991],"direction":[-0.6758,-0.0087,-0.737]},{"id":"branch_002","radius_mm":3.235,"ostium":[20.582,-165.818,412.8],"seed":[20.478,-169.751,411.632],"direction":[-0.0253,-0.9583,-0.2846]},{"id":"branch_003","radius_mm":1.949,"ostium":[30.182,-167.418,340.8],"seed":[30.019,-166.71,336.229],"direction":[-0.0352,0.1531,-0.9876]},{"id":"branch_004","radius_mm":2.239,"ostium":[15.782,-170.618,344.0],"seed":[12.792,-172.849,342.169],"direction":[-0.7194,-0.5368,-0.4407]},{"id":"branch_005","radius_mm":0.528,"ostium":[20.582,-156.218,353.6],"seed":[16.297,-157.026,354.682],"direction":[-0.9538,-0.1798,0.2408]},{"id":"branch_006","radius_mm":3.632,"ostium":[6.982,-173.818,324.8],"seed":[6.551,-176.745,326.655],"direction":[-0.1234,-0.8381,0.5313]},{"id":"branch_007","radius_mm":2.153,"ostium":[18.982,-170.618,347.2],"seed":[19.383,-172.725,350.129],"direction":[0.1106,-0.5803,0.8068]},{"id":"branch_008","radius_mm":0.977,"ostium":[26.182,-152.218,367.2],"seed":[26.535,-148.198,368.809],"direction":[0.0813,0.9253,0.3703]},{"id":"branch_009","radius_mm":1.965,"ostium":[35.782,-153.818,407.2],"seed":[40.107,-153.25,408.758],"direction":[0.9337,0.1228,0.3363]},{"id":"branch_010","radius_mm":0.987,"ostium":[30.982,-147.418,396.0],"seed":[31.431,-144.459,398.904],"direction":[0.1077,0.7096,0.6963]}],"clock_png":"subject021_clock.png","check_png":"subject021_check.png","report":"subject021_report.html","fig_js":"subject021_3d.js"},{"case_id":"subject022","daughters":[{"id":"branch_001","radius_mm":4.5,"ostium":[16.838,-150.062,322.5],"seed":[15.9,-154.52,321.612],"direction":[-0.202,-0.9605,-0.1914]},{"id":"branch_002","radius_mm":4.29,"ostium":[16.038,-148.462,337.7],"seed":[17.123,-152.84,336.547],"direction":[0.2331,-0.9404,-0.2476]},{"id":"branch_003","radius_mm":3.803,"ostium":[4.038,-143.662,314.5],"seed":[0.227,-144.42,311.593],"direction":[-0.7853,-0.1562,-0.5991]},{"id":"branch_004","radius_mm":2.684,"ostium":[22.438,-138.862,306.5],"seed":[26.449,-136.924,305.56],"direction":[0.881,0.4257,-0.2065]},{"id":"branch_005","radius_mm":2.475,"ostium":[15.238,-162.062,242.5],"seed":[17.297,-165.096,239.746],"direction":[0.4492,-0.6615,-0.6005]},{"id":"branch_006","radius_mm":2.203,"ostium":[19.238,-154.062,251.3],"seed":[23.335,-153.07,249.35],"direction":[0.8821,0.2136,-0.4198]},{"id":"branch_007","radius_mm":0.997,"ostium":[22.438,-144.462,348.1],"seed":[23.014,-148.366,346.553],"direction":[0.1358,-0.921,-0.365]},{"id":"branch_008","radius_mm":0.646,"ostium":[5.638,-149.262,245.7],"seed":[2.159,-147.925,248.115],"direction":[-0.7833,0.3012,0.5438]},{"id":"branch_009","radius_mm":1.146,"ostium":[6.438,-122.862,376.1],"seed":[2.461,-122.179,378.385],"direction":[-0.8576,0.1475,0.4927]},{"id":"branch_010","radius_mm":2.078,"ostium":[15.238,-163.662,216.9],"seed":[17.825,-164.686,214.057],"direction":[0.6504,-0.2573,-0.7147]},{"id":"branch_011","radius_mm":2.136,"ostium":[15.238,-162.062,256.9],"seed":[18.773,-165.598,256.9],"direction":[0.7071,-0.7071,0.0]}],"clock_png":"subject022_clock.png","check_png":"subject022_check.png","report":"subject022_report.html","fig_js":"subject022_3d.js"},{"case_id":"subject023","daughters":[{"id":"branch_001","radius_mm":1.614,"ostium":[14.043,-157.457,265.2],"seed":[15.314,-158.251,260.962],"direction":[0.2829,-0.1764,-0.9428]},{"id":"branch_002","radius_mm":1.558,"ostium":[6.043,-143.057,262.0],"seed":[2.39,-142.767,260.19],"direction":[-0.8937,0.0712,-0.443]}],"clock_png":"subject023_clock.png","check_png":"subject023_check.png","report":"subject023_report.html","fig_js":"subject023_3d.js"},{"case_id":"subject024","daughters":[{"id":"branch_001","radius_mm":1.959,"ostium":[11.561,-167.384,1808.509],"seed":[13.045,-171.338,1808.189],"direction":[0.3504,-0.9335,-0.0756]},{"id":"branch_002","radius_mm":1.262,"ostium":[14.299,-172.023,1792.377],"seed":[16.189,-176.109,1793.194],"direction":[0.4131,-0.893,0.1786]},{"id":"branch_003","radius_mm":1.716,"ostium":[6.28,-147.669,1807.101],"seed":[5.897,-143.798,1803.96],"direction":[-0.0766,0.7743,-0.6281]},{"id":"branch_004","radius_mm":1.262,"ostium":[16.4,-152.666,1828.266],"seed":[19.386,-151.635,1825.96],"direction":[0.7635,0.2636,-0.5896]},{"id":"branch_005","radius_mm":0.5,"ostium":[10.277,-150.63,1802.918],"seed":[12.136,-145.99,1802.819],"direction":[0.3719,0.928,-0.0198]},{"id":"branch_006","radius_mm":1.918,"ostium":[-5.69,-158.021,1829.31],"seed":[-4.793,-160.993,1832.124],"direction":[0.214,-0.7092,0.6717]},{"id":"branch_007","radius_mm":1.065,"ostium":[-6.096,-166.058,1810.129],"seed":[-6.938,-169.594,1806.696],"direction":[-0.1684,-0.7072,-0.6867]},{"id":"branch_008","radius_mm":0.957,"ostium":[5.552,-167.752,1816.799],"seed":[5.419,-171.126,1819.817],"direction":[-0.0293,-0.745,0.6665]}],"clock_png":"subject024_clock.png","check_png":"subject024_check.png","report":"subject024_report.html","fig_js":"subject024_3d.js"},{"case_id":"subject025","daughters":[{"id":"branch_001","radius_mm":4.458,"ostium":[12.954,-165.846,-1.0],"seed":[14.108,-167.37,3.031],"direction":[0.2587,-0.3416,0.9035]},{"id":"branch_002","radius_mm":3.71,"ostium":[4.154,-147.446,-189.0],"seed":[4.76,-151.572,-189.861],"direction":[0.1422,-0.969,-0.2022]},{"id":"branch_003","radius_mm":3.523,"ostium":[-0.646,-153.046,-210.6],"seed":[-1.298,-156.981,-212.639],"direction":[-0.1455,-0.8784,-0.4552]},{"id":"branch_004","radius_mm":2.87,"ostium":[22.554,-157.046,-81.0],"seed":[25.441,-154.159,-78.113],"direction":[0.5774,0.5774,0.5774]},{"id":"branch_005","radius_mm":3.423,"ostium":[8.154,-175.446,-9.0],"seed":[8.902,-176.462,-4.713],"direction":[0.1672,-0.2274,0.9593]},{"id":"branch_006","radius_mm":3.068,"ostium":[3.354,-141.846,-229.8],"seed":[6.406,-139.158,-231.969],"direction":[0.6621,0.5831,-0.4707]},{"id":"branch_007","radius_mm":2.824,"ostium":[-17.446,-145.046,-233.0],"seed":[-21.649,-144.074,-234.094],"direction":[-0.9444,0.2183,-0.2458]},{"id":"branch_008","radius_mm":1.539,"ostium":[-0.646,-150.646,-321.8],"seed":[2.436,-148.549,-322.466],"direction":[0.8139,0.5537,-0.176]},{"id":"branch_009","radius_mm":1.056,"ostium":[0.154,-150.646,-298.6],"seed":[2.941,-149.444,-295.024],"direction":[0.5942,0.2562,0.7624]},{"id":"branch_010","radius_mm":1.445,"ostium":[11.354,-123.446,-6.6],"seed":[10.0,-124.469,-11.129],"direction":[-0.2801,-0.2117,-0.9363]},{"id":"branch_011","radius_mm":1.074,"ostium":[10.554,-187.446,-89.8],"seed":[8.669,-190.73,-86.916],"direction":[-0.396,-0.6899,0.606]},{"id":"branch_012","radius_mm":2.795,"ostium":[-16.646,-141.846,-272.2],"seed":[-16.348,-137.95,-271.873],"direction":[0.0758,0.9936,0.0833]},{"id":"branch_013","radius_mm":2.574,"ostium":[-10.246,-141.846,-270.6],"seed":[-7.616,-138.719,-271.62],"direction":[0.6245,0.7426,-0.2422]},{"id":"branch_014","radius_mm":5.472,"ostium":[-7.046,-173.046,-99.4],"seed":[-10.236,-175.491,-99.302],"direction":[-0.7935,-0.6081,0.0243]}],"clock_png":"subject025_clock.png","check_png":"subject025_check.png","report":"subject025_report.html","fig_js":"subject025_3d.js"}];
+let current = 0, view = '3d';
+let plotlyReady = null;           // promise, resolved once the shared bundle is in
+const figLoaded = {};             // case_id -> promise for that case's figure sidecar
+let renderToken = 0;              // guards against a slow 3D load painting over a newer case
+
+const $ = (s) => document.querySelector(s);
+const fmt = (v, n = 1) => Number(v).toFixed(n);
+const vec = (a, n = 2) => a.map((v) => Number(v).toFixed(n)).join(', ');
+
+// The panel arrow is the initial direction as the 3D view currently shows it, so the two agree at
+// a glance. Screen basis from the camera: right = normalise(forward x up), up = right x forward,
+// with world up = +z. The scene is aspectmode 'data' (equal scale on every axis), so a direction
+// vector projects without distortion.
+const DEFAULT_EYE = { x: 1.4, y: -1.4, z: 0.6 };   // report.py pins this; scaling it changes nothing here
+let camEye = DEFAULT_EYE;
+
+function camBasis(eye) {
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const unit = (a) => { const n = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / n, a[1] / n, a[2] / n]; };
+  const fwd = unit([-eye.x, -eye.y, -eye.z]);
+  const up = [0, 0, 1];
+  let right = cross(fwd, up);
+  if (Math.hypot(right[0], right[1], right[2]) < 1e-6) right = [1, 0, 0];  // looking straight down the z axis
+  right = unit(right);
+  return { right: right, up: unit(cross(right, fwd)) };
+}
+
+function arrowSvg(dir) {
+  const b = camBasis(camEye);
+  const sx = dir[0] * b.right[0] + dir[1] * b.right[1] + dir[2] * b.right[2];
+  const sy = dir[0] * b.up[0] + dir[1] * b.up[1] + dir[2] * b.up[2];
+  const ang = -Math.atan2(sy, sx) * 180 / Math.PI;   // SVG y grows downward
+  return `<svg class="arrow" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+    <g transform="rotate(${ang.toFixed(1)} 10 10)">
+      <line x1="3" y1="10" x2="15" y2="10" stroke="#0E0E0E" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M15 10 11.5 7.4 M15 10 11.5 12.6" fill="none" stroke="#0E0E0E" stroke-width="1.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </g></svg>`;
+}
+
+function refreshArrows() {
+  // redraw the glyphs in place, so rotating the 3D view does not collapse an expanded branch
+  const ds = CASES[current].daughters;
+  document.querySelectorAll('#branches .arrowslot').forEach((slot, i) => {
+    if (ds[i]) slot.innerHTML = arrowSvg(ds[i].direction);
+  });
+}
+
+const CHEV = `<svg class="chev" width="11" height="7" viewBox="0 0 12 8" aria-hidden="true">
+  <path d="M1 1.5 6 6.5 11 1.5" fill="none" stroke="#6B6B6B" stroke-width="1.8"
+        stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('could not load ' + src));
+    document.head.appendChild(s);
+  });
+}
+
+function ensurePlotly() {
+  // file:// blocks fetch(), so the bundle and the figures come in as plain <script> tags.
+  if (!plotlyReady) plotlyReady = loadScript('plotly.min.js');
+  return plotlyReady;
+}
+
+function ensureFigure(c) {
+  if (!figLoaded[c.case_id]) figLoaded[c.case_id] = loadScript(c.fig_js);
+  return figLoaded[c.case_id];
+}
+
+// Recolour report.py's figure into this page's palette without touching its geometry. The aorta
+// keeps the report's red so the parent vessel reads the same in both views; everything reported
+// on top of it is page palette, with the ostium the one saturated marker.
+function repaint(trace) {
+  const t = Object.assign({}, trace);
+  if (t.type === 'mesh3d') {
+    t.color = 'lightcoral';
+    t.opacity = 0.35;
+    t.showlegend = true;
+  } else if (t.name === 'centreline') {
+    t.line = Object.assign({}, t.line, { color: '#0E0E0E', width: 3 });
+  } else if (t.name === 'ostia') {
+    t.marker = Object.assign({}, t.marker, {
+      color: '#55C6DE', line: { color: '#0E0E0E', width: 1.5 },
+    });
+    t.textfont = { color: '#0E0E0E', size: 11 };
+  } else if (t.mode === 'lines') {
+    t.line = Object.assign({}, t.line, { color: '#0E0E0E', width: 5 });
+  } else if (t.mode === 'markers') {
+    t.marker = Object.assign({}, t.marker, { color: '#0E0E0E' });
+  }
+  return t;
+}
+
+function render3d(c, token) {
+  const frame = document.getElementById('frame');
+  if (!c.fig_js) {
+    frame.innerHTML = '<div class="empty">no 3D figure for this case</div>';
+    return;
+  }
+  frame.innerHTML = '<div class="loading"><span class="spin"></span>building the 3D view\u2026</div>';
+  ensurePlotly()
+    .then(() => ensureFigure(c))
+    .then(() => {
+      if (token !== renderToken) return;   // the user moved on while this was loading
+      const fig = window.__AORTA3D__[c.case_id];
+      frame.innerHTML = '<div id="plot3d"></div>';
+      // aspectmode 'data' fits the bounding cube, so a long thin segment overruns the frame;
+      // pull the camera back along the same axis report.py pinned it to.
+      const scene = Object.assign({}, fig.layout.scene);
+      const eye = (scene.camera && scene.camera.eye) || { x: 1.4, y: -1.4, z: 0.6 };
+      scene.camera = Object.assign({}, scene.camera, {
+        eye: { x: eye.x * 1.5, y: eye.y * 1.5, z: eye.z * 1.5 },
+      });
+      const layout = Object.assign({}, fig.layout, {
+        scene: scene,
+        title: null, height: null, autosize: true,
+        margin: { l: 0, r: 0, t: 0, b: 0 },
+        paper_bgcolor: '#FFFFFF', plot_bgcolor: '#FFFFFF',
+        legend: { orientation: 'h', y: 1.04, x: 0, bgcolor: 'rgba(255,255,255,0.85)' },
+      });
+      camEye = scene.camera.eye;
+      Plotly.newPlot('plot3d', fig.data.map(repaint), layout, { responsive: true, displaylogo: false })
+        .then((gd) => {
+          refreshArrows();
+          gd.on('plotly_relayout', (e) => {
+            const eye = (e['scene.camera'] && e['scene.camera'].eye)
+              || (e.scene && e.scene.camera && e.scene.camera.eye);
+            if (eye) { camEye = eye; refreshArrows(); }
+          });
+        });
+    })
+    .catch((e) => {
+      if (token !== renderToken) return;
+      frame.innerHTML = '<div class="empty">3D view unavailable: ' + e.message + '</div>';
+    });
+}
+
+function render() {
+  const c = CASES[current];
+  const n = c.daughters.length;
+  const radii = c.daughters.map((d) => d.radius_mm);
+
+  if (!comboOpen) $('#patientSearch').value = c.case_id;   // don't clobber what is being typed
+  $('#prev').disabled = current === 0;
+  $('#next').disabled = current === CASES.length - 1;
+
+  $('#caseName').textContent = c.case_id;
+  const pill = $('#casePill');
+  pill.textContent = n === 0 ? 'none detected' : `${n} branch${n === 1 ? '' : 'es'} detected`;
+  pill.className = n === 0 ? 'pill zero' : 'pill';
+
+  $('#statRadius').textContent = n ? `${fmt(Math.min(...radii))}–${fmt(Math.max(...radii))} mm` : '—';
+  $('#statCase').textContent = `${current + 1} / ${CASES.length}`;
+  const link = $('#reportLink');
+  if (c.report) { link.style.display = ''; link.href = c.report; } else { link.style.display = 'none'; }
+
+  // viewer
+  const token = ++renderToken;
+  const frame = $('#frame');
+  frame.classList.toggle('is3d', view === '3d');
+  if (view === '3d') {
+    render3d(c, token);
+    $('#caption').textContent = 'Drag to rotate, scroll to zoom, hover a marker for its measurements. '
+      + 'Red surface: the supplied aorta mask. Black line through it: the centreline. Cyan markers: the reported '
+      + 'ostia, sized by radius. Black stems: the initial direction, drawn 10 mm out from each ostium.';
+  } else {
+    const src = view === 'clock' ? c.clock_png : c.check_png;
+    frame.innerHTML = src
+      ? `<img src="${src}" alt="${c.case_id} ${view === 'clock' ? 'clock map' : 'verification projections'}">`
+      : `<div class="empty">no ${view === 'clock' ? 'clock map' : 'verification'} image for this case</div>`;
+    $('#caption').textContent = view === 'clock'
+      ? 'Aortic wall unrolled. Horizontal: clock position (12 anterior, 3 patient\u2019s left, 6 posterior, 9 patient\u2019s right). Vertical: height from the superior end of the supplied segment. Marker area scales with radius; the left panel is the local aortic diameter.'
+      : 'Coronal and sagittal projections of the candidate voxels. Pink: the supplied aorta mask. Cyan dots: reported ostia. Red: initial direction, drawn 10 mm from the ostium. Blue: centreline.';
+  }
+  document.querySelectorAll('.segmented button').forEach((b) =>
+    b.setAttribute('aria-selected', String(b.dataset.view === view)));
+
+  // branches
+  $('#branchCount').textContent = n ? `Detected branches (${n})` : 'Detected branches';
+  $('#branches').innerHTML = n === 0
+    ? `<div class="empty-branches">No eligible daughters on the supplied segment.<br>
+       Anatomy outside the supplied coverage cannot be assessed.</div>`
+    : c.daughters.map((d, i) => `
+      <details class="branch">
+        <summary>
+          <span class="idx">${String(i + 1).padStart(2, '0')}</span>
+          <span class="label">
+            <span class="name">${d.id}</span>
+            <span class="sub">radius ${fmt(d.radius_mm)} mm</span>
+          </span>
+          <span class="arrowslot" title="initial direction, as oriented in the 3D view">${arrowSvg(d.direction)}</span>
+          ${CHEV}
+        </summary>
+        <div class="body">
+          <dl class="kv">
+            <dt>Ostium</dt><dd>${vec(d.ostium, 1)} mm</dd>
+            <dt>Seed</dt><dd>${vec(d.seed, 1)} mm</dd>
+            <dt>Direction</dt><dd>${vec(d.direction, 3)}</dd>
+            <dt>Radius</dt><dd>${fmt(d.radius_mm, 2)} mm</dd>
+          </dl>
+        </div>
+      </details>`).join('');
+}
+
+function go(i) {
+  current = Math.max(0, Math.min(CASES.length - 1, i));
+  render();
+}
+
+// ---------- patient search ----------
+let comboOpen = false, comboActive = 0, comboMatches = [];
+
+function matchesFor(query) {
+  const q = query.trim().toLowerCase();
+  return CASES.map((c, i) => ({ c: c, i: i }))
+              .filter((m) => !q || m.c.case_id.toLowerCase().includes(q));
+}
+
+function drawOptions(query) {
+  const q = query.trim().toLowerCase();
+  const list = document.getElementById('patientList');
+  if (!comboMatches.length) {
+    list.innerHTML = '<div class="none">No patient matches that search.</div>';
+    return;
+  }
+  list.innerHTML = comboMatches.map((m, k) => {
+    const id = m.c.case_id;
+    const at = q ? id.toLowerCase().indexOf(q) : -1;
+    const label = at < 0 ? id
+      : id.slice(0, at) + '<mark>' + id.slice(at, at + q.length) + '</mark>' + id.slice(at + q.length);
+    const n = m.c.daughters.length;
+    return `<div class="opt${k === comboActive ? ' active' : ''}${m.i === current ? ' current' : ''}"
+                 role="option" aria-selected="${k === comboActive}" data-i="${m.i}">
+              <span class="name">${label}</span>
+              <span class="n">${n} branch${n === 1 ? '' : 'es'}</span>
+            </div>`;
+  }).join('');
+  const active = list.querySelector('.opt.active');
+  if (active) active.scrollIntoView({ block: 'nearest' });
+}
+
+function openCombo(query) {
+  comboOpen = true;
+  comboMatches = matchesFor(query);
+  comboActive = Math.max(0, comboMatches.findIndex((m) => m.i === current));
+  document.getElementById('patientList').classList.add('open');
+  document.getElementById('patientSearch').setAttribute('aria-expanded', 'true');
+  drawOptions(query);
+}
+
+function closeCombo() {
+  comboOpen = false;
+  document.getElementById('patientList').classList.remove('open');
+  const input = document.getElementById('patientSearch');
+  input.setAttribute('aria-expanded', 'false');
+  input.value = CASES[current].case_id;   // always settle back on the case actually shown
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const input = $('#patientSearch');
+  const list = $('#patientList');
+
+  input.addEventListener('focus', () => { input.select(); openCombo(''); });
+  input.addEventListener('input', () => openCombo(input.value));
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!comboOpen) return openCombo('');
+      if (comboMatches.length) {
+        comboActive = (comboActive + (e.key === 'ArrowDown' ? 1 : -1) + comboMatches.length) % comboMatches.length;
+        drawOptions(input.value);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (comboOpen && comboMatches[comboActive]) { go(comboMatches[comboActive].i); input.blur(); }
+    } else if (e.key === 'Escape') {
+      closeCombo();
+      input.blur();
+    }
+  });
+  list.addEventListener('mousedown', (e) => {   // mousedown: fires before the input's blur
+    const opt = e.target.closest('.opt');
+    if (!opt) return;
+    e.preventDefault();
+    go(Number(opt.dataset.i));
+    input.blur();
+  });
+  list.addEventListener('mousemove', (e) => {
+    const opt = e.target.closest('.opt');
+    if (!opt) return;
+    const k = comboMatches.findIndex((m) => m.i === Number(opt.dataset.i));
+    if (k >= 0 && k !== comboActive) { comboActive = k; drawOptions(input.value); }
+  });
+  input.addEventListener('blur', closeCombo);
+
+  $('#prev').addEventListener('click', () => go(current - 1));
+  $('#next').addEventListener('click', () => go(current + 1));
+  document.querySelectorAll('.segmented button').forEach((b) =>
+    b.addEventListener('click', () => { view = b.dataset.view; render(); }));
+  document.addEventListener('keydown', (e) => {
+    if (e.target === input) return;
+    if (e.key === 'ArrowLeft') go(current - 1);
+    if (e.key === 'ArrowRight') go(current + 1);
+  });
+  render();
+});
+</script>
+</body></html>
