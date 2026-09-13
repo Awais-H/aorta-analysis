@@ -67,8 +67,15 @@ def _dist_to_polyline(P, poly):
 
 def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0, 100.0),
                  size_xyz=(72, 64, 60), with_branch=True, gz_under_nii=False, mask_fragment=False,
-                 direction=None, branch_kind="straight"):
-    """Write orig.nii and mask.nii into out_dir; return a dict with paths and ground truth."""
+                 direction=None, branch_kind="straight", mask_z_fraction=1.0, parallel_vessel=False,
+                 blob=False):
+    """Write orig.nii and mask.nii into out_dir; return a dict with paths and ground truth.
+
+    mask_z_fraction < 1 keeps the mask on the middle fraction of the aorta only, so the bright
+    aorta continues past both mask ends (D6 rule 1). parallel_vessel adds a bright 2.5 mm tube
+    running along the aorta in contact with it (rule 3). blob adds a bright 9 mm sphere touching
+    the aorta (rule 4: bone-sized, 3 ml).
+    """
     os.makedirs(out_dir, exist_ok=True)
     sx, sy, sz = spacing_xyz
     nx, ny, nz = size_xyz
@@ -91,7 +98,16 @@ def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0,
             near |= _dist_to_polyline(P, poly) <= BRANCH_R
         branch = near.reshape(aorta.shape)
         ct[branch & ~aorta] = LUMEN_HU
+    if parallel_vessel:
+        px = cx - AORTA_R - 2.5 + 0.5  # 2.5 mm tube overlapping the aorta surface by 0.5 mm
+        ct[((X - px) ** 2 + (Y - cy) ** 2 <= 2.5 ** 2) & ~aorta] = LUMEN_HU
+    if blob:
+        by = cy + AORTA_R + 8.5  # 9 mm sphere overlapping the aorta surface by 0.5 mm
+        ct[((X - cx) ** 2 + (Y - by) ** 2 + (Z - zc) ** 2 <= 9.0 ** 2) & ~aorta] = LUMEN_HU
     mask = aorta.astype(np.uint8)
+    if mask_z_fraction < 1.0:
+        keep = np.abs(Z - zc) <= mask_z_fraction * (z[-1] - z[0]) / 2
+        mask[~keep] = 0
     if mask_fragment:
         mask[1, 1, 1] = 1  # a stray voxel far from the aorta
 

@@ -51,6 +51,7 @@ class Trace:
     radius_inscribed_mm: float | None = None
     pca_chord_angle_deg: float | None = None  # diagnostic: angle between the PCA axis of the first 5 mm of path and the chord
     march_length_mm: float = 0.0   # what the march achieved before any fallback
+    section_areas_mm2: list | None = None  # cross-section area (main blob voxels x voxel area) at each march step, 1 mm apart; D6 rule 4
 
 
 # ------------------------------------------------------------------ geometry helpers
@@ -119,56 +120,65 @@ def blobs(idx: np.ndarray) -> list:
 
 
 def march(cand: Candidates, region_idx: np.ndarray, ost: Ostium):
-    """Returns (points in mm-scaled index space, bifurcation flag, stop reason)."""
+    """Returns (points in mm-scaled index space, bifurcation flag, stop reason, section areas mm2)."""
     sp = cand.spacing
     V = region_idx * sp
     p = ost.index_zyx * sp
     d = _unit(ost.axis_zyx.astype(float))
     pts = [p]
+    areas = []
+    vox_area = float(sp[1] * sp[2])
     upper = (np.array(cand.mask.shape) - 1) * sp
     n_steps = int(round(config.TRACE_MAX_MM / config.TRACE_STEP_MM))
     for _ in range(n_steps):
         q = p + config.TRACE_STEP_MM * d
         sel = cross_section(V, q, d)
         if len(sel) < config.MIN_CROSS_SECTION_VOXELS:
-            return pts, False, "vanished"
+            return pts, False, "vanished", areas
         parts = blobs(region_idx[sel])
         lat = np.linalg.norm((V[sel] - q) - ((V[sel] - q) @ d)[:, None] * d, axis=1)
         nearest = int(np.argmin(lat))
         main = next(b for b in parts if nearest in set(b.tolist()))
         if len(main) < config.MIN_CROSS_SECTION_VOXELS:
-            return pts, False, "vanished"
+            return pts, False, "vanished", areas
         others = [b for b in parts if b is not main and len(b) >= config.MIN_CROSS_SECTION_VOXELS]
-        if others:
-            return pts, True, "bifurcation"
+        # a split counts as the first downstream bifurcation only once the slab is clear of the
+        # wall layer: inside it the cross-section still contains fragments of the origin itself
+        q_vox = np.clip(np.round(q / sp).astype(int), 0, np.array(cand.mask.shape) - 1)
+        if others and cand.distance_mm[tuple(q_vox)] > config.WALL_LAYER_MM:
+            return pts, True, "bifurcation", areas
         c = V[sel][main].mean(axis=0)
         d_new = _unit(c - p)
         if np.degrees(np.arccos(np.clip(np.dot(d_new, d), -1, 1))) > config.TRACE_MAX_TURN_DEG:
-            return pts, False, "flip"
+            return pts, False, "flip", areas
         p_new = p + config.TRACE_STEP_MM * d_new
         if np.any(p_new < 0) or np.any(p_new > upper):
-            return pts, False, "edge"
+            return pts, False, "edge", areas
         p, d = p_new, d_new
         pts.append(p)
-    return pts, False, "max"
+        areas.append(len(main) * vox_area)
+    return pts, False, "max", areas
 
 
 def axis_path(cand: Candidates, region_idx: np.ndarray, ost: Ostium) -> list:
-    """Fallback A: straight line along the axis as far as the branch voxels reach (mm-scaled index)."""
+    """Fallback A: straight line along the axis for as long as the line itself stays inside the
+    branch voxels (a branch voxel within one working voxel of every step point). Returns points
+    in mm-scaled index space."""
+    from scipy.spatial import cKDTree
     sp = cand.spacing
-    V = region_idx * sp
     p0 = ost.index_zyx * sp
     d = _unit(ost.axis_zyx.astype(float))
-    rel = V - p0
-    t = rel @ d
-    lat = np.linalg.norm(rel - t[:, None] * d, axis=1)
-    reach = float(t[lat <= config.CROSS_SECTION_HALF_WIDTH_MM].max()) if len(t) and (lat <= config.CROSS_SECTION_HALF_WIDTH_MM).any() else 0.0
-    upper = (np.array(cand.mask.shape) - 1) * sp
     pts = [p0]
-    n_steps = int(min(config.TRACE_MAX_MM, reach) // config.TRACE_STEP_MM)
+    if len(region_idx) == 0:
+        return pts
+    tree = cKDTree(region_idx * sp)
+    upper = (np.array(cand.mask.shape) - 1) * sp
+    n_steps = int(round(config.TRACE_MAX_MM / config.TRACE_STEP_MM))
     for k in range(1, n_steps + 1):
         p = p0 + k * config.TRACE_STEP_MM * d
         if np.any(p < 0) or np.any(p > upper):
+            break
+        if tree.query(p)[0] > config.ISO_SPACING_MM:
             break
         pts.append(p)
     return pts
@@ -231,11 +241,12 @@ def trace_one(cand: Candidates, ost: Ostium, region_idx: np.ndarray, inside_edt:
         return Trace(label=ost.label, path_mm=io_utils.index_to_mm(cand.image, ost.index_zyx)[None, :], seed_mm=None,
                      direction_xyz=ost.normal_mm.copy(), radius_mm=float(config.RADIUS_CLAMP_MM[0]),
                      path_length_mm=0.0, bifurcation=False, method="none", stop_reason="no_voxels")
-    pts, bif, reason = march(cand, region_idx, ost)
+    pts, bif, reason, areas = march(cand, region_idx, ost)
     march_len = float((len(pts) - 1) * config.TRACE_STEP_MM)
     method = "march"
     if march_len < config.MIN_TRACE_MM:
         pts, bif, method = axis_path(cand, region_idx, ost), False, "axis"
+        areas = None
     length = float((len(pts) - 1) * config.TRACE_STEP_MM)
     pts_idx = np.array(pts) / sp
     path_mm = io_utils.index_to_mm(cand.image, pts_idx)
@@ -243,7 +254,8 @@ def trace_one(cand: Candidates, ost: Ostium, region_idx: np.ndarray, inside_edt:
     if seed is None:
         return Trace(label=ost.label, path_mm=path_mm, seed_mm=None, direction_xyz=ost.axis_mm.copy(),
                      radius_mm=float(config.RADIUS_CLAMP_MM[0]), path_length_mm=length, bifurcation=bif,
-                     method=method if length > 0 else "none", stop_reason=reason, march_length_mm=march_len)
+                     method=method if length > 0 else "none", stop_reason=reason, march_length_mm=march_len,
+                     section_areas_mm2=areas)
     direction = chord_direction(ost.mm, seed)
     seed_idx = io_utils.mm_to_index(cand.image, seed)
     dir_idx = io_utils.mm_vector_to_index(cand.image, seed, direction)
@@ -254,7 +266,8 @@ def trace_one(cand: Candidates, ost: Ostium, region_idx: np.ndarray, inside_edt:
     pca_angle = float(np.degrees(np.arccos(np.clip(np.dot(pca, direction), -1, 1)))) if pca is not None else None
     return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=direction, radius_mm=radius,
                  path_length_mm=length, bifurcation=bif, method=method, stop_reason=reason, radius_flag=flag,
-                 radius_area_mm=r_area, radius_inscribed_mm=r_ins, pca_chord_angle_deg=pca_angle, march_length_mm=march_len)
+                 radius_area_mm=r_area, radius_inscribed_mm=r_ins, pca_chord_angle_deg=pca_angle, march_length_mm=march_len,
+                 section_areas_mm2=areas)
 
 
 def trace_all(cand: Candidates, inst: Instances, ostia: dict) -> dict:

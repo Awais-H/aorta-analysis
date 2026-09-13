@@ -40,7 +40,15 @@ python scorer.py score --cases 19-23 --out results/dev_scores.txt
 python scorer.py invariants --cases all --out results/invariants.txt
 ```
 
-`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not. Both result files are committed after every change to the pipeline.
+```bash
+python scorer.py ledger --cases 19-23 --out results/reference_ledger.txt
+```
+
+```bash
+python sweeps.py --out results/sweeps.txt
+```
+
+`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not. `ledger` writes, for every reference branch, the nearest wall patch, its fate in the filters and every measurement the rules saw, plus the surviving false positives. `sweeps.py` varies one constant at a time and reports the TP/FP curve (SPEC.md section 3: the shape matters, not the peak). All four result files are committed after every change to the pipeline.
 
 ## Layout
 
@@ -52,10 +60,11 @@ python scorer.py invariants --cases all --out results/invariants.txt
 | `io_utils.py` | NIfTI reading (gzip sniffing, non-orthonormal header fallback), crop, resample, the only index-to-mm conversion |
 | `candidates.py` | D1 adaptive threshold, D2 shell and ring-removing opening |
 | `instances.py` | D3 wall-patch components and watershed growth |
-| `ostium.py` | D4 ostium localisation (stub) |
-| `tracing.py` | D5 seed, direction, radius (stub) |
-| `filters.py` | D6 false-positive rules (stub: eligibility only) |
+| `ostium.py` | D4 ostium localisation |
+| `tracing.py` | D5 seed, direction, radius |
+| `filters.py` | D6 false-positive rules 1 to 7 |
 | `frame.py` | centreline, clock frame, mm to (height, clock) (stub: slice centroids) |
 | `report.py` | verification PNG and HTML report (stub: table only) |
-| `scorer.py` | D7 Hungarian matching, metrics, invariants |
+| `scorer.py` | D7 Hungarian matching, metrics, invariants, reference ledger |
+| `sweeps.py` | section 3 sensitivity sweeps |
 | `triage.py` | per-case atlas tool used to build `docs/atlas_all.csv` |

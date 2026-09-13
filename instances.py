@@ -30,7 +30,7 @@ class Instances:
     wall_labels: np.ndarray            # int32 (z, y, x): the wall-patch component of each label
     wall_indices: dict = field(default_factory=dict)   # label -> (k, 3) int zyx voxel indices of the wall patch
     wall_area_mm2: dict = field(default_factory=dict)  # label -> wall-patch voxel count x in-plane voxel area (atlas convention)
-    region_volume_ml: dict = field(default_factory=dict)  # label -> watershed region volume (D6 rule 4)
+    region_volume_ml: dict = field(default_factory=dict)  # label -> whole watershed basin volume (information only: the basin floods every connected bright voxel in the shell; rule 4 uses the proximal volume, see filters)
     n: int = 0
 
     branch_indices: dict = field(default_factory=dict)  # filled lazily by branch_voxels()

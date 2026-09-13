@@ -37,6 +37,13 @@ class Frame:
     tortuosity: float              # path length / chord
     method: str = "stub_slice_centroids"
 
+    def end_faces(self) -> list:
+        """[(endpoint_mm, outward unit tangent)] for the superior and inferior ends. D2/D6 rule 1:
+        the end faces are the mask boundary regions nearest these two points."""
+        if len(self.centreline_mm) < 2:
+            return [(self.endpoints_mm[0], np.array([0.0, 0.0, 1.0])), (self.endpoints_mm[1], np.array([0.0, 0.0, -1.0]))]
+        return [(self.endpoints_mm[0], -self.tangents[0]), (self.endpoints_mm[1], self.tangents[-1])]
+
     def nearest(self, xyz_mm) -> int:
         d = np.linalg.norm(self.centreline_mm - np.asarray(xyz_mm, float)[None, :], axis=1)
         return int(np.argmin(d))

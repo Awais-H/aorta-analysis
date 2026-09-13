@@ -11,6 +11,7 @@ angle to the reference direction_xyz, which is the ostium-to-seed chord in every
     python scorer.py predict    --cases 19 20 21 22 23        # run.py per case -> out/predictions/
     python scorer.py score      --cases 19 20 21 22 23 --out results/dev_scores.txt
     python scorer.py invariants --cases all --out results/invariants.txt
+    python scorer.py ledger     --cases 19 20 21 22 23 --out results/reference_ledger.txt
 """
 from __future__ import annotations
 
@@ -384,10 +385,61 @@ def invariants_report(cases: list, pred_dir: str = PRED_DIR, data_dir: str = DAT
     return "\n".join(lines) + "\n"
 
 
+def reference_ledger(cases: list, data_dir: str = DATA_DIR, reference_dir: str = REFERENCE_DIR) -> str:
+    """For every reference branch: the nearest wall patch, its fate in the filters, and every
+    measurement the rules saw; then the surviving false positives. D7's failure ledger in text."""
+    import candidates
+    import filters
+    import frame as frame_mod
+    import instances
+    import io_utils
+    import ostium
+    import tracing
+    keys = ("wall_voxels", "wall_area_mm2", "proximal_ml", "path_mm", "departure_mm", "origin_diameter_mm",
+            "area_growth", "end_face_height_mm", "end_face_angle_deg", "area_ratio", "tangency_deg", "aspect_ratio")
+    lines = [f"Reference ledger, commit {_git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
+             "For each reference branch: nearest wall patch by ostium distance, kept or rejected (rule = value), measurements, flags.",
+             "Then every kept patch further than the match cutoff from all references (false positives).", ""]
+    for n in cases:
+        ref = load_reference(n, reference_dir)
+        cf = case_files(n, data_dir)
+        if ref is None or cf["image"] is None:
+            continue
+        image, mask_image, _ = io_utils.load_case(cf["image"], cf["mask"])
+        cand = candidates.build(image, mask_image)
+        inst = instances.build(cand)
+        ostia = ostium.locate(cand, inst)
+        traces = tracing.trace_all(cand, inst, ostia)
+        fr = frame_mod.build(cand)
+        res = filters.apply(cand, inst, ostia, traces, fr)
+        lines.append(f"== {cf['case_id']}: {inst.n} wall patches, {len(res.kept)} kept, {len(ref['daughters'])} references")
+        for r in ref["daughters"]:
+            R = np.array(r["ostium_xyz_mm"])
+            if not ostia:
+                lines.append(f"  {r['instance_id']}: no wall patches at all")
+                continue
+            lab = min(ostia, key=lambda l: np.linalg.norm(ostia[l].mm - R))
+            d = float(np.linalg.norm(ostia[lab].mm - R))
+            hits = [f"{rr}={v:.2f}" for l, rr, v in res.rejections if l == lab]
+            fate = "KEPT" if lab in res.kept else "REJECTED " + ", ".join(hits)
+            m = res.measurements.get(lab, {})
+            tr = traces.get(lab)
+            lines.append(f"  {r['instance_id']} (ref diam {r.get('origin_diameter_estimate_mm')}, {r.get('confidence')}) -> patch {lab} at {d:.2f} mm: {fate}")
+            lines.append("      " + ", ".join(f"{k}={m[k]}" for k in keys if k in m)
+                         + (f" | trace {tr.method}/{tr.stop_reason}" if tr is not None else "") + f" | flags {res.flags.get(lab, [])}")
+        fps = [l for l in res.kept if all(np.linalg.norm(ostia[l].mm - np.array(r["ostium_xyz_mm"])) > config.MATCH_CUTOFF_MM for r in ref["daughters"])]
+        lines.append(f"  false positives kept: {len(fps)}")
+        for l in fps:
+            m = res.measurements[l]
+            lines.append(f"    patch {l}: " + ", ".join(f"{k}={m[k]}" for k in keys if k in m) + f" | trace {traces[l].method}/{traces[l].stop_reason} | flags {res.flags.get(l, [])}")
+        lines.append("")
+    return "\n".join(lines) + "\n"
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name in ("predict", "score", "invariants"):
+    for name in ("predict", "score", "invariants", "ledger"):
         s = sub.add_parser(name)
         s.add_argument("--cases", nargs="*", default=["labelled"], help="numbers, ranges (19-23), 'labelled', 'regression' or 'all'")
         s.add_argument("--pred-dir", default=PRED_DIR)
@@ -403,6 +455,8 @@ def main(argv=None) -> int:
         text = format_scores(cs, agg, [f"Dev-set scores, commit {_git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
                                        "References: docs/references (draft, expert review pending). Matching: Hungarian on ostium distance.",
                                        "seed_on_branch = predicted seed voxel carries the matched reference label; radius scored only where the reference radius is not null."])
+    elif args.cmd == "ledger":
+        text = reference_ledger(cases, args.data_dir)
     else:
         text = invariants_report(cases, args.pred_dir, args.data_dir)
     print(text)

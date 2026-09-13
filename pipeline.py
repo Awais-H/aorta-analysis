@@ -99,6 +99,9 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
     with _timed(meta, "filters"):
         fres = filters.apply(cand, inst, ostia, traces, fr)
     meta["rejections"] = [(int(l), r, round(float(v), 3)) for l, r, v in fres.rejections]
+    meta["rejection_counts"] = {r: sum(1 for _, rr, _ in fres.rejections if rr == r) for r in sorted({r for _, r, _ in fres.rejections})}
+    meta["flags"] = {str(l): f for l, f in fres.flags.items() if f}
+    meta["measurements"] = {str(l): m for l, m in fres.measurements.items()}
     meta["label_to_branch"] = {}
     result = assemble(case_id, fres.kept, ostia, traces)
     for d, label in zip(result["daughters"], [l for l in fres.kept if traces[l].seed_mm is not None]):
