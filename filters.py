@@ -45,8 +45,10 @@ soft signals for the display and the failure gallery. Default on borderline: kee
    area_growth     FLAG ONLY for now: cross-section more than AREA_GROWTH_MAX x larger at 4 to 5 mm
                    than at the first step clear of the wall layer. On the labelled cases the only
                    hits are real 4.5 mm branches whose first 3 mm read narrow at 1.5 mm voxels, and
-                   no labelled false positive grows; it becomes a rejection once the bowel cases
-                   (subjects 8, 12) have been reviewed in the failure gallery.
+                   no labelled false positive grows. The bowel cases were reviewed on 13 Sep
+                   (gallery sheets of subjects 8 and 12 with the rejected patches): subject 12
+                   flags nothing, subject 8's two hits are already rejected as a duplicate and as
+                   bone. No case in the dev set needs the rule, so it stays a flag.
 5. (invariant, no rule) branches of branches cannot occur: instances need wall contact.
 6. duplicate       two surviving ostia within DUPLICATE_MM with directions within
                    DUPLICATE_ANGLE_DEG, or on the same working voxel whatever their directions (one

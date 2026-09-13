@@ -56,8 +56,10 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
 4. **Rule 4 bone = seed section runs out of the 16 mm window AND contains cortex over 1.5 x the
    lumen median.** Both signs on every vertebral contact on subjects 16 and 22, neither on any
    real vessel. Edge without cortex is a flag (reference 19/b3 merges with a neighbour).
-5. **Rule 4 area growth is a flag** until the bowel cases (subjects 8, 12) are looked at: its
-   only hits are real branches whose first 3 mm read narrow at 1.5 mm voxels.
+5. **Rule 4 area growth stays a flag.** Its only labelled hits are real branches whose first
+   3 mm read narrow at 1.5 mm voxels; the bowel cases were checked on 13 Sep (subject 12 flags
+   nothing, subject 8's two hits are already rejected as duplicate and bone), so arming it
+   removes nothing anywhere in the dev set.
 6. **Rule 6 also merges same-voxel ostia and survivors whose 10 mm paths come within 4 mm.**
    Two daughters cannot share a lumen; one hugging vessel leaves several contact patches.
 7. **D4 axis refinement is off** (`config.OSTIUM_USE_AXIS_REFINEMENT`): worse than the inscribed
@@ -94,11 +96,10 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
    off, and the README setup command switched to `--no-index --find-links vendor`. Everything
    else is in place: dev-set predictions in `results/predictions/`, visual checks in
    `results/visual_checks/`, README setup and run commands checked.
-2. Rule 4 area growth: `python gallery.py --cases 8 12 --rejected`, look, decide.
-3. Demo material: failure gallery sheets, the known-failure slide (subjects 18 and 24 are allowed
+2. Demo material: failure gallery sheets, the known-failure slide (subjects 18 and 24 are allowed
    to fail; 19/b2 and 23/b2 are the honest misses), runtime figure, and the clock maps and 3D
    views from `python run.py ... --report-dir` for three cases.
-4. When the organisers answer (SPEC section 6): question 1 decides the `near_cut_face` candidates
+3. When the organisers answer (SPEC section 6): question 1 decides the `near_cut_face` candidates
    (rule 1 at the inferior cut), question 2 the `borderline_diameter` handling, question 3 whether
    the remaining false positives are ours, question 4 the scorer cutoff.
 
