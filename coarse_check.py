@@ -9,19 +9,24 @@ direction kept, size = native extent / 1.5 mm), so a coarse prediction and its n
 are compared in the same mm coordinates.
 
 Per case: matched branches with ostium, direction, radius and seed error; branches lost at coarse
-resolution with the fate of the nearest coarse wall patch (which rule rejected it, or no patch);
-branches gained with the fate of the nearest native patch. Aggregate: TP/FP/FN, errors, rule
-flips, and the origin diameter of what was lost.
+resolution with the fate of the nearest coarse wall patch (which rule rejected it, merged into a
+kept neighbour, or no contact at all); branches gained with the fate of the nearest native patch.
+Aggregate: TP/FP/FN, errors, rule flips, and the origin diameter of what was lost.
+
+`compare_stacks` is the shared core: perturb_check.py uses it with a perturbed run in place of
+the coarse one.
 
     python coarse_check.py --out results/coarse_check.txt [--cases 1-15] [--work out/coarse]
 """
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import sys
 import time
 import traceback
+from collections import Counter
 
 import numpy as np
 import SimpleITK as sitk
@@ -39,7 +44,7 @@ import tracing
 
 COARSE_SPACING_MM = 1.5  # the coarse acquisition of subjects 16 to 25 and of all five references
 FINE_CASES = tuple(range(1, 16))  # the 0.8 mm cases (docs/atlas_all.csv)
-CONTACT_MM = 3.0  # a wall patch whose voxels come within 3 mm (two coarse voxels) of the other resolution's ostium is the same contact
+CONTACT_MM = 3.0  # a wall patch whose voxels come within 3 mm (two coarse voxels) of the other run's ostium is the same contact
 DIAMETER_BANDS = ((0.0, 2.5), (2.5, 3.5), (3.5, 5.0), (5.0, 99.0))  # origin diameter bands for the lost/kept histogram
 
 
@@ -124,10 +129,123 @@ def _band(d):
     return "n/a"
 
 
+def compare_stacks(ref: dict, alt: dict, ref_name: str, alt_name: str) -> tuple[list, dict]:
+    """Match `alt`'s kept branches to `ref`'s (pseudo-references) at the working cutoff and
+    explain every branch that is lost or gained by the fate of the wall patch under it."""
+    lines = []
+    P, R = alt["result"]["daughters"], ref["result"]["daughters"]
+    pairs = scorer.match(P, R, config.MATCH_CUTOFF_MM)
+    tp, fp, fn = len(pairs), len(P) - len(pairs), len(R) - len(pairs)
+    alt_wall, ref_wall = _wall_table(alt), _wall_table(ref)
+    alt_match_of = {alt["kept"][i]: R[j]["instance_id"] for i, j, _ in pairs}
+    ref_match_of = {ref["kept"][j]: P[i]["instance_id"] for i, j, _ in pairs}
+    lines.append(f"  matched {tp}, lost {fn}, gained {fp}")
+    stats = {"tp": tp, "fp": fp, "fn": fn, "ostium": [], "direction": [], "radius": [], "seed_dist": [], "seed_in_ref": [],
+             "lost_bands": [], "kept_bands": [], "lost_fates": [], "gained_fates": [], "invariants": 0,
+             "pairs": [(P[i]["instance_id"], R[j]["instance_id"]) for i, j, _ in pairs]}
+    for i, j, d in pairs:
+        p, r = P[i], R[j]
+        ang = scorer.angle_deg(p["direction_xyz"], r["direction_xyz"])
+        dr = abs(float(p["radius_mm"]) - float(r["radius_mm"]))
+        sd = float(np.linalg.norm(np.subtract(p["seed_xyz_mm"], r["seed_xyz_mm"])))
+        ref_label = ref["kept"][j]
+        on = _in_region(ref, ref_label, p["seed_xyz_mm"])
+        m = ref["res"].measurements.get(ref_label, {})
+        stats["ostium"].append(d)
+        stats["direction"].append(ang)
+        stats["radius"].append(dr)
+        stats["seed_dist"].append(sd)
+        stats["seed_in_ref"].append(on)
+        stats["kept_bands"].append(_band(m.get("origin_diameter_mm")))
+        af = alt["res"].flags.get(alt["kept"][i])
+        lines.append(f"    {p['instance_id']} <- {ref_name} {r['instance_id']} (patch {ref_label}, diam {m.get('origin_diameter_mm')}): "
+                     f"ostium {d:.2f} mm, direction {ang:.0f} deg, radius {float(p['radius_mm']):.2f} vs {float(r['radius_mm']):.2f}, "
+                     f"seed {sd:.2f} mm apart, seed in {ref_name} region {'yes' if on else 'no'}" + (f"  flags {af}" if af else ""))
+    matched_ref = {j for _, j, _ in pairs}
+    for j, r in enumerate(R):
+        if j in matched_ref:
+            continue
+        ref_label = ref["kept"][j]
+        m = ref["res"].measurements.get(ref_label, {})
+        lab, dist = _nearest_patch(alt["ostia"], np.array(r["ostium_xyz_mm"]))
+        wlab, wdist = _nearest_wall(alt_wall, np.array(r["ostium_xyz_mm"]))
+        if lab is None or dist > config.MATCH_CUTOFF_MM:
+            if wlab is None or wdist > CONTACT_MM:
+                fate = f"contact erased: no {alt_name} wall voxel within {CONTACT_MM:g} mm of the {ref_name} ostium (nearest {wdist:.1f} mm)"
+                key = "contact_erased"
+            else:
+                wr = _rules(alt["res"], wlab)
+                if wr == "kept":
+                    other = alt_match_of.get(wlab)
+                    fate = (f"merged: {alt_name} patch {wlab} touches the {ref_name} ostium ({wdist:.1f} mm) and was kept"
+                            + (f", matched to {ref_name} {other}" if other else ", unmatched") + f"; its own ostium is {dist:.1f} mm away")
+                    key = "merged_into_kept"
+                else:
+                    cm = alt["res"].measurements.get(wlab, {})
+                    fate = (f"{alt_name} patch {wlab} touches the {ref_name} ostium ({wdist:.1f} mm) but was REJECTED {wr} "
+                            f"(wall {cm.get('wall_voxels')} vox, diam {cm.get('origin_diameter_mm')}, path {cm.get('path_mm')})")
+                    key = wr
+        else:
+            rules = _rules(alt["res"], lab)
+            if rules == "kept":
+                fate = f"{alt_name} patch {lab} at {dist:.1f} mm was kept but matched another {ref_name} branch"
+                key = "kept_elsewhere"
+            else:
+                cm = alt["res"].measurements.get(lab, {})
+                fate = f"{alt_name} patch {lab} at {dist:.1f} mm REJECTED {rules} (wall {cm.get('wall_voxels')} vox, diam {cm.get('origin_diameter_mm')}, path {cm.get('path_mm')})"
+                key = rules
+        stats["lost_bands"].append(_band(m.get("origin_diameter_mm")))
+        stats["lost_fates"].append(key)
+        lines.append(f"    LOST {ref_name} {r['instance_id']} (patch {ref_label}, diam {m.get('origin_diameter_mm')}, wall {m.get('wall_voxels')} vox, "
+                     f"flags {ref['res'].flags.get(ref_label, [])}): {fate}")
+    matched_alt = {i for i, _, _ in pairs}
+    for i, p in enumerate(P):
+        if i in matched_alt:
+            continue
+        alt_label = alt["kept"][i]
+        cm = alt["res"].measurements.get(alt_label, {})
+        lab, dist = _nearest_patch(ref["ostia"], np.array(p["ostium_xyz_mm"]))
+        wlab, wdist = _nearest_wall(ref_wall, np.array(p["ostium_xyz_mm"]))
+        if lab is None or dist > config.MATCH_CUTOFF_MM:
+            if wlab is None or wdist > CONTACT_MM:
+                fate = f"new contact: no {ref_name} wall voxel within {CONTACT_MM:g} mm of the {alt_name} ostium (nearest {wdist:.1f} mm)"
+                key = "new_contact"
+            else:
+                wr = _rules(ref["res"], wlab)
+                nm = ref["res"].measurements.get(wlab, {})
+                if wr == "kept":
+                    other = ref_match_of.get(wlab)
+                    fate = (f"split: {ref_name} patch {wlab} touches the {alt_name} ostium ({wdist:.1f} mm) and was kept"
+                            + (f", matched to {alt_name} {other}" if other else ", unmatched") + f"; its own ostium is {dist:.1f} mm away")
+                    key = "split_from_kept"
+                else:
+                    fate = (f"{ref_name} patch {wlab} touches the {alt_name} ostium ({wdist:.1f} mm) but was REJECTED {wr} "
+                            f"(wall {nm.get('wall_voxels')} vox, diam {nm.get('origin_diameter_mm')}, path {nm.get('path_mm')})")
+                    key = wr
+        else:
+            rules = _rules(ref["res"], lab)
+            nm = ref["res"].measurements.get(lab, {})
+            if rules == "kept":
+                fate = f"{ref_name} patch {lab} at {dist:.1f} mm was kept but matched another {alt_name} branch"
+                key = "kept_elsewhere"
+            else:
+                fate = f"{ref_name} patch {lab} at {dist:.1f} mm was REJECTED {rules} (wall {nm.get('wall_voxels')} vox, diam {nm.get('origin_diameter_mm')}, path {nm.get('path_mm')})"
+                key = rules
+        stats["gained_fates"].append(key)
+        lines.append(f"    GAINED {alt_name} {p['instance_id']} (patch {alt_label}, diam {cm.get('origin_diameter_mm')}, wall {cm.get('wall_voxels')} vox, "
+                     f"trace {alt['traces'][alt_label].method}/{alt['traces'][alt_label].stop_reason}, flags {alt['res'].flags.get(alt_label, [])}): {fate}")
+    viol = scorer.check_invariants(alt["result"], alt["cand"], alt["inst"], {"label_to_branch": {str(l): d["instance_id"] for l, d in zip(alt["kept"], P)}})
+    reach = [v for v in viol if "watershed region reaches" in v]
+    viol = [v for v in viol if v not in reach]
+    stats["invariants"] = len(viol)
+    lines.append((f"  {alt_name} invariants: clean" if not viol else f"  {alt_name} invariants: {len(viol)} violation(s): " + "; ".join(viol))
+                 + (f" (plus {len(reach)} watershed regions reaching over {config.INVARIANT_REGION_MAX_PATH_MM:g} mm, information only)" if reach else ""))
+    return lines, stats
+
+
 def check_case(n: int, work_dir: str, data_dir: str = scorer.DATA_DIR) -> tuple[list, dict]:
     cf = scorer.case_files(n, data_dir)
     cid = cf["case_id"]
-    lines = []
     image, mask_image, _ = io_utils.load_case(cf["image"], cf["mask"])
     native_sp = image.GetSpacing()
     ct_c, m_c = resample_pair(image, mask_image, COARSE_SPACING_MM)
@@ -139,123 +257,52 @@ def check_case(n: int, work_dir: str, data_dir: str = scorer.DATA_DIR) -> tuple[
     coa = run_stack(ct_c, m_c, cid)
     pdir = os.path.join(work_dir, "predictions")
     os.makedirs(pdir, exist_ok=True)
-    import json
     with open(os.path.join(pdir, f"{cid}_coarse.json"), "w", encoding="utf-8") as f:
         json.dump(coa["result"], f, indent=2)
     with open(os.path.join(pdir, f"{cid}_native.json"), "w", encoding="utf-8") as f:
         json.dump(nat["result"], f, indent=2)
-
-    P, R = coa["result"]["daughters"], nat["result"]["daughters"]
-    pairs = scorer.match(P, R, config.MATCH_CUTOFF_MM)
-    tp, fp, fn = len(pairs), len(P) - len(pairs), len(R) - len(pairs)
-    coa_wall, nat_wall = _wall_table(coa), _wall_table(nat)
-    coarse_match_of = {coa["kept"][i]: R[j]["instance_id"] for i, j, _ in pairs}   # coarse label -> matched native branch id
-    native_match_of = {nat["kept"][j]: P[i]["instance_id"] for i, j, _ in pairs}   # native label -> matched coarse branch id
-    lines.append(f"== {cid}: native {native_sp[0]:.2f}x{native_sp[1]:.2f}x{native_sp[2]:.2f} mm -> {COARSE_SPACING_MM} mm iso; "
-                 f"native {len(R)} kept of {nat['inst'].n} patches ({nat['seconds']:.1f} s), coarse {len(P)} kept of {coa['inst'].n} patches ({coa['seconds']:.1f} s); "
-                 f"threshold {nat['cand'].threshold_hu:.0f} -> {coa['cand'].threshold_hu:.0f} HU")
-    lines.append(f"  matched {tp}, lost {fn}, gained {fp}")
-    stats = {"tp": tp, "fp": fp, "fn": fn, "ostium": [], "direction": [], "radius": [], "seed_dist": [], "seed_in_native": [],
-             "lost_bands": [], "kept_bands": [], "lost_fates": [], "gained_fates": [], "invariants": 0}
-    for i, j, d in pairs:
-        p, r = P[i], R[j]
-        ang = scorer.angle_deg(p["direction_xyz"], r["direction_xyz"])
-        dr = abs(float(p["radius_mm"]) - float(r["radius_mm"]))
-        sd = float(np.linalg.norm(np.subtract(p["seed_xyz_mm"], r["seed_xyz_mm"])))
-        nat_label = nat["kept"][j]
-        on = _in_region(nat, nat_label, p["seed_xyz_mm"])
-        m = nat["res"].measurements.get(nat_label, {})
-        stats["ostium"].append(d)
-        stats["direction"].append(ang)
-        stats["radius"].append(dr)
-        stats["seed_dist"].append(sd)
-        stats["seed_in_native"].append(on)
-        stats["kept_bands"].append(_band(m.get("origin_diameter_mm")))
-        lines.append(f"    {p['instance_id']} <- native {r['instance_id']} (patch {nat_label}, diam {m.get('origin_diameter_mm')}): "
-                     f"ostium {d:.2f} mm, direction {ang:.0f} deg, radius {float(p['radius_mm']):.2f} vs {float(r['radius_mm']):.2f}, "
-                     f"seed {sd:.2f} mm apart, seed in native region {'yes' if on else 'no'}"
-                     f"{'  flags ' + str(coa['res'].flags.get(coa['kept'][i])) if coa['res'].flags.get(coa['kept'][i]) else ''}")
-    matched_ref = {j for _, j, _ in pairs}
-    for j, r in enumerate(R):
-        if j in matched_ref:
-            continue
-        nat_label = nat["kept"][j]
-        m = nat["res"].measurements.get(nat_label, {})
-        lab, dist = _nearest_patch(coa["ostia"], np.array(r["ostium_xyz_mm"]))
-        wlab, wdist = _nearest_wall(coa_wall, np.array(r["ostium_xyz_mm"]))
-        if lab is None or dist > config.MATCH_CUTOFF_MM:
-            if wlab is None or wdist > CONTACT_MM:
-                fate = f"contact erased: no coarse wall voxel within {CONTACT_MM:g} mm of the native ostium (nearest {wdist:.1f} mm)"
-                key = "contact_erased"
-            else:
-                wr = _rules(coa["res"], wlab)
-                if wr == "kept":
-                    other = coarse_match_of.get(wlab)
-                    fate = (f"merged: coarse patch {wlab} touches the native ostium ({wdist:.1f} mm) and was kept" + (f", matched to native {other}" if other else ", unmatched") + f"; its own ostium is {dist:.1f} mm away")
-                    key = "merged_into_kept"
-                else:
-                    cm = coa["res"].measurements.get(wlab, {})
-                    fate = f"coarse patch {wlab} touches the native ostium ({wdist:.1f} mm) but was REJECTED {wr} (wall {cm.get('wall_voxels')} vox, diam {cm.get('origin_diameter_mm')}, path {cm.get('path_mm')})"
-                    key = wr
-        else:
-            rules = _rules(coa["res"], lab)
-            if rules == "kept":
-                fate = f"coarse patch {lab} at {dist:.1f} mm was kept but matched another native branch"
-                key = "kept_elsewhere"
-            else:
-                cm = coa["res"].measurements.get(lab, {})
-                fate = f"coarse patch {lab} at {dist:.1f} mm REJECTED {rules} (wall {cm.get('wall_voxels')} vox, diam {cm.get('origin_diameter_mm')}, path {cm.get('path_mm')})"
-                key = rules
-        stats["lost_bands"].append(_band(m.get("origin_diameter_mm")))
-        stats["lost_fates"].append(key)
-        lines.append(f"    LOST native {r['instance_id']} (patch {nat_label}, diam {m.get('origin_diameter_mm')}, wall {m.get('wall_voxels')} vox, "
-                     f"flags {nat['res'].flags.get(nat_label, [])}): {fate}")
-    matched_pred = {i for i, _, _ in pairs}
-    for i, p in enumerate(P):
-        if i in matched_pred:
-            continue
-        coa_label = coa["kept"][i]
-        cm = coa["res"].measurements.get(coa_label, {})
-        lab, dist = _nearest_patch(nat["ostia"], np.array(p["ostium_xyz_mm"]))
-        wlab, wdist = _nearest_wall(nat_wall, np.array(p["ostium_xyz_mm"]))
-        if lab is None or dist > config.MATCH_CUTOFF_MM:
-            if wlab is None or wdist > CONTACT_MM:
-                fate = f"new contact: no native wall voxel within {CONTACT_MM:g} mm of the coarse ostium (nearest {wdist:.1f} mm)"
-                key = "new_contact"
-            else:
-                wr = _rules(nat["res"], wlab)
-                nm = nat["res"].measurements.get(wlab, {})
-                if wr == "kept":
-                    other = native_match_of.get(wlab)
-                    fate = f"split: native patch {wlab} touches the coarse ostium ({wdist:.1f} mm) and was kept" + (f", matched to coarse {other}" if other else ", unmatched") + f"; its own ostium is {dist:.1f} mm away"
-                    key = "split_from_kept"
-                else:
-                    fate = f"native patch {wlab} touches the coarse ostium ({wdist:.1f} mm) but was REJECTED {wr} (wall {nm.get('wall_voxels')} vox, diam {nm.get('origin_diameter_mm')}, path {nm.get('path_mm')})"
-                    key = wr
-        else:
-            rules = _rules(nat["res"], lab)
-            nm = nat["res"].measurements.get(lab, {})
-            if rules == "kept":
-                fate = f"native patch {lab} at {dist:.1f} mm was kept but matched another coarse branch"
-                key = "kept_elsewhere"
-            else:
-                fate = f"native patch {lab} at {dist:.1f} mm was REJECTED {rules} (wall {nm.get('wall_voxels')} vox, diam {nm.get('origin_diameter_mm')}, path {nm.get('path_mm')})"
-                key = rules
-        stats["gained_fates"].append(key)
-        lines.append(f"    GAINED coarse {p['instance_id']} (patch {coa_label}, diam {cm.get('origin_diameter_mm')}, wall {cm.get('wall_voxels')} vox, "
-                     f"trace {coa['traces'][coa_label].method}/{coa['traces'][coa_label].stop_reason}, flags {coa['res'].flags.get(coa_label, [])}): {fate}")
-    viol = scorer.check_invariants(coa["result"], coa["cand"], coa["inst"], {"label_to_branch": {str(l): d["instance_id"] for l, d in zip(coa["kept"], P)}})
-    reach = [v for v in viol if "watershed region reaches" in v]
-    viol = [v for v in viol if v not in reach]
-    stats["invariants"] = len(viol)
-    lines.append(("  coarse invariants: clean" if not viol else f"  coarse invariants: {len(viol)} violation(s): " + "; ".join(viol))
-                 + (f" (plus {len(reach)} watershed regions reaching over {config.INVARIANT_REGION_MAX_PATH_MM:g} mm, information only)" if reach else ""))
-    lines.append("")
-    return lines, stats
+    head = (f"== {cid}: native {native_sp[0]:.2f}x{native_sp[1]:.2f}x{native_sp[2]:.2f} mm -> {COARSE_SPACING_MM} mm iso; "
+            f"native {len(nat['kept'])} kept of {nat['inst'].n} patches ({nat['seconds']:.1f} s), coarse {len(coa['kept'])} kept of {coa['inst'].n} patches ({coa['seconds']:.1f} s); "
+            f"threshold {nat['cand'].threshold_hu:.0f} -> {coa['cand'].threshold_hu:.0f} HU")
+    lines, stats = compare_stacks(nat, coa, "native", "coarse")
+    return [head] + lines + [""], stats
 
 
 def _mean(xs):
     return float(np.mean(xs)) if xs else float("nan")
+
+
+def aggregate_lines(all_stats: dict, ref_name: str, alt_name: str) -> list:
+    tp = sum(s["tp"] for s in all_stats.values())
+    fp = sum(s["fp"] for s in all_stats.values())
+    fn = sum(s["fn"] for s in all_stats.values())
+    prec = tp / (tp + fp) if tp + fp else 0.0
+    rec = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
+    ost = [d for s in all_stats.values() for d in s["ostium"]]
+    ang = [a for s in all_stats.values() for a in s["direction"]]
+    rad = [r for s in all_stats.values() for r in s["radius"]]
+    sd = [r for s in all_stats.values() for r in s["seed_dist"]]
+    on = [r for s in all_stats.values() for r in s["seed_in_ref"]]
+    lines = [f"AGGREGATE over {len(all_stats)} cases ({alt_name} vs {ref_name}, {config.MATCH_CUTOFF_MM:g} mm cutoff)",
+             f"  matched {tp}, lost {fn}, gained {fp}: precision {prec:.2f}, recall {rec:.2f}, F1 {f1:.2f}",
+             f"  matched branches: ostium error mean {_mean(ost):.2f} mm (median {np.median(ost) if ost else float('nan'):.2f}, max {max(ost) if ost else float('nan'):.2f}); "
+             f"direction error mean {_mean(ang):.1f} deg (median {np.median(ang) if ang else float('nan'):.1f}, over 30 deg: {sum(a > 30 for a in ang)}); "
+             f"radius abs error mean {_mean(rad):.2f} mm; seed-to-seed mean {_mean(sd):.2f} mm; {alt_name} seed inside the {ref_name} branch region {sum(on)}/{len(on)}",
+             "  per case (matched/lost/gained): " + ", ".join(f"{n}: {s['tp']}/{s['fn']}/{s['fp']}" for n, s in all_stats.items())]
+    bands = [f"{lo:g}-{hi:g}" if hi < 99 else f">={lo:g}" for lo, hi in DIAMETER_BANDS]
+    lines.append(f"  {ref_name} origin diameter (mm) of matched vs lost branches:")
+    for b in bands + ["n/a"]:
+        k = sum(s["kept_bands"].count(b) for s in all_stats.values())
+        l_ = sum(s["lost_bands"].count(b) for s in all_stats.values())
+        if k or l_:
+            lines.append(f"    {b:>8}: matched {k:3d}, lost {l_:3d}  ({l_ / (k + l_) * 100:.0f}% lost)")
+    lf = Counter(f for s in all_stats.values() for f in s["lost_fates"])
+    gf = Counter(f for s in all_stats.values() for f in s["gained_fates"])
+    lines.append(f"  why a {ref_name} branch is lost (fate of the nearest {alt_name} wall patch): " + ", ".join(f"{k} {v}" for k, v in lf.most_common()))
+    lines.append(f"  where a {alt_name}-only branch comes from (fate of the nearest {ref_name} wall patch): " + ", ".join(f"{k} {v}" for k, v in gf.most_common()))
+    lines.append(f"  {alt_name} invariant violations: {sum(s['invariants'] for s in all_stats.values())}")
+    return lines
 
 
 def report(cases: list, work_dir: str, data_dir: str = scorer.DATA_DIR) -> str:
@@ -275,37 +322,7 @@ def report(cases: list, work_dir: str, data_dir: str = scorer.DATA_DIR) -> str:
         lines += case_lines
         if stats is not None:
             all_stats[n] = stats
-    tp = sum(s["tp"] for s in all_stats.values())
-    fp = sum(s["fp"] for s in all_stats.values())
-    fn = sum(s["fn"] for s in all_stats.values())
-    prec = tp / (tp + fp) if tp + fp else 0.0
-    rec = tp / (tp + fn) if tp + fn else 0.0
-    f1 = 2 * prec * rec / (prec + rec) if prec + rec else 0.0
-    ost = [d for s in all_stats.values() for d in s["ostium"]]
-    ang = [a for s in all_stats.values() for a in s["direction"]]
-    rad = [r for s in all_stats.values() for r in s["radius"]]
-    sd = [r for s in all_stats.values() for r in s["seed_dist"]]
-    on = [r for s in all_stats.values() for r in s["seed_in_native"]]
-    lines.append(f"AGGREGATE over {len(all_stats)} cases (coarse vs native, {config.MATCH_CUTOFF_MM:g} mm cutoff)")
-    lines.append(f"  matched {tp}, lost {fn}, gained {fp}: precision {prec:.2f}, recall {rec:.2f}, F1 {f1:.2f}")
-    lines.append(f"  matched branches: ostium error mean {_mean(ost):.2f} mm (median {np.median(ost) if ost else float('nan'):.2f}, max {max(ost) if ost else float('nan'):.2f}); "
-                 f"direction error mean {_mean(ang):.1f} deg (median {np.median(ang) if ang else float('nan'):.1f}, over 30 deg: {sum(a > 30 for a in ang)}); "
-                 f"radius abs error mean {_mean(rad):.2f} mm; seed-to-seed mean {_mean(sd):.2f} mm; coarse seed inside the native branch region {sum(on)}/{len(on)}")
-    lines.append(f"  per case (matched/lost/gained): " + ", ".join(f"{n}: {s['tp']}/{s['fn']}/{s['fp']}" for n, s in all_stats.items()))
-    bands = [f"{lo:g}-{hi:g}" if hi < 99 else f">={lo:g}" for lo, hi in DIAMETER_BANDS]
-    lines.append("  native origin diameter (mm) of matched vs lost branches:")
-    for b in bands + ["n/a"]:
-        k = sum(s["kept_bands"].count(b) for s in all_stats.values())
-        l_ = sum(s["lost_bands"].count(b) for s in all_stats.values())
-        if k or l_:
-            lines.append(f"    {b:>8}: matched {k:3d}, lost {l_:3d}  ({l_ / (k + l_) * 100:.0f}% lost)")
-    from collections import Counter
-    lf = Counter(f for s in all_stats.values() for f in s["lost_fates"])
-    gf = Counter(f for s in all_stats.values() for f in s["gained_fates"])
-    lines.append("  why a native branch is lost at 1.5 mm (fate of the nearest coarse wall patch): " + ", ".join(f"{k} {v}" for k, v in lf.most_common()))
-    lines.append("  where a coarse-only branch comes from (fate of the nearest native wall patch): " + ", ".join(f"{k} {v}" for k, v in gf.most_common()))
-    inv = sum(s["invariants"] for s in all_stats.values())
-    lines.append(f"  coarse invariant violations: {inv}")
+    lines += aggregate_lines(all_stats, "native", "coarse")
     return "\n".join(lines) + "\n"
 
 
