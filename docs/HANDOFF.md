@@ -8,8 +8,8 @@ what remains, and how to work.
 ## Where the code is
 
 - Repository: fork `https://github.com/nikolakr7/aorta-analysis` (remote `fork`). The team origin
-  is `https://github.com/Awais-H/aorta-analysis` (remote `origin`); nothing has been pushed there
-  since the initial skeleton, by request.
+  is `https://github.com/Awais-H/aorta-analysis` (remote `origin`); its `main` was fast-forwarded to
+  the fork's `main` (091fdcd) on 13 Sep, so both hold the same state.
 - `main` on the fork holds everything through 13 Sep (merged from `skeleton`, commit 091fdcd); work
   continues on `precision-review` (adjudicating the remaining false positives by eye and the 1.5 mm
   pseudo-labelled check on subjects 1 to 15). The branches `skeleton`, `ostium-tracing`, `filters` and
