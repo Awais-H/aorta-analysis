@@ -25,7 +25,7 @@ import scorer
 import tracing
 
 SWEEPS = {
-    "DEPARTURE_MM": [2.0, 2.5, 3.0, 3.5, 4.0, 5.0],
+    "DEPARTURE_MM": [0.0, 1.0, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0],
     "TANGENCY_ANGLE_DEG": [60.0, 65.0, 70.0, 75.0, 80.0],
     "MIN_ORIGIN_DIAMETER_MM": [1.5, 2.0, 2.5, 3.0],
     "REGION_VOLUME_CAP_ML": [0.5, 0.75, 1.0, 1.5, 2.0],

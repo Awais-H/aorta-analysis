@@ -47,7 +47,7 @@ import config
 import io_utils
 import tracing
 from candidates import Candidates
-from instances import Instances, branch_voxels
+from instances import Instances, branch_voxels, patch_aspect_ratio
 
 log = logging.getLogger("branchseed.filters")
 
@@ -118,14 +118,6 @@ def proximal_volume_ml(cand: Candidates, region_idx: np.ndarray, ostium_idx: np.
         return 0.0
     d = np.linalg.norm((region_idx - ostium_idx) * cand.spacing, axis=1)
     return float((d <= config.TRACE_MAX_MM).sum() * np.prod(cand.spacing) / 1000.0)
-
-
-def patch_aspect_ratio(cand: Candidates, wall_idx: np.ndarray) -> float:
-    """sqrt of the ratio of the two largest PCA variances of the patch voxels (1 = round)."""
-    if len(wall_idx) < 3:
-        return 1.0
-    w = np.sort(np.linalg.eigvalsh(np.cov((wall_idx * cand.spacing).T)))[::-1]
-    return float(np.sqrt(w[0] / w[1])) if w[1] > 1e-9 else float("inf")
 
 
 def origin_diameter_mm(cand: Candidates, trace) -> tuple:

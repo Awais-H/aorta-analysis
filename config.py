@@ -54,6 +54,7 @@ FRANGI_MIN_RESPONSE = 0.0   # rule 2 secondary: mean Frangi response floor. PLAC
 DEPARTURE_MM = 3.0          # rule 3: a real branch has moved more than 3 mm from the aorta surface after 10 mm of path; a parallel vein or the SMA lying on the wall never leaves. First sensitivity sweep: 2 to 4 mm
 TANGENCY_ANGLE_DEG = 70.0   # rule 3 secondary: direction more than 70 deg from the outward wall normal is tangential, i.e. running along the wall
 PATCH_ASPECT_RATIO_MAX = 3.0  # rule 3 secondary: a wall patch elongated more than 3:1 is a vessel hugging the wall, not an opening
+STRIP_END_WINDOW_MM = 4.0   # D4 hugging branch: the ostium of an elongated patch (aspect over PATCH_ASPECT_RATIO_MAX) lies in the end window that hugs the wall most tightly; 4 mm covers the strip's own width (2 to 4 mm at lumbar scale) and is under half of any strip that passes the aspect test
 AREA_GROWTH_MAX = 2.0       # rule 4: a cross-section that more than doubles over the first 5 mm is organ or bowel, not a tube
 REGION_VOLUME_CAP_ML = 1.0  # rule 4: no proximal branch segment within 15 mm approaches 1 ml, but a vertebral body or heart chamber does
 DUPLICATE_MM = 4.0          # rule 6: two ostia within 4 mm are one opening; separate lumbar pairs are further apart than that

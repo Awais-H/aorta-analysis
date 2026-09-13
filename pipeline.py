@@ -84,7 +84,7 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
         ostia = ostium.locate(cand, inst)
     with _timed(meta, "tracing"):
         traces = tracing.trace_all(cand, inst, ostia)
-    meta["ostium_methods"] = {m: sum(o.method == m for o in ostia.values()) for m in ("axis_intersection", "inscribed_circle")}
+    meta["ostium_methods"] = {m: sum(o.method == m for o in ostia.values()) for m in ("axis_intersection", "inscribed_circle", "strip_end")}
     meta["trace_methods"] = {m: sum(t.method == m for t in traces.values()) for m in ("march", "axis", "none")}
     meta["trace_stop_reasons"] = {r: sum(t.stop_reason == r for t in traces.values())
                                  for r in sorted({t.stop_reason for t in traces.values()})}

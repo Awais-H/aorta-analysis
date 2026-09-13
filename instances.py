@@ -40,6 +40,14 @@ class Instances:
         return list(range(1, self.n + 1))
 
 
+def patch_aspect_ratio(cand: Candidates, wall_idx: np.ndarray) -> float:
+    """sqrt of the ratio of the two largest PCA variances of the patch voxels (1 = round)."""
+    if len(wall_idx) < 3:
+        return 1.0
+    w = np.sort(np.linalg.eigvalsh(np.cov((wall_idx * cand.spacing).T)))[::-1]
+    return float(np.sqrt(w[0] / w[1])) if w[1] > 1e-9 else float("inf")
+
+
 def branch_voxels(cand: Candidates, inst: Instances) -> dict:
     """label -> (k, 3) int zyx indices of the voxels D4 and D5 operate on, cached on `inst`.
 

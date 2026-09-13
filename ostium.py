@@ -10,6 +10,13 @@ Finally snap to the nearest raw-mask boundary voxel, which is the annotators' or
 Outward wall normal from the local gradient of the distance-from-mask field. The fitted axis
 (when the fit succeeded and agreed) is handed to D5 as the tracer's initial direction.
 
+Hugging branch (elongated patch, aspect over PATCH_ASPECT_RATIO_MAX): a vessel that leaves at a
+shallow angle and runs along the wall gives a long thin patch. Its origin is at the end that is
+still in contact with the lumen: the STRIP_END_WINDOW_MM end window with the smaller mean
+distance from the mask (the other end is where the vessel lifts off; on the labelled cases that
+end is also narrower and dimmer, with vessel body beyond the wall layer). The ostium is the
+inscribed centre within that window, and the tracer starts along the strip axis away from it.
+
 Output contract (SPEC.md D9): per label, ostium in working index space and in mm, outward normal.
 """
 from __future__ import annotations
@@ -24,7 +31,7 @@ from scipy.spatial import cKDTree
 import config
 import io_utils
 from candidates import Candidates
-from instances import Instances, branch_voxels
+from instances import Instances, branch_voxels, patch_aspect_ratio
 
 log = logging.getLogger("branchseed.ostium")
 
@@ -38,7 +45,7 @@ class Ostium:
     normal_mm: np.ndarray     # unit outward wall normal, xyz physical
     axis_zyx: np.ndarray      # unit initial branch direction for the tracer (axis fit, else the normal)
     axis_mm: np.ndarray
-    method: str               # "axis_intersection" or "inscribed_circle"
+    method: str               # "axis_intersection", "inscribed_circle" or "strip_end" (hugging branch)
     inscribed_idx: np.ndarray | None = None  # D estimate (float zyx), for the failure gallery
     axis_idx: np.ndarray | None = None       # C estimate (float zyx) or None if the fit failed
     agreement_mm: float | None = None        # |C - D| in mm, or None
@@ -125,8 +132,37 @@ def axis_fit(cand: Candidates, region_idx: np.ndarray, from_idx: np.ndarray):
     return None
 
 
+def strip_end(cand: Candidates, wall_idx: np.ndarray):
+    """For an elongated patch: (inscribed centre within the proximal end window, unit strip axis
+    pointing away from that end, end index 0 or 1). The proximal end hugs the wall most tightly."""
+    W = wall_idx * cand.spacing
+    c = W.mean(axis=0)
+    w, V = np.linalg.eigh(np.cov((W - c).T))
+    axis = _unit(V[:, int(np.argmax(w))])
+    proj = (W - c) @ axis
+    ends = (proj <= proj.min() + config.STRIP_END_WINDOW_MM, proj >= proj.max() - config.STRIP_END_WINDOW_MM)
+    hug = [float(cand.distance_mm[tuple(wall_idx[e].T)].mean()) for e in ends]
+    k = int(np.argmin(hug))
+    window = wall_idx[ends[k]]
+    d_est = inscribed_centre(cand, window)
+    direction = axis if k == 0 else -axis     # from the proximal end toward the far end
+    return d_est, direction, k
+
+
 def locate_one(cand: Candidates, label: int, wall_idx: np.ndarray, region_idx: np.ndarray,
                boundary: np.ndarray, tree: cKDTree) -> Ostium:
+    if patch_aspect_ratio(cand, wall_idx) > config.PATCH_ASPECT_RATIO_MAX and len(wall_idx) >= config.AXIS_FIT_MIN_VOXELS:
+        d_est, strip_axis, _ = strip_end(cand, wall_idx)
+        _, j = tree.query(d_est * cand.spacing)
+        b = boundary[j]
+        n = _local_gradient(cand.distance_mm, d_est, cand.spacing)
+        if np.linalg.norm(n) == 0:
+            n = np.array([0.0, 0.0, 1.0])
+        n = _unit(n)
+        return Ostium(label=int(label), index_zyx=b.astype(int), mm=io_utils.index_to_mm(cand.image, b),
+                      normal_zyx=n, normal_mm=io_utils.index_vector_to_mm(cand.image, b, n),
+                      axis_zyx=strip_axis, axis_mm=io_utils.index_vector_to_mm(cand.image, b, strip_axis),
+                      method="strip_end", inscribed_idx=d_est)
     d_est = inscribed_centre(cand, wall_idx)
     fit = axis_fit(cand, region_idx, d_est) if len(region_idx) else None
     chosen, method, axis_idx, agreement = d_est, "inscribed_circle", None, None
@@ -164,6 +200,6 @@ def locate(cand: Candidates, inst: Instances) -> dict:
     out = {}
     for label, wall_idx in inst.wall_indices.items():
         out[label] = locate_one(cand, label, wall_idx, regions.get(label, np.zeros((0, 3), int)), boundary, tree)
-    n_axis = sum(o.method == "axis_intersection" for o in out.values())
-    log.info("located %d ostia (%d by axis intersection, %d by inscribed circle)", len(out), n_axis, len(out) - n_axis)
+    counts = {m: sum(o.method == m for o in out.values()) for m in ("axis_intersection", "inscribed_circle", "strip_end")}
+    log.info("located %d ostia (%s)", len(out), ", ".join(f"{v} {k}" for k, v in counts.items()))
     return out

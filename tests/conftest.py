@@ -68,7 +68,7 @@ def _dist_to_polyline(P, poly):
 def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0, 100.0),
                  size_xyz=(72, 64, 60), with_branch=True, gz_under_nii=False, mask_fragment=False,
                  direction=None, branch_kind="straight", mask_z_fraction=1.0, parallel_vessel=False,
-                 blob=False):
+                 blob=False, hugging=False):
     """Write orig.nii and mask.nii into out_dir; return a dict with paths and ground truth.
 
     mask_z_fraction < 1 keeps the mask on the middle fraction of the aorta only, so the bright
@@ -101,6 +101,15 @@ def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0,
     if parallel_vessel:
         px = cx - AORTA_R - 2.5 + 0.5  # 2.5 mm tube overlapping the aorta surface by 0.5 mm
         ct[((X - px) ** 2 + (Y - cy) ** 2 <= 2.5 ** 2) & ~aorta] = LUMEN_HU
+    if hugging:
+        # a 1.5 mm-radius tube leaving the aorta at (cx, cy + AORTA_R, zc - 10) and running along
+        # the wall toward +z, lifting off linearly: its axis sits 0.5 mm outside the surface at the
+        # proximal end (2 mm of lumen protruding, enough to survive the opening) and 3 mm outside
+        # it 20 mm later (SPEC D3/D4: the branch that hugs the wall)
+        t = np.clip((Z - (zc - 10.0)) / 20.0, 0.0, 1.0)
+        yaxis = cy + AORTA_R + 0.5 + 2.5 * t
+        hug_tube = ((Y - yaxis) ** 2 + (X - cx) ** 2 <= 1.5 ** 2) & (Z >= zc - 10.0) & (Z <= zc + 10.0)
+        ct[hug_tube & ~aorta] = LUMEN_HU
     if blob:
         by = cy + AORTA_R + 8.5  # 9 mm sphere overlapping the aorta surface by 0.5 mm
         ct[((X - cx) ** 2 + (Y - by) ** 2 + (Z - zc) ** 2 <= 9.0 ** 2) & ~aorta] = LUMEN_HU
@@ -139,6 +148,7 @@ def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0,
         "seed_mm": seed, "radius_mm": BRANCH_R, "branch_kind": branch_kind,
         "polylines": polys, "bifurcation_mm": BIFURCATION_MM if branch_kind == "bifurcating" else None,
         "centre_xy": (cx, cy), "z_range": (z[0], z[-1]), "with_branch": with_branch,
+        "hugging_ostium_mm": np.array([cx, cy + AORTA_R, zc - 10.0]) if hugging else None,
     }
 
 

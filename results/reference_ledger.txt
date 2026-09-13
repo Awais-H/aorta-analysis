@@ -1,4 +1,4 @@
-Reference ledger, commit b04ea0f, 2026-09-13 00:58
+Reference ledger, commit cecd1f2, 2026-09-13 01:11
 For each reference branch: nearest wall patch by ostium distance, kept or rejected (rule = value), measurements, flags.
 Then every kept patch further than the match cutoff from all references (false positives).
 
@@ -11,35 +11,33 @@ Then every kept patch further than the match cutoff from all references (false p
       wall_voxels=24, wall_area_mm2=15.4, proximal_ml=0.351, path_mm=10.0, departure_mm=9.09, origin_diameter_mm=4.46, area_growth=None, end_face_height_mm=-4.8, end_face_angle_deg=90.0, area_ratio=0.06, tangency_deg=0.0, aspect_ratio=1.53 | trace axis/bifurcation | flags ['axis_fallback', 'radius_inscribed_fallback']
   false positives kept: 0
 
-== subject020: 6 wall patches, 3 kept, 4 references
-  branch_001 (ref diam 2.6, moderate) -> patch 2 at 6.76 mm: REJECTED departure_mm=1.98
-      wall_voxels=123, wall_area_mm2=78.7, proximal_ml=0.088, path_mm=10.0, departure_mm=1.98, origin_diameter_mm=5.29, area_growth=0.58, end_face_height_mm=-13.6, end_face_angle_deg=32.5, area_ratio=0.39, tangency_deg=58.1, aspect_ratio=8.26 | trace march/max | flags ['elongated_patch']
+== subject020: 6 wall patches, 4 kept, 4 references
+  branch_001 (ref diam 2.6, moderate) -> patch 2 at 2.32 mm: REJECTED departure_mm=1.88
+      wall_voxels=123, wall_area_mm2=78.7, proximal_ml=0.058, path_mm=10.0, departure_mm=1.88, origin_diameter_mm=2.69, area_growth=1.75, end_face_height_mm=-13.6, end_face_angle_deg=18.7, area_ratio=0.39, tangency_deg=83.2, aspect_ratio=8.26 | trace march/max | flags ['tangential', 'elongated_patch']
   branch_002 (ref diam 2.4, moderate) -> patch 5 at 1.83 mm: KEPT
       wall_voxels=21, wall_area_mm2=13.4, proximal_ml=0.053, path_mm=10.0, departure_mm=6.57, origin_diameter_mm=2.78, area_growth=1.5, end_face_height_mm=-20.8, end_face_angle_deg=42.4, area_ratio=0.07, tangency_deg=50.9, aspect_ratio=1.42 | trace march/max | flags []
   branch_003 (ref diam 2.5, moderate) -> patch 6 at 0.64 mm: KEPT
       wall_voxels=11, wall_area_mm2=7.0, proximal_ml=0.036, path_mm=10.0, departure_mm=6.5, origin_diameter_mm=2.51, area_growth=0.78, end_face_height_mm=-27.2, end_face_angle_deg=83.9, area_ratio=0.03, tangency_deg=15.7, aspect_ratio=1.21 | trace march/max | flags []
-  branch_004 (ref diam 2.5, moderate) -> patch 3 at 2.48 mm: REJECTED min_trace_mm=3.00
-      wall_voxels=28, wall_area_mm2=17.9, path_mm=3.0 | trace axis/bifurcation | flags []
+  branch_004 (ref diam 2.5, moderate) -> patch 3 at 3.17 mm: KEPT
+      wall_voxels=28, wall_area_mm2=17.9, proximal_ml=0.232, path_mm=10.0, departure_mm=6.84, origin_diameter_mm=3.31, area_growth=3.9, end_face_height_mm=-24.0, end_face_angle_deg=57.5, area_ratio=0.09, tangency_deg=39.4, aspect_ratio=3.21 | trace march/max | flags ['elongated_patch', 'area_growth']
   false positives kept: 1
     patch 4: wall_voxels=22, wall_area_mm2=14.1, proximal_ml=0.54, path_mm=10.0, departure_mm=8.32, origin_diameter_mm=2.49, area_growth=0.79, end_face_height_mm=-0.0, end_face_angle_deg=102.0, area_ratio=0.07, tangency_deg=5.9, aspect_ratio=1.48 | trace march/max | flags ['radius_inscribed_fallback', 'near_cut_face', 'borderline_diameter']
 
-== subject021: 45 wall patches, 10 kept, 3 references
+== subject021: 45 wall patches, 8 kept, 3 references
   branch_001 (ref diam 5.5, high) -> patch 2 at 1.44 mm: KEPT
       wall_voxels=177, wall_area_mm2=113.3, proximal_ml=0.367, path_mm=10.0, departure_mm=9.18, origin_diameter_mm=8.02, area_growth=0.85, end_face_height_mm=-18.4, end_face_angle_deg=137.5, area_ratio=0.4, tangency_deg=18.1, aspect_ratio=1.4 | trace march/max | flags []
   branch_002 (ref diam 4.5, high) -> patch 13 at 1.29 mm: KEPT
       wall_voxels=13, wall_area_mm2=8.3, proximal_ml=0.149, path_mm=10.0, departure_mm=8.76, origin_diameter_mm=2.84, area_growth=2.45, end_face_height_mm=-13.6, end_face_angle_deg=70.3, area_ratio=0.03, tangency_deg=21.0, aspect_ratio=1.3 | trace march/max | flags ['area_growth']
   branch_003 (ref diam 4.5, high) -> patch 3 at 2.05 mm: KEPT
       wall_voxels=125, wall_area_mm2=80.0, proximal_ml=0.288, path_mm=10.0, departure_mm=7.25, origin_diameter_mm=8.15, area_growth=1.18, end_face_height_mm=-4.8, end_face_angle_deg=106.5, area_ratio=0.28, tangency_deg=9.9, aspect_ratio=1.18 | trace march/max | flags []
-  false positives kept: 7
-    patch 4: wall_voxels=106, wall_area_mm2=67.8, proximal_ml=0.152, path_mm=10.0, departure_mm=5.04, origin_diameter_mm=4.24, area_growth=1.06, end_face_height_mm=-10.4, end_face_angle_deg=17.2, area_ratio=0.24, tangency_deg=73.1, aspect_ratio=4.3 | trace march/max | flags ['tangential', 'elongated_patch']
-    patch 5: wall_voxels=73, wall_area_mm2=46.7, proximal_ml=0.139, path_mm=10.0, departure_mm=3.87, origin_diameter_mm=8.33, area_growth=0.76, end_face_height_mm=-12.8, end_face_angle_deg=50.5, area_ratio=0.17, tangency_deg=49.5, aspect_ratio=3.7 | trace march/max | flags ['elongated_patch']
+  false positives kept: 5
+    patch 5: wall_voxels=73, wall_area_mm2=46.7, proximal_ml=0.124, path_mm=10.0, departure_mm=3.31, origin_diameter_mm=8.14, area_growth=0.32, end_face_height_mm=-12.8, end_face_angle_deg=63.9, area_ratio=0.17, tangency_deg=60.0, aspect_ratio=3.7 | trace march/max | flags ['elongated_patch']
     patch 7: wall_voxels=48, wall_area_mm2=30.7, proximal_ml=0.04, path_mm=7.0, departure_mm=5.37, origin_diameter_mm=2.96, area_growth=0.12, end_face_height_mm=-28.8, end_face_angle_deg=103.9, area_ratio=0.11, tangency_deg=22.0, aspect_ratio=1.9 | trace march/vanished | flags []
     patch 8: wall_voxels=39, wall_area_mm2=25.0, proximal_ml=0.351, path_mm=6.0, departure_mm=4.2, origin_diameter_mm=8.51, area_growth=0.37, end_face_height_mm=-0.8, end_face_angle_deg=122.1, area_ratio=0.09, tangency_deg=33.5, aspect_ratio=2.47 | trace march/bifurcation | flags ['bifurcation', 'near_cut_face']
-    patch 11: wall_voxels=16, wall_area_mm2=10.2, proximal_ml=0.201, path_mm=10.0, departure_mm=7.83, origin_diameter_mm=7.51, area_growth=1.74, end_face_height_mm=-37.6, end_face_angle_deg=102.4, area_ratio=0.04, tangency_deg=12.5, aspect_ratio=3.15 | trace march/max | flags ['radius_inscribed_fallback', 'elongated_patch']
     patch 12: wall_voxels=16, wall_area_mm2=10.2, proximal_ml=0.04, path_mm=10.0, departure_mm=4.38, origin_diameter_mm=2.85, area_growth=0.67, end_face_height_mm=-43.2, end_face_angle_deg=111.7, area_ratio=0.04, tangency_deg=40.1, aspect_ratio=2.56 | trace march/max | flags []
     patch 14: wall_voxels=12, wall_area_mm2=7.7, proximal_ml=0.033, path_mm=10.0, departure_mm=5.01, origin_diameter_mm=2.96, area_growth=0.73, end_face_height_mm=-24.8, end_face_angle_deg=45.9, area_ratio=0.03, tangency_deg=44.8, aspect_ratio=2.18 | trace march/max | flags []
 
-== subject022: 65 wall patches, 22 kept, 6 references
+== subject022: 65 wall patches, 23 kept, 6 references
   branch_001 (ref diam 3.0, moderate) -> patch 11 at 1.18 mm: KEPT
       wall_voxels=66, wall_area_mm2=42.2, proximal_ml=0.169, path_mm=7.0, departure_mm=4.82, origin_diameter_mm=4.5, area_growth=1.09, end_face_height_mm=-40.8, end_face_angle_deg=53.1, area_ratio=0.19, tangency_deg=38.2, aspect_ratio=1.57 | trace march/bifurcation | flags ['bifurcation']
   branch_002 (ref diam 4.5, high) -> patch 8 at 1.46 mm: KEPT
@@ -52,7 +50,7 @@ Then every kept patch further than the match cutoff from all references (false p
       wall_voxels=242, wall_area_mm2=154.9, proximal_ml=0.569, path_mm=10.0, departure_mm=8.9, origin_diameter_mm=10.51, area_growth=0.97, end_face_height_mm=-65.6, end_face_angle_deg=104.3, area_ratio=0.7, tangency_deg=19.9, aspect_ratio=1.14 | trace march/max | flags []
   branch_006 (ref diam 3.5, high) -> patch 13 at 1.31 mm: KEPT
       wall_voxels=50, wall_area_mm2=32.0, proximal_ml=0.14, path_mm=10.0, departure_mm=8.45, origin_diameter_mm=5.05, area_growth=0.62, end_face_height_mm=-49.6, end_face_angle_deg=65.2, area_ratio=0.14, tangency_deg=6.0, aspect_ratio=1.19 | trace march/max | flags []
-  false positives kept: 15
+  false positives kept: 16
     patch 9: wall_voxels=74, wall_area_mm2=47.4, proximal_ml=0.933, path_mm=10.0, departure_mm=7.31, origin_diameter_mm=12.34, area_growth=1.58, end_face_height_mm=-60.0, end_face_angle_deg=107.9, area_ratio=0.21, tangency_deg=14.9, aspect_ratio=1.27 | trace march/max | flags ['radius_inscribed_fallback']
     patch 12: wall_voxels=54, wall_area_mm2=34.6, proximal_ml=0.851, path_mm=10.0, departure_mm=8.78, origin_diameter_mm=10.01, area_growth=1.21, end_face_height_mm=-28.0, end_face_angle_deg=97.3, area_ratio=0.16, tangency_deg=16.2, aspect_ratio=1.54 | trace march/max | flags ['radius_inscribed_fallback']
     patch 15: wall_voxels=38, wall_area_mm2=24.3, proximal_ml=0.036, path_mm=6.0, departure_mm=3.98, origin_diameter_mm=2.44, area_growth=0.7, end_face_height_mm=-57.6, end_face_angle_deg=111.4, area_ratio=0.11, tangency_deg=65.7, aspect_ratio=2.41 | trace march/vanished | flags ['borderline_diameter']
@@ -61,22 +59,22 @@ Then every kept patch further than the match cutoff from all references (false p
     patch 18: wall_voxels=18, wall_area_mm2=11.5, proximal_ml=0.271, path_mm=10.0, departure_mm=9.92, origin_diameter_mm=6.46, area_growth=None, end_face_height_mm=-16.8, end_face_angle_deg=82.4, area_ratio=0.05, tangency_deg=0.0, aspect_ratio=2.15 | trace axis/bifurcation | flags ['axis_fallback', 'radius_inscribed_fallback']
     patch 21: wall_voxels=14, wall_area_mm2=9.0, proximal_ml=0.426, path_mm=10.0, departure_mm=8.16, origin_diameter_mm=5.08, area_growth=2.58, end_face_height_mm=-18.4, end_face_angle_deg=82.5, area_ratio=0.04, tangency_deg=25.4, aspect_ratio=1.63 | trace march/max | flags ['radius_inscribed_fallback', 'area_growth']
     patch 23: wall_voxels=12, wall_area_mm2=7.7, proximal_ml=0.03, path_mm=10.0, departure_mm=6.83, origin_diameter_mm=3.18, area_growth=0.7, end_face_height_mm=-46.4, end_face_angle_deg=122.9, area_ratio=0.03, tangency_deg=33.9, aspect_ratio=1.66 | trace march/max | flags []
-    patch 24: wall_voxels=11, wall_area_mm2=7.0, proximal_ml=0.136, path_mm=10.0, departure_mm=7.71, origin_diameter_mm=4.65, area_growth=0.39, end_face_height_mm=0.8, end_face_angle_deg=38.5, area_ratio=0.03, tangency_deg=66.1, aspect_ratio=5.02 | trace march/max | flags ['near_cut_face', 'elongated_patch']
+    patch 24: wall_voxels=11, wall_area_mm2=7.0, proximal_ml=0.136, path_mm=10.0, departure_mm=7.14, origin_diameter_mm=5.34, area_growth=2.26, end_face_height_mm=0.8, end_face_angle_deg=45.5, area_ratio=0.03, tangency_deg=51.3, aspect_ratio=5.02 | trace march/max | flags ['near_cut_face', 'elongated_patch', 'area_growth']
     patch 26: wall_voxels=8, wall_area_mm2=5.1, proximal_ml=0.051, path_mm=10.0, departure_mm=6.91, origin_diameter_mm=2.01, area_growth=0.8, end_face_height_mm=-31.2, end_face_angle_deg=60.5, area_ratio=0.02, tangency_deg=44.7, aspect_ratio=1.37 | trace march/max | flags ['borderline_diameter']
-    patch 28: wall_voxels=7, wall_area_mm2=4.5, proximal_ml=0.067, path_mm=7.0, departure_mm=3.78, origin_diameter_mm=5.95, area_growth=0.61, end_face_height_mm=-16.8, end_face_angle_deg=44.3, area_ratio=0.02, tangency_deg=39.4, aspect_ratio=3.06 | trace march/vanished | flags ['elongated_patch']
+    patch 28: wall_voxels=7, wall_area_mm2=4.5, proximal_ml=0.067, path_mm=7.0, departure_mm=3.94, origin_diameter_mm=5.47, area_growth=0.61, end_face_height_mm=-16.8, end_face_angle_deg=44.4, area_ratio=0.02, tangency_deg=39.5, aspect_ratio=3.06 | trace march/vanished | flags ['elongated_patch']
     patch 30: wall_voxels=7, wall_area_mm2=4.5, proximal_ml=0.525, path_mm=8.0, departure_mm=8.0, origin_diameter_mm=2.19, area_growth=None, end_face_height_mm=-57.6, end_face_angle_deg=90.0, area_ratio=0.02, tangency_deg=0.0, aspect_ratio=1.0 | trace axis/bifurcation | flags ['axis_fallback', 'radius_inscribed_fallback', 'borderline_diameter']
     patch 31: wall_voxels=7, wall_area_mm2=4.5, proximal_ml=0.781, path_mm=10.0, departure_mm=7.48, origin_diameter_mm=2.27, area_growth=1.48, end_face_height_mm=-87.2, end_face_angle_deg=90.9, area_ratio=0.02, tangency_deg=31.9, aspect_ratio=1.0 | trace march/max | flags ['radius_inscribed_fallback', 'borderline_diameter']
-    patch 34: wall_voxels=5, wall_area_mm2=3.2, proximal_ml=0.446, path_mm=10.0, departure_mm=6.9, origin_diameter_mm=11.66, area_growth=1.74, end_face_height_mm=-28.8, end_face_angle_deg=132.5, area_ratio=0.01, tangency_deg=44.2, aspect_ratio=inf | trace march/max | flags ['radius_inscribed_fallback', 'elongated_patch']
+    patch 32: wall_voxels=5, wall_area_mm2=3.2, proximal_ml=0.243, path_mm=10.0, departure_mm=6.53, origin_diameter_mm=12.24, area_growth=0.74, end_face_height_mm=-67.2, end_face_angle_deg=82.9, area_ratio=0.01, tangency_deg=36.2, aspect_ratio=3.52 | trace march/max | flags ['radius_inscribed_fallback', 'elongated_patch']
+    patch 34: wall_voxels=5, wall_area_mm2=3.2, proximal_ml=0.446, path_mm=10.0, departure_mm=7.38, origin_diameter_mm=11.89, area_growth=1.52, end_face_height_mm=-28.8, end_face_angle_deg=109.2, area_ratio=0.01, tangency_deg=19.8, aspect_ratio=inf | trace march/max | flags ['radius_inscribed_fallback', 'elongated_patch']
     patch 35: wall_voxels=4, wall_area_mm2=2.6, proximal_ml=0.198, path_mm=7.0, departure_mm=6.51, origin_diameter_mm=12.1, area_growth=None, end_face_height_mm=-67.2, end_face_angle_deg=90.0, area_ratio=0.01, tangency_deg=0.0, aspect_ratio=inf | trace axis/vanished | flags ['axis_fallback', 'radius_inscribed_fallback', 'elongated_patch']
 
-== subject023: 6 wall patches, 3 kept, 3 references
-  branch_001 (ref diam 2.8, medium) -> patch 2 at 6.73 mm: REJECTED departure_mm=1.34
-      wall_voxels=195, wall_area_mm2=124.8, proximal_ml=0.142, path_mm=10.0, departure_mm=1.34, origin_diameter_mm=7.11, area_growth=0.27, end_face_height_mm=-9.6, end_face_angle_deg=26.9, area_ratio=0.63, tangency_deg=65.1, aspect_ratio=8.26 | trace march/max | flags ['elongated_patch']
+== subject023: 6 wall patches, 2 kept, 3 references
+  branch_001 (ref diam 2.8, medium) -> patch 2 at 0.37 mm: REJECTED departure_mm=1.99
+      wall_voxels=195, wall_area_mm2=124.8, proximal_ml=0.082, path_mm=10.0, departure_mm=1.99, origin_diameter_mm=3.8, area_growth=1.0, end_face_height_mm=-9.6, end_face_angle_deg=160.5, area_ratio=0.63, tangency_deg=73.7, aspect_ratio=8.26 | trace march/max | flags ['tangential', 'elongated_patch']
   branch_002 (ref diam 2.5, low) -> patch 3 at 3.99 mm: KEPT
       wall_voxels=54, wall_area_mm2=34.6, proximal_ml=0.117, path_mm=10.0, departure_mm=5.59, origin_diameter_mm=3.41, area_growth=4.69, end_face_height_mm=-14.4, end_face_angle_deg=116.3, area_ratio=0.17, tangency_deg=42.6, aspect_ratio=2.19 | trace march/max | flags ['area_growth']
   branch_003 (ref diam 2.2, low) -> patch 3 at 0.96 mm: KEPT
       wall_voxels=54, wall_area_mm2=34.6, proximal_ml=0.117, path_mm=10.0, departure_mm=5.59, origin_diameter_mm=3.41, area_growth=4.69, end_face_height_mm=-14.4, end_face_angle_deg=116.3, area_ratio=0.17, tangency_deg=42.6, aspect_ratio=2.19 | trace march/max | flags ['area_growth']
-  false positives kept: 2
-    patch 4: wall_voxels=45, wall_area_mm2=28.8, proximal_ml=0.913, path_mm=10.0, departure_mm=7.38, origin_diameter_mm=3.66, area_growth=None, end_face_height_mm=-7.2, end_face_angle_deg=151.7, area_ratio=0.15, tangency_deg=0.0, aspect_ratio=4.99 | trace axis/bifurcation | flags ['axis_fallback', 'radius_inscribed_fallback', 'elongated_patch']
-    patch 5: wall_voxels=40, wall_area_mm2=25.6, proximal_ml=0.081, path_mm=10.0, departure_mm=4.1, origin_diameter_mm=3.96, area_growth=0.25, end_face_height_mm=0.0, end_face_angle_deg=120.5, area_ratio=0.13, tangency_deg=40.5, aspect_ratio=3.18 | trace march/max | flags ['near_cut_face', 'elongated_patch']
+  false positives kept: 1
+    patch 5: wall_voxels=40, wall_area_mm2=25.6, proximal_ml=0.077, path_mm=10.0, departure_mm=4.26, origin_diameter_mm=7.15, area_growth=0.28, end_face_height_mm=0.0, end_face_angle_deg=130.6, area_ratio=0.13, tangency_deg=62.4, aspect_ratio=3.18 | trace march/max | flags ['near_cut_face', 'elongated_patch']
 

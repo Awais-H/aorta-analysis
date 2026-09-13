@@ -80,3 +80,18 @@ def test_no_instances_gives_no_ostia(cand):
     c.opened = np.zeros_like(cand.opened)
     c.bright_shell = np.zeros_like(cand.bright_shell)
     assert ostium.locate(c, instances.build(c)) == {}
+
+
+def test_hugging_branch_ostium_is_at_the_contact_end(tmp_path):
+    from conftest import make_phantom
+    ph = make_phantom(tmp_path / "hug", with_branch=False, hugging=True)
+    image, mask_image, _ = io_utils.load_case(ph["image"], ph["mask"])
+    cand = candidates.build(image, mask_image)
+    inst = instances.build(cand)
+    ostia = ostium.locate(cand, inst)
+    assert inst.n == 1
+    o = ostia[1]
+    assert instances.patch_aspect_ratio(cand, inst.wall_indices[1]) > config.PATCH_ASPECT_RATIO_MAX
+    assert o.method == "strip_end"
+    assert np.linalg.norm(o.mm - ph["hugging_ostium_mm"]) < 3.0
+    assert o.axis_mm[2] > 0.9, "tracer starts along the strip toward +z, away from the contact end"
