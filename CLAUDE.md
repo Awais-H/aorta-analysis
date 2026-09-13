@@ -1,33 +1,36 @@
 # Branchseed Challenge
 
-Read SPEC.md before doing anything. It contains every design decision and the reasoning.
-The challenge PDF is docs/Branchseed_challenge.pdf. SPEC.md wins if they conflict.
+Read docs/HANDOFF.md first (current state, decisions, what remains), then SPEC.md (design and
+reasoning, up to date with the code). The challenge PDF is docs/Branchseed_challenge.pdf. Where
+SPEC.md and the PDF conflict, the PDF's definitions win; where SPEC.md's first-draft methods and
+the anatomy conflict, the anatomy wins (see the principle at the top of SPEC.md).
 
 ## Rules
 - All numeric constants live in config.py with a justification comment. Never hardcode a threshold elsewhere.
 - io_utils.index_to_mm is the only place TransformIndexToPhysicalPoint is called.
 - Every module gets a fake-data test in tests/ before it is merged.
-- Do not change constants to improve a score on one case. See SPEC.md section 3.
-- Do not add anatomical names anywhere. Branches are branch_001, branch_002, ...
+- Do not change constants to improve a score on one case. See SPEC.md section 3. Run sweeps.py and keep the physical value.
+- Judge every rule against real vascular anatomy and the reference annotations before the numbers. A rule that rejects things real vessels do gets changed, with the evidence written next to it.
+- Do not add anatomical names to the output. Branches are branch_001, branch_002, ... (names may appear in comments and the ledger as reasoning).
 - run.py must never crash on a case: log, write empty daughters, exit 0.
+- After any pipeline change, regenerate and commit results/ (scores, ledger, sweeps, invariants). A change must improve or hold every labelled case or come with a written anatomical argument.
 
 ## Data
-- data/subjectNNN/origN.nii and maskN.nii. Some are gzipped despite the extension. Subject 24 has a non-orthonormal header.
-- atlas_all.csv has per-case stats; expected wall-patch counts are in the wall_patches column.
+- data/subjectNNN/origN.nii or origN.nii.gz and maskN.nii. Some are gzipped despite the extension. Subject 24 has a non-orthonormal header. Subjects 1 to 15 are 0.8 mm, 16 to 25 are 1.5 mm isotropic; the hidden set is assumed to be 1.5 mm like the references.
+- docs/atlas_all.csv has per-case stats for all 25; wall_patches is the expected candidate count before filtering.
 - Reference annotations for cases 19-23 are in docs/references/case_XX/annotations.json
   (SimpleITK LPS mm; schema is a superset of the required output). Read docs/references/README.md
   for the annotation policy: 2.0 mm minimum origin diameter, ostium on the supplied mask boundary,
   direction = normalised (seed - ostium). These are drafts; see each case's review_notes.md.
 - Daughter instance masks for the seed-on-branch test: data/subjectXXX/daughtersXX_draft.nii.gz
   (0 = background, 1..N = branch_001..branch_N, same grid as the CT).
-- docs/atlas_all.csv has per-case stats for all 25; wall_patches is the expected candidate count
-  before filtering. Regression priority is cases 19-23, then 16-17, then 18 and 24 (allowed to fail).
-- The scorer (scorer.py) is a day-one deliverable and reads docs/references/ directly.
+- Regression priority is cases 19-23 (scored), then 16-17, then 18 and 24 (allowed to fail), then 1, 6, 8. Subject 25 (whole aorta with arch) is out of scope.
+- The scorer (scorer.py) reads docs/references/ directly.
 
 ## Smoke test
 python run.py --image data/subject010/orig10.nii --aorta-mask data/subject010/mask10.nii --output /tmp/s10.json
-Expected: 4 to 6 branches, runtime under 10 s.
+Expected: 4 daughters (celiac and SMA at 12 to 1 o'clock, right renal at 10.5, left renal at 3), pipeline about 2 s, about 5 s wall with imports.
 
 ## Current status
 (update this line as modules land)
-Engine complete through D6, reviewed by eye on the gallery sheets (gallery.py) for subjects 16, 17, 21, 22. D6 now: rule 3 is a flag (hugging lumbars and the IMA are daughters); rule 4 rejects bone by "seed cross-section runs out of the 16 mm window AND carries cortex over 1.5 x lumen" (edge without cortex = section_merged flag); rule 6 also merges same-voxel ostia and survivors whose 10 mm paths come within 4 mm (one lumen, one daughter). On cases 19-23 at 5 mm: TP 17 / FP 16 / FN 2, F1 0.65, ostium 1.35 mm, seed on branch 14/17. Remaining false positives are mostly 2 to 3 mm posterior/anterior-left vessels in unannotated lumbar and IMA territory, plus one candidate per case at the inferior cut (iliac division or cut-adjacent; decision pending, flagged near_cut_face). Known misses: 19/b2 (1-voxel patch), 23/b2 (merged with b3). Remaining stubs: frame (slice centroids), report (PNG + table). Review tools: review_markers.py (ITK-SNAP overlays), gallery.py (crop sheets).
+Engine complete through D6 and reviewed by eye (gallery.py) on subjects 16, 17, 21, 22. On cases 19-23 at 5 mm: TP 17 / FP 16 / FN 2, F1 0.65, ostium 1.35 mm, seed on branch 14/17; invariants clean on all 25, under 9 s per case. Remaining stubs: frame (slice centroids), report (PNG + table). Next in order: frame, report, submission mechanics (vendored wheels need the organisers' OS/Python answer), rule 4 area growth after a look at subjects 8 and 12, demo material. Six questions are with the organisers (SPEC section 6); their answers may reopen rule 1 at the inferior cut and the borderline-diameter handling. Code is on the fork nikolakr7/aorta-analysis, branch skeleton.

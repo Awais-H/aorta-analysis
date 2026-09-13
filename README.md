@@ -1,6 +1,8 @@
 # Branchseed challenge
 
-Finds every artery that leaves the supplied abdominal aorta and reports each origin as a machine-readable branch instance (ostium, seed 5 mm in, direction, radius). Design and reasoning: [SPEC.md](SPEC.md). Challenge text: [docs/Branchseed_challenge.pdf](docs/Branchseed_challenge.pdf).
+Finds every artery that leaves the supplied abdominal aorta and reports each origin as a machine-readable branch instance (ostium, seed 5 mm in, direction, radius). Current state and what remains: [docs/HANDOFF.md](docs/HANDOFF.md). Design and reasoning: [SPEC.md](SPEC.md). Challenge text: [docs/Branchseed_challenge.pdf](docs/Branchseed_challenge.pdf).
+
+On the five labelled dev cases (19 to 23) at a 5 mm ostium cutoff: 17 of 19 reference branches found, 16 false positives (most of them small vessels the draft references do not cover), mean ostium error 1.35 mm, under 9 s per case on a laptop CPU. Details in `results/`.
 
 ## Setup
 
@@ -8,7 +10,7 @@ Finds every artery that leaves the supplied abdominal aorta and reports each ori
 pip install -r requirements.txt
 ```
 
-Python 3.10 or newer, CPU only, no torch.
+Python 3.10 or newer (developed on 3.13), CPU only, no torch. An offline install with vendored wheels is planned once the scoring machine's platform is known.
 
 ## Run
 

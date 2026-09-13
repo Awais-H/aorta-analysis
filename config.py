@@ -52,17 +52,17 @@ END_FACE_AREA_SHORTCUT = 1.5  # rule 1: a patch over 1.5 x the aortic cross-sect
 FRANGI_SCALES_MM = (1.0, 2.0, 3.0)  # rule 2 secondary / rule 4: three vesselness scales spanning lumbar to renal radii; three scales max for runtime
 FRANGI_MIN_RESPONSE = 0.0   # rule 2 secondary: mean Frangi response floor. PLACEHOLDER, not yet set by the spec; 0.0 disables the rule until a sweep sets it
 DEPARTURE_MM = 3.0          # rule 3, FLAG ONLY (no_departure): path far end still within 3 mm of the aorta. Not a rejection: wall-hugging lumbars and the IMA are real daughters that never leave the wall within 10 mm (2 of 19 references; subject 2), and no vein in the dev set clears the threshold. See filters.py rule 3
-TANGENCY_ANGLE_DEG = 70.0   # rule 3 secondary: direction more than 70 deg from the outward wall normal is tangential, i.e. running along the wall
-PATCH_ASPECT_RATIO_MAX = 3.0  # rule 3 secondary: a wall patch elongated more than 3:1 is a vessel hugging the wall, not an opening
+TANGENCY_ANGLE_DEG = 70.0   # rule 3 secondary, FLAG ONLY (tangential): direction more than 70 deg from the outward wall normal, i.e. running along the wall
+PATCH_ASPECT_RATIO_MAX = 3.0  # rule 3 secondary, FLAG ONLY (elongated_patch), and the D4 trigger for the hugging-branch ostium (strip_end): a wall patch elongated more than 3:1 is a vessel running along the wall
 STRIP_END_WINDOW_MM = 4.0   # D4 hugging branch: the ostium of an elongated patch (aspect over PATCH_ASPECT_RATIO_MAX) lies in the end window that hugs the wall most tightly; 4 mm covers the strip's own width (2 to 4 mm at lumbar scale) and is under half of any strip that passes the aspect test
-AREA_GROWTH_MAX = 2.0       # rule 4: a cross-section that more than doubles over the first 5 mm is organ or bowel, not a tube
-REGION_VOLUME_CAP_ML = 1.0  # rule 4: no proximal branch segment within 15 mm approaches 1 ml, but a vertebral body or heart chamber does
+AREA_GROWTH_MAX = 2.0       # rule 4, FLAG ONLY (area_growth): cross-section at 4 to 5 mm over the first step clear of the wall layer. Its only hits on the labelled cases are real 4.5 mm branches whose first 3 mm read narrow at 1.5 mm voxels; re-arm after a look at the bowel cases (subjects 8, 12)
+REGION_VOLUME_CAP_ML = 1.0  # rule 4: applied to the branch's voxels within TRACE_MAX_MM of the ostium (the proximal segment). No proximal segment approaches 1 ml (every labelled reference is under 0.8 ml), a vertebral body or heart chamber does. Not the whole watershed basin, which floods every connected bright voxel in the shell
 BONE_HU_LUMEN_RATIO = 1.5   # rule 4: contrast-filled blood is the brightest soft tissue in the scan; voxels over 1.5 x the lumen median in a cross-section are cortical bone or calcium. Bone only becomes a candidate on poorly enhanced scans (lumen about 230 HU, threshold about 105, so cancellous bone clears it), and there the cortex reads 400 to 1200 HU
-DUPLICATE_MM = 4.0          # rule 6: two ostia within 4 mm are one opening; separate lumbar pairs are further apart than that
+DUPLICATE_MM = 4.0          # rule 6: two ostia within 4 mm (with directions within DUPLICATE_ANGLE_DEG) are one opening, and two survivors whose 10 mm paths come within 4 mm share a lumen; separate lumbar pairs are further apart than that. Ostia on the same working voxel merge regardless of direction
 DUPLICATE_ANGLE_DEG = 20.0  # rule 6: and their directions within 20 deg; genuinely separate nearby origins diverge
 MIN_ORIGIN_DIAMETER_MM = 2.0  # rule 7: the reference policy's minimum estimated lumen diameter at the origin (docs/references, minimum_origin_diameter_mm); equivalent diameter of the wall patch
 BORDERLINE_ORIGIN_DIAMETER_MM = (1.5, 2.5)  # rule 7: at 1.5 mm voxels a 2 mm lumen is 1.3 voxels wide, so origins in this band are flagged borderline_diameter in the display; both excluded candidates in the reference package sit in this band
-MIN_WALL_PATCH_VOXELS = 3   # rule 7: a wall patch under 3 voxels on the 0.8 mm grid is smaller than any 2 mm origin can be and is pure noise
+MIN_WALL_PATCH_VOXELS = 3   # rule 7: a wall patch under 3 voxels on the 0.8 mm grid is smaller than any 2 mm origin can be and is pure noise. Sweep: 1 voxel adds 15 false positives and recovers nothing (reference 19/b2 fails the 5 mm test regardless)
 
 # ------------------------------------------------------------------------ scorer (D7)
 LABELLED_CASES = (19, 20, 21, 22, 23)  # dev cases with draft reference annotations in docs/references (all 1.5 mm isotropic)
