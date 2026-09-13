@@ -101,3 +101,6 @@ END_FACE_NORMAL_DEG = 60.0  # an end-face voxel's outward normal is within 60 de
 END_FACE_LATERAL_FACTOR = 1.5  # end-face voxels lie within 1.5 x the local aortic radius of the extended axis, so a neighbouring structure fused to the mask at the cut is not counted
 CLOCK_ANTERIOR_MIN_SIN = 0.25  # 12 o'clock is the patient's anterior projected into the plane perpendicular to the local tangent (the surgeon's convention at every level; the transported frame drifts 43 deg from it on subject 3). The projection is undefined when the tangent runs antero-posteriorly; below this sine (tangent within about 15 deg of the y axis, which the abdominal aorta never does) the rotation-minimising transport is used instead
 CENTRELINE_SWEEP_DOWNSAMPLE = 2  # the two farthest-point sweeps that find the end rims run on a mask downsampled by this factor (endpoints identical on the longest case, 6 x faster); only the central path itself runs at working resolution
+
+# ------------------------------------------------------------------------ mask export
+MASK_EXPORT_DIRECTION_RADIUS_MM = 0.5  # radius of the direction indicator drawn from ostium to ostium + direction * TRACE_MAX_MM in mask_export.py: thinner than the smallest reported daughter (RADIUS_CLAMP_MM min 0.5 mm) so the ostium sphere and the direction segment stay visually distinct in a viewer

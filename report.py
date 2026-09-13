@@ -255,7 +255,11 @@ def plotly_3d_div(cand: Candidates, result: dict, frame: Frame | None, downsampl
                                    marker=dict(size=4, color="red", symbol="diamond"), name="10 mm along the path", showlegend=False))
     fig = go.Figure(data=traces)
     fig.update_layout(scene=dict(xaxis_title="x (mm, LPS: +x = patient's left)", yaxis_title="y (mm, +y = posterior)",
-                                 zaxis_title="z (mm, +z = superior)", aspectmode="data"),
+                                 zaxis_title="z (mm, +z = superior)", aspectmode="data",
+                                 # pin the initial camera so the view always opens superior-up: Plotly's own
+                                 # default angle can otherwise make a tall, thin segment look flipped on load
+                                 # (dragging would show it is not; this just fixes the first frame).
+                                 camera=dict(up=dict(x=0, y=0, z=1), eye=dict(x=1.4, y=-1.4, z=0.6))),
                       margin=dict(l=0, r=0, t=30, b=0), height=650, legend=dict(orientation="h"),
                       title=f"{result.get('case_id', '')}: aorta mask, centreline, ostia and directions")
     return fig.to_html(full_html=False, include_plotlyjs=True, div_id="view3d")
