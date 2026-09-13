@@ -16,7 +16,7 @@ what remains, and how to work.
   in `docs/references/` (committed), with the daughter label volumes in `data/`.
 - Every module lives flat at the repository root. `python run.py --image ... --aorta-mask ...
   --output ...` is the judges' command and never crashes (traceback to stderr, empty daughters,
-  exit 0). 87 tests: `python -m pytest tests`.
+  exit 0). 99 tests: `python -m pytest tests`.
 
 ## What is built
 
@@ -28,15 +28,16 @@ what remains, and how to work.
 | Ostium | `ostium.py` | done; inscribed circle snapped to the mask; axis refinement off by default; contact-end rule for hugging strips |
 | Tracing | `tracing.py` | done; march with bifurcation stop, axis fallback, chord direction, 0.25 mm plane radius |
 | Filters | `filters.py` | done; rules 1, 2, 4 (volume, bone), 6, 7 reject; rule 3 and area growth are flags |
-| Frame | `frame.py` | STUB: slice centroids, axial clock; endpoints used by rule 1 |
-| Report | `report.py` | STUB: verification PNG (coronal/sagittal projections) + HTML table |
+| Frame | `frame.py` | done; geodesic centreline, end-face endpoints (rule 1), anatomical clock, radius profile, spacing |
+| Report | `report.py` | done; verification PNG, clock map PNG, self-contained HTML with flags, spacing and Plotly 3D |
 | Scorer and tools | `scorer.py`, `sweeps.py`, `gallery.py`, `review_markers.py` | done |
 
 Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 16 false
 positives, F1 0.65, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
-branch 14 of 17. Invariants on all 25 cases: no crash, under 9 s per case. Files:
+branch 14 of 17. Invariants on all 25 cases: no crash, under 10 s per case. Files:
 `results/dev_scores.txt`, `results/reference_ledger.txt`, `results/sweeps.txt`,
-`results/invariants.txt`, and `results/dev_scores_skeleton_baseline.txt` for the before/after.
+`results/invariants.txt`, `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
+JSON for all 25 dev cases) and `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23).
 
 ## Decisions made against the spec's first draft, with the evidence
 
@@ -68,6 +69,14 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
    reference and then lost it to the cutoff.
 10. **Two misses are resolution limits and are not chased:** 19/b2 (2.3 mm, one opened voxel) and
     23/b2 (two origins merged at the wall). The alternatives were measured and rejected.
+11. **The clock's 12 o'clock is the patient's anterior projected at each level, not a transported
+    frame.** The rotation-minimising transport the spec first asked for drifts 43 deg from the
+    patient's anterior on subject 3 and 35 deg on subject 6 (torsion in the S-bends); it is kept
+    as the `twist_deg` diagnostic. The two agree on a planar bend. SPEC D8.
+12. **Centreline endpoints are end-face centroids**, not the geodesic rim points: the rim-to-axis
+    stretch of the path is cut one radius in and the face (boundary voxels with normals within
+    60 deg of the tangent) is averaged. Rule 1 picks the endpoints up automatically; the labelled
+    scores did not move.
 
 ## Open, waiting on the organisers (sent 13 Sep, SPEC section 6)
 
@@ -80,17 +89,18 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
 
 ## What remains, in order
 
-1. `frame.py`: geodesic centreline (skimage route_through_array on the mask, cost from the inside
-   distance), rotation-minimising frame, height and inter-branch spacing. Rule 1 picks up the
-   endpoints automatically. Keep `end_faces()` and `height_clock()` as the interface.
-2. `report.py`: unrolled clock map with spacing brackets, branch table with the flags, Plotly 3D,
-   and verification PNGs for at least three cases committed (the PDF requires them).
-3. Submission mechanics: dev-set predictions committed (`python scorer.py predict --cases all`
-   into a committed folder), vendored wheels once the platform is known, an install test with
-   networking off, README setup and run commands checked.
-4. Rule 4 area growth: `python gallery.py --cases 8 12 --rejected`, look, decide.
-5. Demo material: failure gallery sheets, the known-failure slide (subjects 18 and 24 are allowed
-   to fail; 19/b2 and 23/b2 are the honest misses), runtime figure.
+1. Submission mechanics that wait on organiser question 6: vendored wheels (`pip download -r
+   requirements.txt -d vendor/` on the right platform), the offline install test with networking
+   off, and the README setup command switched to `--no-index --find-links vendor`. Everything
+   else is in place: dev-set predictions in `results/predictions/`, visual checks in
+   `results/visual_checks/`, README setup and run commands checked.
+2. Rule 4 area growth: `python gallery.py --cases 8 12 --rejected`, look, decide.
+3. Demo material: failure gallery sheets, the known-failure slide (subjects 18 and 24 are allowed
+   to fail; 19/b2 and 23/b2 are the honest misses), runtime figure, and the clock maps and 3D
+   views from `python run.py ... --report-dir` for three cases.
+4. When the organisers answer (SPEC section 6): question 1 decides the `near_cut_face` candidates
+   (rule 1 at the inferior cut), question 2 the `borderline_diameter` handling, question 3 whether
+   the remaining false positives are ours, question 4 the scorer cutoff.
 
 ## How to work
 
@@ -101,7 +111,8 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
   --out results/invariants.txt`. Commit the results files with the change. A change must improve
   or hold every labelled case (SPEC section 3), or come with a written anatomical argument.
 - To look at a case: `python run.py ... --meta-output out/review/subjectNNN_meta.json --output
-  out/review/subjectNNN.json`, then `python gallery.py --cases NN --pred-dir out/review` and read
+  out/review/subjectNNN.json --report-dir out/review` gives the clock map, the projections and the
+  HTML with the 3D view; then `python gallery.py --cases NN --pred-dir out/review` and read
   the sheets in `out/gallery/`; `review_markers.py` writes ITK-SNAP overlays (recipe in README).
 - Judge every rule against anatomy and the annotations first, the numbers second. Do not change a
   constant to improve a score; run the sweep and keep the physical value unless the curve says

@@ -173,3 +173,10 @@ def test_fallback_to_slice_centroids(cand, monkeypatch):
     assert fr.method == "slice_centroids" and "fallback_error" in fr.info
     assert fr.centreline_mm[0, 2] > fr.centreline_mm[-1, 2]
     assert len(fr.end_faces()) == 2
+
+
+def test_radius_profile_flat_to_the_cut_faces(cand):
+    from conftest import AORTA_R
+    fr = frame_mod.build(cand)
+    assert np.all(np.abs(fr.radius_mm - AORTA_R) < 0.8)   # including the first and last point at the faces
+    assert abs(fr.radius_at(0.0) - AORTA_R) < 0.8 and abs(fr.radius_at(fr.length_mm) - AORTA_R) < 0.8

@@ -70,7 +70,7 @@ class Frame:
     clock12: np.ndarray = None     # (k, 3) unit xyz: 12 o'clock, the patient's anterior projected perpendicular to the tangent
     clock3: np.ndarray = None      # (k, 3) unit xyz: 3 o'clock (patient's left) = clock12 x tangent
     clock12_rmf: np.ndarray = None  # (k, 3) the rotation-minimising transport of anterior from the inferior end (diagnostic)
-    radius_mm: np.ndarray = None   # (k,) inside distance at each centreline point: the local aortic radius
+    radius_mm: np.ndarray = None   # (k,) local aortic radius: median lateral distance to the wall in a perpendicular slab
     twist_deg: float = 0.0         # max angle between the transported (RMF) anterior and the projected anterior: zero on a planar curve
     info: dict = field(default_factory=dict)
 
@@ -201,6 +201,42 @@ def _snap_to_mask(mask: np.ndarray, idx: np.ndarray) -> np.ndarray:
     return lo + local[int(np.argmin(np.linalg.norm(local + lo - idx, axis=1)))]
 
 
+def boundary_with_normals(cand: Candidates, din: np.ndarray) -> tuple:
+    """(boundary voxels in mm (B, 3), unit outward normals in mm (B, 3)) of the working mask."""
+    bidx = mask_boundary_voxels(cand.mask)
+    bmm = io_utils.index_to_mm(cand.image, bidx.astype(float))
+    bnorm_idx = _boundary_normals(din, bidx, cand.spacing)
+    # index-space normals to mm: the working image direction matrix (row-major xyz) applied to the xyz vector
+    D = np.array(cand.image.GetDirection()).reshape(3, 3)
+    return bmm, (D @ bnorm_idx[:, ::-1].T).T
+
+
+def wall_radius_profile(pts: np.ndarray, tang: np.ndarray, boundary: tuple, fallback: np.ndarray,
+                        slab_mm: float = config.CENTRELINE_STEP_MM) -> np.ndarray:
+    """Local aortic radius at each centreline point: the median lateral distance to the lateral-wall
+    boundary voxels (normal more than END_FACE_NORMAL_DEG from the tangent, so the cut faces do not
+    count) inside a slab of +-slab_mm along the tangent. The inside distance transform cannot give
+    this near a cut: there it measures the face, and the profile would ramp to zero at each end."""
+    bmm, bnorm = boundary
+    out = np.array(fallback, float).copy()
+    if len(bmm) == 0 or len(pts) == 0:
+        return out
+    cos_face = np.cos(np.radians(config.END_FACE_NORMAL_DEG))
+    for i, (c, t) in enumerate(zip(pts, tang)):
+        d = bmm - c[None, :]
+        along = d @ t
+        sel = np.abs(along) <= slab_mm
+        if not sel.any():
+            continue
+        lateral_wall = np.abs(bnorm[sel] @ t) < cos_face
+        if not lateral_wall.any():
+            continue
+        dd = d[sel][lateral_wall]
+        lat = np.linalg.norm(dd - (dd @ t)[:, None] * t[None, :], axis=1)
+        out[i] = float(np.median(lat))
+    return out
+
+
 def _boundary_normals(din: np.ndarray, bidx: np.ndarray, spacing: np.ndarray) -> np.ndarray:
     """Unit outward normals at boundary voxels: minus the central-difference gradient of the
     inside distance (index space scaled to mm)."""
@@ -290,7 +326,7 @@ def slice_centroid_polyline(cand: Candidates) -> np.ndarray:
     return io_utils.index_to_mm(cand.image, idx)
 
 
-def geodesic_polyline(cand: Candidates, din: np.ndarray, info: dict) -> np.ndarray:
+def geodesic_polyline(cand: Candidates, din: np.ndarray, boundary: tuple, info: dict) -> np.ndarray:
     """Steps 1 to 3 of the module docstring: rim-to-rim geodesic path, cut to its central part and
     capped with the two end-face centroids. Returns (k, 3) mm points, unordered in z.
 
@@ -313,12 +349,7 @@ def geodesic_polyline(cand: Candidates, din: np.ndarray, info: dict) -> np.ndarr
     if len(core_mm) < 3:
         return core_mm
 
-    bidx = mask_boundary_voxels(cand.mask)
-    bmm = io_utils.index_to_mm(cand.image, bidx.astype(float))
-    bnorm_idx = _boundary_normals(din, bidx, sp)
-    # index-space normals to mm: the working image direction matrix (row-major xyz) applied to the xyz vector
-    D = np.array(cand.image.GetDirection()).reshape(3, 3)
-    bnorm = (D @ bnorm_idx[:, ::-1].T).T
+    bmm, bnorm = boundary
 
     arc = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(core_mm, axis=0), axis=1))])
     total = float(arc[-1])
@@ -358,7 +389,7 @@ def geodesic_polyline(cand: Candidates, din: np.ndarray, info: dict) -> np.ndarr
 # ------------------------------------------------------------------ build
 
 
-def _finish(cand: Candidates, pts_mm: np.ndarray, din: np.ndarray, method: str, info: dict) -> Frame:
+def _finish(cand: Candidates, pts_mm: np.ndarray, din: np.ndarray, boundary: tuple, method: str, info: dict) -> Frame:
     pts = smooth_polyline(pts_mm)
     if len(pts) > 1 and pts[0, 2] < pts[-1, 2]:        # superior (+z in LPS) first
         pts = pts[::-1].copy()
@@ -389,7 +420,8 @@ def _finish(cand: Candidates, pts_mm: np.ndarray, din: np.ndarray, method: str, 
     e3 = np.cross(e12, tang)
     length = float(arc[-1]) if k else 0.0
     ci = np.clip(idx, 0, np.array(din.shape) - 1)
-    radius = ndimage.map_coordinates(din, ci.T, order=1, mode="nearest") if k else np.zeros(0)
+    inside = ndimage.map_coordinates(din, ci.T, order=1, mode="nearest") if k else np.zeros(0)
+    radius = wall_radius_profile(pts, tang, boundary, inside) if k else np.zeros(0)
     fr = Frame(centreline_mm=pts, centreline_idx=idx, tangents=tang, arc_mm=arc, length_mm=length,
                endpoints_mm=np.array([pts[0], pts[-1]]), endpoint_idx_zyx=np.array([idx[0], idx[-1]]),
                tortuosity=float(length / chord) if chord > 0 else 1.0, method=method,
@@ -401,16 +433,17 @@ def _finish(cand: Candidates, pts_mm: np.ndarray, din: np.ndarray, method: str, 
 
 def build(cand: Candidates) -> Frame:
     din = inside_distance(cand.mask, cand.spacing)
+    boundary = boundary_with_normals(cand, din)
     info = {}
     try:
-        pts = geodesic_polyline(cand, din, info)
+        pts = geodesic_polyline(cand, din, boundary, info)
         method = "geodesic"
     except Exception as e:  # noqa: BLE001 - the engine needs endpoints whatever happens
         log.warning("geodesic centreline failed (%s: %s); falling back to slice centroids", type(e).__name__, e)
         pts = slice_centroid_polyline(cand)
         method = "slice_centroids"
         info["fallback_error"] = f"{type(e).__name__}: {e}"
-    return _finish(cand, pts, din, method, info)
+    return _finish(cand, pts, din, boundary, method, info)
 
 
 # ------------------------------------------------------------------ spacing

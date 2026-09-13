@@ -49,3 +49,15 @@ def test_anisotropic_phantom_end_to_end(phantom_aniso):
     assert meta["grid"]["resampled"] is True
     assert len(result["daughters"]) == 1
     assert np.linalg.norm(np.subtract(result["daughters"][0]["ostium_xyz_mm"], phantom_aniso["ostium_mm"])) < 3.0
+
+
+def test_report_failure_never_costs_the_prediction(phantom, tmp_path, monkeypatch):
+    import pipeline
+    import report
+
+    def boom(*a, **k):
+        raise RuntimeError("no display")
+    monkeypatch.setattr(report, "write_all", boom)
+    result, meta = pipeline.run(phantom["image"], phantom["mask"], "subject000", report_dir=str(tmp_path / "rep"))
+    assert len(result["daughters"]) == 1
+    assert "no display" in meta["report_error"]

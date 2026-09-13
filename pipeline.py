@@ -80,6 +80,8 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
     with _timed(meta, "frame"):
         fr = frame_mod.build(cand)
     meta["segment_length_mm"] = round(fr.length_mm, 1)
+    meta["frame"] = {"method": fr.method, "tortuosity": round(fr.tortuosity, 3), "twist_deg": round(fr.twist_deg, 1),
+                     "endpoints_mm": [[round(float(v), 1) for v in e] for e in fr.endpoints_mm], **fr.info}
     with _timed(meta, "ostium"):
         ostia = ostium.locate(cand, inst)
     with _timed(meta, "tracing"):
@@ -107,8 +109,14 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
     for d, label in zip(result["daughters"], [l for l in fres.kept if traces[l].seed_mm is not None]):
         meta["label_to_branch"][str(label)] = d["instance_id"]
     if report_dir:
+        # the report is display only: a failure here is logged and must never cost the JSON
+        # (run.py replaces the result with an empty daughters list on any exception)
         with _timed(meta, "report"):
-            meta["report_files"] = report.write_all(cand, result, fr, report_dir, case_id)
+            try:
+                meta["report_files"] = report.write_all(cand, result, fr, report_dir, case_id, meta=meta)
+            except Exception as e:  # noqa: BLE001
+                log.exception("report generation failed; the prediction is unaffected")
+                meta["report_error"] = f"{type(e).__name__}: {e}"
     meta["timings_s"]["total"] = round(time.perf_counter() - t_all, 3)
     log.info("%s: %d daughters in %.1f s", case_id, len(result["daughters"]), meta["timings_s"]["total"])
     return result, meta
