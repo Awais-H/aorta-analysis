@@ -1,11 +1,14 @@
 """Review aids for looking at a case by eye in ITK-SNAP or 3D Slicer.
 
 Writes, on the CT's native grid:
-  <out>/subjectNNN_pred_markers.nii.gz   2 mm spheres at each predicted ostium, label = branch number
+  <out>/subjectNNN_pred_markers.nii.gz   2 mm spheres: kept branches as labels 1..N (green in the label file),
+                                         rejected wall patches as labels 101.. (red), so both directions of
+                                         error are on screen at once
   <out>/subjectNNN_ref_markers.nii.gz    the same for the reference ostia (label = reference number), if any
-  <out>/subjectNNN_review.txt            one line per predicted branch: native voxel index (x, y, z) of the
-                                         ostium for the slice sliders, clock, height, diameter, path, flags,
-                                         nearest reference and its distance
+  <out>/subjectNNN_labels.txt            ITK-SNAP label descriptions (Segmentation -> Import Label Descriptions)
+  <out>/subjectNNN_review.txt            kept branches: native voxel index (x, y, z) of the ostium for the
+                                         slice sliders, clock, height, diameter, path, flags, nearest
+                                         reference; then every rejected patch with its rule hits
 
     python review_markers.py --cases 21 22 --pred-dir out/review --out out/review
 """
@@ -59,20 +62,35 @@ def main(argv=None):
             pred = json.load(f)
         meta = json.load(open(meta_path, encoding="utf-8")) if os.path.exists(meta_path) else {}
         ds = pred["daughters"]
-        sitk.WriteImage(paint_spheres(image, [d["ostium_xyz_mm"] for d in ds], list(range(1, len(ds) + 1))),
-                        os.path.join(args.out, f"{cf['case_id']}_pred_markers.nii.gz"))
         ref = scorer.load_reference(n)
         refs = ref["daughters"] if ref else []
         if refs:
             sitk.WriteImage(paint_spheres(image, [r["ostium_xyz_mm"] for r in refs], list(range(1, len(refs) + 1))),
                             os.path.join(args.out, f"{cf['case_id']}_ref_markers.nii.gz"))
-        # frame for clock/height: rebuild the cheap front half
+        # rebuild the front half for the frame (clock/height) and the rejected patches' ostia
         import candidates
         import frame as frame_mod
+        import instances
+        import ostium
         img_full, mask_img, _ = io_utils.load_case(cf["image"], cf["mask"])
         cand = candidates.build(img_full, mask_img)
         fr = frame_mod.build(cand)
+        inst = instances.build(cand)
+        ostia = ostium.locate(cand, inst)
         branch_of_label = {v: k for k, v in meta.get("label_to_branch", {}).items()}
+        kept_labels = set(meta.get("label_to_branch", {}).keys())
+        rejected = [l for l in inst.labels_list if str(l) not in kept_labels]
+        # combined marker volume: kept 1..N, rejected 101..
+        pts = [d["ostium_xyz_mm"] for d in ds] + [ostia[l].mm for l in rejected]
+        labs = list(range(1, len(ds) + 1)) + [100 + k for k in range(1, len(rejected) + 1)]
+        sitk.WriteImage(paint_spheres(image, pts, labs), os.path.join(args.out, f"{cf['case_id']}_pred_markers.nii.gz"))
+        with open(os.path.join(args.out, f"{cf['case_id']}_labels.txt"), "w", encoding="utf-8") as f:
+            f.write("# ITK-SNAP label descriptions: IDX R G B A VIS MSH LABEL\n0 0 0 0 0 0 0 \"Clear Label\"\n")
+            for k, d in enumerate(ds, 1):
+                f.write(f"{k} 0 220 60 1 1 1 \"kept {d['instance_id']}\"\n")
+            for k, l in enumerate(rejected, 1):
+                rules = ",".join(sorted({rr for ll, rr, v in meta.get("rejections", []) if ll == l}))
+                f.write(f"{100 + k} 230 40 40 1 1 1 \"rejected patch {l} ({rules})\"\n")
         lines = [f"{cf['case_id']}: {len(ds)} predicted branches, {len(refs)} reference branches. "
                  "Voxel index is (x, y, z) zero-based on the native grid, for the ITK-SNAP slice sliders.",
                  "Clock: 12 anterior, 3 patient's left, 6 posterior, 9 patient's right. Height from the superior end of the mask.", ""]
@@ -90,6 +108,21 @@ def main(argv=None):
             lines.append(f"{d['instance_id']}  voxel (x={idx[0]}, y={idx[1]}, z={idx[2]})  clock {c:4.1f}  height {h:5.1f} mm  "
                          f"diam {m.get('origin_diameter_mm')} mm  radius {d['radius_mm']:.1f}  path {m.get('path_mm')} mm  "
                          f"departure {m.get('departure_mm')}  flags {flags}  {near}")
+        lines += ["", f"REJECTED wall patches ({len(rejected)}), marker label = 100 + row number. Rules per patch, then the measurements the rules saw."]
+        for k, l in enumerate(rejected, 1):
+            o = ostia[l]
+            idx = np.round(io_utils.mm_to_index(image, o.mm)).astype(int)[::-1]
+            h, c = fr.height_clock(o.mm)
+            hits = [f"{rr}={v}" for ll, rr, v in meta.get("rejections", []) if ll == l]
+            m = meta.get("measurements", {}).get(str(l), {})
+            near = ""
+            if refs:
+                dist = [np.linalg.norm(np.subtract(o.mm, r["ostium_xyz_mm"])) for r in refs]
+                j = int(np.argmin(dist))
+                if dist[j] <= config.MATCH_CUTOFF_MM:
+                    near = f"  <-- within 5 mm of ref {refs[j]['instance_id']} ({dist[j]:.1f} mm)"
+            lines.append(f"marker {100 + k:3d} patch {l:3d}  voxel (x={idx[0]}, y={idx[1]}, z={idx[2]})  clock {c:4.1f}  height {h:5.1f} mm  "
+                         f"wall {m.get('wall_voxels')} vox  diam {m.get('origin_diameter_mm')}  path {m.get('path_mm')}  rejected by {'; '.join(hits)}{near}")
         with open(os.path.join(args.out, f"{cf['case_id']}_review.txt"), "w", encoding="utf-8") as f:
             f.write("\n".join(lines) + "\n")
         print("\n".join(lines))
