@@ -33,6 +33,8 @@ what remains, and how to work.
 | Frame | `frame.py` | done; geodesic centreline, end-face endpoints (rule 1), anatomical clock, radius profile, spacing |
 | Report | `report.py` | done; verification PNG, clock map PNG, self-contained HTML with flags, spacing and Plotly 3D |
 | Scorer and tools | `scorer.py`, `sweeps.py`, `gallery.py`, `review_markers.py` | done |
+| Dense review views | `review_dense.py` | done; perpendicular sections along the path and wall-parallel reformats per candidate, the views that decided the 13 Sep adjudication |
+| 1.5 mm pseudo-labelled check | `coarse_check.py` | done; subjects 1 to 15 resampled to 1.5 mm and scored against their native predictions (`results/coarse_check.txt`) |
 
 Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 13 false
 positives, F1 0.69, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
@@ -44,7 +46,9 @@ false-positive review). Invariants on all 25 cases: no crash, 1.4 to 6.3 s wall 
 `results/dev_scores.txt`, `results/reference_ledger.txt`, `results/sweeps.txt`,
 `results/invariants.txt` (with peak memory per case), `results/leave_one_out.txt` (SPEC section 3, defence 3: the physical constants are
 the held-out optimum for eight of ten, and tuning the other two hurts held out), `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
-JSON for all 25 dev cases) and `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23).
+JSON for all 25 dev cases), `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23), `results/visual_checks/precision_review/` (the dense views behind the five verdicts below) and `results/coarse_check.txt` (the 1.5 mm check on subjects 1 to 15).
+
+Of the 13 false positives, after the adjudication by eye on 13 Sep (night): three are the looping vessel on 21, three borderline origins, two at the cut faces, four are real unannotated 3 mm lumbars on 21 and 22 (ours to keep; the references' gap), one is a passing contact of the inferior mesenteric artery on 22 26 mm below its own reported origin (ours, unfixed; no clean signature yet).
 
 ## Decisions made against the spec's first draft, with the evidence
 
@@ -104,6 +108,23 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
     stretch of the path is cut one radius in and the face (boundary voxels with normals within
     60 deg of the tangent) is averaged. Rule 1 picks the endpoints up automatically; the labelled
     scores did not move.
+19. **Four of the five unflagged false positives are real vessels and stay** (SPEC section 1,
+    adjudication by eye): subject 21 patches 7, 12, 14 and subject 22 patch 23 are 3 mm posterior
+    and posterolateral tubes, round in section out to 5 to 10 mm, with nothing on the far side of
+    their ostium along the wall; 21 patch 7 is one of the two structures case 21's notes leave
+    unresolved. Subject 22 patch 28 is a vessel passing in contact (a continuous band through the
+    ostium along the anterior-left wall, under the threshold for its first 2 mm): the inferior
+    mesenteric artery 26 mm below its own reported origin (reference b1). No rule: the mirror test
+    (bright voxels on the far side of the ostium) was measured on cases 16, 17, 19 to 23 and reads
+    high on two real vessels in a crowded shell; a rule needs a lumen-connected reverse march and
+    more than one negative example.
+20. **The 1.5 mm check says the hidden set's resolution costs about a fifth of the branches**
+    (`results/coarse_check.txt`, SPEC section 1): 66 of 80 native branches survive coarsening, 15
+    appear; ostium error 1.36 mm, the labelled cases' number; the losses are small vessels erased
+    or unfollowable and adjacent origins merged (the 19/b2 and 23/b2 classes at scale), the gains
+    are partial-volume bridges of vessels passing 1 to 2 mm from the wall. Only eligibility and
+    noise-floor rules flip; the structural rules hold. Nothing was tuned to it, and none of the
+    three classes has a fix that holds every labelled case today.
 
 ## Open, waiting on the organisers (sent 13 Sep, SPEC section 6)
 
@@ -117,36 +138,36 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
   sheets; one coincides with a structure case 21's notes list as unresolved.
 - Matching cutoff (we assume 5 mm), subjects 18/24/25 in or out, scoring machine OS and Python.
 
-## Next on `precision-review` (agreed 13 Sep, late)
+## Done on `precision-review` (13 Sep, night)
 
 The dev-set F1 has stopped measuring the engine: recall is 17 of 19 with both misses explained,
-and every remaining false positive is something the draft references cannot adjudicate. Two jobs
-that need no organiser answer, in this order:
+and every remaining false positive is something the draft references cannot adjudicate. The two
+jobs agreed for this branch are done and written up (decisions 19 and 20 above; SPEC section 1
+has the per-vessel verdicts and the coarse-check findings, D7 the two new tools):
 
-1. **Adjudicate the five unflagged false positives by eye.** Subject 21 patches 7, 12, 14 and
-   subject 22 patches 23, 28 (their measurements are under "false positives kept" in
-   `results/reference_ledger.txt`; branch ids in `results/predictions/`). For each: is there a
-   contrast-filled tube leaving the aortic lumen here that can be followed 5 mm? Use
-   `python gallery.py --cases 21 22 --pred-dir out/predictions` and `review_markers.py` with
-   ITK-SNAP (recipe in README; subject 22's threshold is 105 HU, so bone and disc are bright
-   there). Record each verdict in SPEC section 1 next to the false-positive review. A real vessel
-   means our precision is real and the number is the reference's gap; an artefact has a
-   signature we have not found, and gets a rule only with an anatomical argument and a full
-   regression (see "How to work").
-2. **The 1.5 mm pseudo-labelled check on subjects 1 to 15.** The hidden set is assumed to be
-   1.5 mm like cases 16 to 25. Resample each 0.8 mm case (CT linear, mask nearest neighbour,
-   SimpleITK, same physical frame) to 1.5 mm isotropic, run the pipeline on the resampled pair,
-   and score the coarse predictions against the native 0.8 mm predictions as pseudo-references
-   with `scorer.match` at the 5 mm cutoff: which branches are lost or gained at coarse
-   resolution, how the ostium error and direction error grow, which rules flip. Fifteen cases,
-   three times the labelled set, in the hidden set's regime. Report per case and aggregate in a
-   new `results/coarse_check.txt`, and write what it says into SPEC (a new findings block in
-   section 1 and a line in D7). Do not tune anything to it; it is a measurement.
+1. **The five unflagged false positives were adjudicated by eye** with `review_dense.py` (the
+   gallery sheets could not answer the question for 2 to 3 mm vessels at 1.5 mm voxels). Four
+   real, one passing contact. No pipeline change, so the scores, ledger, sweeps and invariants
+   stand; the figures are in `results/visual_checks/precision_review/`.
+2. **The 1.5 mm pseudo-labelled check ran on subjects 1 to 15** (`coarse_check.py`,
+   `results/coarse_check.txt`). Rerun it after any change to the front half or the tracer.
 
-Then, if time allows, the perturbation-stability check (mask eroded and dilated by one voxel,
-threshold shifted a few HU; which predictions flip) and the two cut-face candidates (21 patch 8,
-20 patch 4) against the "flat crop ends are not origins" rule, counting first how many kept
-branches on all 25 cases have their ostium voxel on a face.
+## Next on `precision-review`
+
+Neither needs an organiser answer:
+
+1. **The perturbation-stability check**: mask eroded and dilated by one voxel, threshold shifted a
+   few HU; which predictions flip. Same shape as `coarse_check.py` (native predictions as the
+   pseudo-reference, `scorer.match` at 5 mm, fates of the nearest patch in both directions); the
+   resample step becomes a mask morphology or a threshold offset.
+2. **The two cut-face candidates** (21 patch 8, 20 patch 4) against the "flat crop ends are not
+   origins" rule, counting first how many kept branches on all 25 cases have their ostium voxel
+   on a face.
+
+Two candidate rules are recorded with their evidence and deliberately not armed, each waiting
+for a second example: the passing-vessel signature (22 patch 28, decision 19; needs a
+lumen-connected reverse march) and the bridged-contact class the coarse check exposed (seven of
+its fifteen gains; needs the followability test D5 already asks for).
 
 ## What remains, in order
 
@@ -176,6 +197,13 @@ branches on all 25 cases have their ostium voxel on a face.
   out/review/subjectNNN.json --report-dir out/review` gives the clock map, the projections and the
   HTML with the 3D view; then `python gallery.py --cases NN --pred-dir out/review` and read
   the sheets in `out/gallery/`; `review_markers.py` writes ITK-SNAP overlays (recipe in README).
+  For one candidate that the sheet cannot settle (a 2 to 3 mm vessel at 1.5 mm voxels), `python
+  review_dense.py --case NN --labels L` (wall-patch labels as in the ledger) or `--branches
+  branch_00k`: a daughter is a round dot at the centre of the perpendicular sections that persists
+  to 5 mm; a vessel passing in contact is a band through the ostium on the wall-parallel planes.
+- Coarse data files: subjects 16 to 25 store the CT as `origNN.nii.gz`, the mask as `maskNN.nii`
+  (gzip inside); `scorer.case_files` globs both, but a hand-typed run.py command must use the
+  right extension.
 - Judge every rule against anatomy and the annotations first, the numbers second. Do not change a
   constant to improve a score; run the sweep and keep the physical value unless the curve says
   the constant does not matter.
