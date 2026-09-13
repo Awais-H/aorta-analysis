@@ -31,6 +31,17 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    the labelled cases carry 1 to 4 ml basins), and the opened component is one sheet
                    around most of the aorta (5 to 17 ml). Within 10 mm of the ostium every labelled
                    reference is under 0.8 ml.
+   bone            the thresholded cross-section at the seed reaches the edge of the
+                   CROSS_SECTION_HALF_WIDTH_MM window (16 mm across) AND contains cortex (voxels over
+                   BONE_HU_LUMEN_RATIO x the lumen median). A daughter's lumen 5 mm out is a closed
+                   region no wider than the largest daughter; a vertebral body runs out of the
+                   window and carries a cortical shell far brighter than blood. Reviewed on the
+                   gallery sheets: on subject 22 (threshold 105 HU, so cancellous bone is "bright")
+                   all eight vertebral-contact candidates show both signs and none of the eleven
+                   real vessels shows either; on subject 16 the four posterior candidates at 500 to
+                   1200 HU. Reaching the edge WITHOUT cortex is flagged section_merged and kept:
+                   reference 19/b3 (2.7 mm) does that because at 1.5 mm voxels its section merges
+                   with an adjacent vessel at lumen brightness.
    area_growth     FLAG ONLY for now: cross-section more than AREA_GROWTH_MAX x larger at 4 to 5 mm
                    than at the first step clear of the wall layer. On the labelled cases the only
                    hits are real 4.5 mm branches whose first 3 mm read narrow at 1.5 mm voxels, and
@@ -38,7 +49,12 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    (subjects 8, 12) have been reviewed in the failure gallery.
 5. (invariant, no rule) branches of branches cannot occur: instances need wall contact.
 6. duplicate       two surviving ostia within DUPLICATE_MM with directions within
-                   DUPLICATE_ANGLE_DEG: keep the larger wall patch.
+                   DUPLICATE_ANGLE_DEG, or on the same working voxel whatever their directions (one
+                   origin is one instance; a trunk that splits still has one ostium), or whose
+                   traced paths come within DUPLICATE_MM of each other (two daughters cannot share
+                   a lumen: a wall-hugging vessel can produce several contact patches along its
+                   length, e.g. subject 17, and each traces into the same vessel): keep the larger
+                   wall patch.
 7. tiny_patch      wall patch under MIN_WALL_PATCH_VOXELS;
    origin_diameter_mm  area-equivalent diameter of the thresholded cross-section perpendicular to
                    the path at the first plane clear of the wall layer (WALL_LAYER_MM out; closer
@@ -148,26 +164,41 @@ def origin_diameter_mm(cand: Candidates, trace) -> tuple:
     d = tracing.chord_direction(trace.path_mm[0], p)
     idx = io_utils.mm_to_index(cand.image, p)
     d_idx = io_utils.mm_vector_to_index(cand.image, p, d)
-    _, r_area, r_ins, flag = tracing.radius_at(cand, idx, d_idx, None)
+    _, r_area, r_ins, flag, _, _ = tracing.radius_at(cand, idx, d_idx, None)
     if r_area is None:
         return None, flag
     return 2.0 * r_area, flag
 
 
+def _path_gap_mm(p: np.ndarray, q: np.ndarray) -> float:
+    """Smallest distance between two polylines' points (mm); paths are sampled every TRACE_STEP_MM."""
+    if p is None or q is None or len(p) == 0 or len(q) == 0:
+        return float("inf")
+    return float(np.linalg.norm(p[:, None, :] - q[None, :, :], axis=2).min())
+
+
 def merge_duplicates(survivors: list) -> tuple:
-    """survivors: [(label, ostium_mm, direction_xyz, wall_area_mm2)]. Larger patch wins.
+    """survivors: [(label, ostium_mm, direction_xyz, wall_area_mm2[, path_mm])]. Larger patch wins.
     Returns (kept labels, [(label, 'duplicate', distance, kept_label)])."""
     order = sorted(survivors, key=lambda s: -s[3])
     kept, rejected = [], []
-    for label, o, d, a in order:
+    for item in order:
+        label, o, d, a = item[:4]
+        path = item[4] if len(item) > 4 else None
         dup = None
-        for k_label, k_o, k_d, _ in kept:
+        for k in kept:
+            k_label, k_o, k_d, _ = k[:4]
+            k_path = k[4] if len(k) > 4 else None
             dist = float(np.linalg.norm(np.subtract(o, k_o)))
-            if dist < config.DUPLICATE_MM and _angle(d, k_d) < config.DUPLICATE_ANGLE_DEG:
+            if dist <= config.ISO_SPACING_MM or (dist < config.DUPLICATE_MM and _angle(d, k_d) < config.DUPLICATE_ANGLE_DEG):
                 dup = (k_label, dist)
                 break
+            gap = _path_gap_mm(path, k_path)
+            if gap < config.DUPLICATE_MM:
+                dup = (k_label, gap)
+                break
         if dup is None:
-            kept.append((label, o, d, a))
+            kept.append(item)
         else:
             rejected.append((label, "duplicate", dup[1], dup[0]))
     return [k[0] for k in kept], rejected
@@ -247,6 +278,13 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
         if asp > config.PATCH_ASPECT_RATIO_MAX:
             flags.append("elongated_patch")
 
+        # 4: the seed cross-section runs out of the window with a cortical shell: bone
+        m["cortex_fraction"] = round(tr.section_cortex_fraction, 3)
+        if tr.section_fills_window and tr.section_cortex_fraction > 0:
+            hits.append(("bone", float(tr.section_cortex_fraction)))
+        elif tr.section_fills_window:
+            flags.append("section_merged")
+
         # 4: area growth along the march (flag only, see module docstring)
         g = area_growth(tr.section_areas_mm2)
         m["area_growth"] = None if g is None else round(g, 2)
@@ -268,7 +306,7 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
         res.rejections += [(label, r, v) for r, v in hits]
         res.flags[label], res.measurements[label] = flags, m
         if not hits:
-            survivors.append((label, ost.mm, tr.direction_xyz, inst.wall_area_mm2[label]))
+            survivors.append((label, ost.mm, tr.direction_xyz, inst.wall_area_mm2[label], tr.path_mm))
 
     # 6: duplicates among survivors
     kept, dups = merge_duplicates(survivors)

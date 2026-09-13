@@ -49,6 +49,8 @@ class Trace:
     radius_flag: str | None = None  # "inscribed_fallback" when the area radius failed the sanity check, "no_cross_section" when none was found
     radius_area_mm: float | None = None
     radius_inscribed_mm: float | None = None
+    section_fills_window: bool = False  # the seed cross-section reaches the CROSS_SECTION_HALF_WIDTH_MM window edge (D6 rule 4)
+    section_cortex_fraction: float = 0.0  # fraction of the seed cross-section over BONE_HU_LUMEN_RATIO x the lumen median: cortical bone or calcium (D6 rule 4)
     pca_chord_angle_deg: float | None = None  # diagnostic: angle between the PCA axis of the first 5 mm of path and the chord
     march_length_mm: float = 0.0   # what the march achieved before any fallback
     section_areas_mm2: list | None = None  # cross-section area (main blob voxels x voxel area) at each march step, 1 mm apart; D6 rule 4
@@ -190,7 +192,7 @@ def axis_path(cand: Candidates, region_idx: np.ndarray, ost: Ostium) -> list:
 def radius_at(cand: Candidates, seed_idx: np.ndarray, dir_idx: np.ndarray, local_aortic_radius_mm: float | None):
     """Area-equivalent and inscribed-circle radius of the thresholded cross-section on a plane
     perpendicular to dir_idx at seed_idx, sampled at RADIUS_PLANE_SPACING_MM.
-    Returns (radius_mm, area_radius, inscribed_radius, flag)."""
+    Returns (radius_mm, area_radius, inscribed_radius, flag, fills_window, cortex_fraction)."""
     sp = float(cand.spacing[0])
     h = config.RADIUS_PLANE_SPACING_MM
     u, w = _perp_basis(_unit(dir_idx.astype(float)))
@@ -204,23 +206,25 @@ def radius_at(cand: Candidates, seed_idx: np.ndarray, dir_idx: np.ndarray, local
     bright = (ct > cand.threshold_hu) & (inside == 0)
     lab, k = ndimage.label(bright, structure=np.ones((3, 3), bool))
     if k == 0:
-        return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section"
+        return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section", False, 0.0
     centre = (n // 2, n // 2)
     if lab[centre] > 0:
         comp = lab == lab[centre]
     else:
         dist_to_bright = ndimage.distance_transform_edt(lab == 0) * h
         if dist_to_bright[centre] > config.ISO_SPACING_MM:
-            return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section"
+            return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section", False, 0.0
         yy, xx = np.where(lab > 0)
         j = int(np.argmin((yy - centre[0]) ** 2 + (xx - centre[1]) ** 2))
         comp = lab == lab[yy[j], xx[j]]
     r_area = float(np.sqrt(comp.sum() * h * h / np.pi))
     r_ins = float(ndimage.distance_transform_edt(comp).max() * h)
+    fills = bool(comp[0, :].any() or comp[-1, :].any() or comp[:, 0].any() or comp[:, -1].any())
+    cortex = float((ct[comp] > config.BONE_HU_LUMEN_RATIO * cand.hu_stats["hu_in_mask_median"]).mean())
     r, flag = r_area, None
     if local_aortic_radius_mm is not None and r_area > config.RADIUS_AORTA_FRACTION_MAX * local_aortic_radius_mm:
         r, flag = r_ins, "inscribed_fallback"
-    return float(np.clip(r, *config.RADIUS_CLAMP_MM)), r_area, r_ins, flag
+    return float(np.clip(r, *config.RADIUS_CLAMP_MM)), r_area, r_ins, flag, fills, cortex
 
 
 def local_aortic_radius(inside_edt: np.ndarray, spacing: np.ndarray, at_idx: np.ndarray) -> float | None:
@@ -260,14 +264,14 @@ def trace_one(cand: Candidates, ost: Ostium, region_idx: np.ndarray, inside_edt:
     seed_idx = io_utils.mm_to_index(cand.image, seed)
     dir_idx = io_utils.mm_vector_to_index(cand.image, seed, direction)
     aortic_r = local_aortic_radius(inside_edt, sp, ost.index_zyx) if inside_edt is not None else None
-    radius, r_area, r_ins, flag = radius_at(cand, seed_idx, dir_idx, aortic_r)
+    radius, r_area, r_ins, flag, fills, cortex = radius_at(cand, seed_idx, dir_idx, aortic_r)
     first = path_mm[np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(path_mm, axis=0), axis=1))]) <= config.SEED_DISTANCE_MM + 1e-9]
     pca = pca_direction(first, path_mm[0])
     pca_angle = float(np.degrees(np.arccos(np.clip(np.dot(pca, direction), -1, 1)))) if pca is not None else None
     return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=direction, radius_mm=radius,
                  path_length_mm=length, bifurcation=bif, method=method, stop_reason=reason, radius_flag=flag,
                  radius_area_mm=r_area, radius_inscribed_mm=r_ins, pca_chord_angle_deg=pca_angle, march_length_mm=march_len,
-                 section_areas_mm2=areas)
+                 section_areas_mm2=areas, section_fills_window=fills, section_cortex_fraction=cortex)
 
 
 def trace_all(cand: Candidates, inst: Instances, ostia: dict) -> dict:

@@ -57,6 +57,7 @@ PATCH_ASPECT_RATIO_MAX = 3.0  # rule 3 secondary: a wall patch elongated more th
 STRIP_END_WINDOW_MM = 4.0   # D4 hugging branch: the ostium of an elongated patch (aspect over PATCH_ASPECT_RATIO_MAX) lies in the end window that hugs the wall most tightly; 4 mm covers the strip's own width (2 to 4 mm at lumbar scale) and is under half of any strip that passes the aspect test
 AREA_GROWTH_MAX = 2.0       # rule 4: a cross-section that more than doubles over the first 5 mm is organ or bowel, not a tube
 REGION_VOLUME_CAP_ML = 1.0  # rule 4: no proximal branch segment within 15 mm approaches 1 ml, but a vertebral body or heart chamber does
+BONE_HU_LUMEN_RATIO = 1.5   # rule 4: contrast-filled blood is the brightest soft tissue in the scan; voxels over 1.5 x the lumen median in a cross-section are cortical bone or calcium. Bone only becomes a candidate on poorly enhanced scans (lumen about 230 HU, threshold about 105, so cancellous bone clears it), and there the cortex reads 400 to 1200 HU
 DUPLICATE_MM = 4.0          # rule 6: two ostia within 4 mm are one opening; separate lumbar pairs are further apart than that
 DUPLICATE_ANGLE_DEG = 20.0  # rule 6: and their directions within 20 deg; genuinely separate nearby origins diverge
 MIN_ORIGIN_DIAMETER_MM = 2.0  # rule 7: the reference policy's minimum estimated lumen diameter at the origin (docs/references, minimum_origin_diameter_mm); equivalent diameter of the wall patch

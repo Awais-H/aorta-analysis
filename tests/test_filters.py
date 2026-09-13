@@ -110,9 +110,22 @@ def test_merge_duplicates():
     b = (2, [0, 0, 3.0], [0.98, 0.2, 0], 20.0)     # 3 mm away, 11 deg: duplicate of 1
     c = (3, [0, 0, 3.0], [0, 1, 0], 20.0)          # 3 mm away but 90 deg: separate origin
     d = (4, [0, 0, 10.0], [1, 0, 0], 80.0)         # far away
-    kept, rej = filters.merge_duplicates([a, b, c, d])
+    e = (5, [0, 0, 0.5], [0, -1, 0], 10.0)         # same voxel as 1, opposite direction: still one origin
+    kept, rej = filters.merge_duplicates([a, b, c, d, e])
     assert kept == [4, 1, 3]
-    assert rej == [(2, "duplicate", 3.0, 1)]
+    assert (2, "duplicate", 3.0, 1) in rej and (5, "duplicate", 0.5, 1) in rej
+
+
+def test_bone_at_the_seed_is_rejected_but_a_vessel_merge_is_only_flagged(cand, inst, ostia, traces):
+    import copy
+    t = copy.copy(traces[1])
+    t.section_fills_window = True
+    t.section_cortex_fraction = 0.3
+    res = filters.apply(cand, inst, ostia, {1: t}, frame_mod.build(cand))
+    assert res.kept == [] and any(r == "bone" for _, r, _ in res.rejections)
+    t.section_cortex_fraction = 0.0
+    res = filters.apply(cand, inst, ostia, {1: t}, frame_mod.build(cand))
+    assert res.kept == [1] and "section_merged" in res.flags[1]
 
 
 def test_area_growth():
@@ -159,3 +172,22 @@ def test_area_growth_is_a_flag_not_a_rejection(cand, inst, ostia, traces):
     res = filters.apply(cand, inst, ostia, {1: grown}, frame_mod.build(cand))
     assert res.kept == [1] and "area_growth" in res.flags[1]
     assert res.measurements[1]["area_growth"] > config.AREA_GROWTH_MAX
+
+
+def test_merge_duplicates_by_shared_path():
+    """Two patches 8 mm apart on one wall-hugging vessel: their paths run into each other."""
+    path_a = np.array([[0, 0, t] for t in range(0, 11)], float)          # along +z from the origin
+    path_b = np.array([[0.5, 0, 8 + t] for t in range(0, 11)], float)    # starts 8 mm along the same vessel
+    path_c = np.array([[t, 0, 8] for t in range(0, 11)], float)          # a different vessel: perpendicular, 8 mm off
+    a = (1, [0, 0, 0], [0, 0, 1], 50.0, path_a)
+    b = (2, [0.5, 0, 8], [0, 0, 1], 20.0, path_b)
+    c = (3, [0, 0, 8], [1, 0, 0], 30.0, path_c)
+    kept, rej = filters.merge_duplicates([a, b, c])
+    assert 1 in kept and 2 not in kept
+    assert any(r[0] == 2 and r[3] == 1 for r in rej)
+    # c's ostium is 8 mm from a's, but its path passes within 4 mm of a's path at (0..3, 0, 8): merged too
+    assert 3 not in kept
+    # a genuinely separate vessel whose path stays clear survives
+    d = (4, [0, 6, 0], [0, 1, 0], 30.0, np.array([[0, 6 + t, 0] for t in range(0, 11)], float))
+    kept, rej = filters.merge_duplicates([a, d])
+    assert kept == [1, 4]

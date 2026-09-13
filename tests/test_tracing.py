@@ -107,15 +107,32 @@ def test_no_voxels_gives_no_seed(cand, ostia):
 def test_radius_at_on_the_phantom(cand, phantom):
     seed_idx = io_utils.mm_to_index(cand.image, phantom["seed_mm"])
     d = io_utils.mm_vector_to_index(cand.image, phantom["seed_mm"], phantom["direction"])
-    r, r_area, r_ins, flag = tracing.radius_at(cand, seed_idx, d, local_aortic_radius_mm=6.0)
+    r, r_area, r_ins, flag, fills, cortex = tracing.radius_at(cand, seed_idx, d, local_aortic_radius_mm=6.0)
+    assert fills is False and cortex == 0.0
     # the phantom threshold (280 HU on a 300 HU lumen) sits at the voxel centres, so the interpolated
     # cross-section is about half a voxel small; real thresholds are far below the lumen value
     assert abs(r_area - BRANCH_R) < 0.5 and abs(r_ins - BRANCH_R) < 0.5
     assert flag is None and abs(r - r_area) < 1e-9
     # sanity rule: a tiny "aorta" makes the branch look too big, so the inscribed circle is used
-    r2, _, _, flag2 = tracing.radius_at(cand, seed_idx, d, local_aortic_radius_mm=1.0)
+    r2, _, _, flag2, _, _ = tracing.radius_at(cand, seed_idx, d, local_aortic_radius_mm=1.0)
     assert flag2 == "inscribed_fallback" and abs(r2 - r_ins) < 1e-9
     # far from any bright voxel there is no cross-section
     far = seed_idx + np.array([0.0, 12.0, 0.0]) / cand.spacing
-    r3, _, _, flag3 = tracing.radius_at(cand, far, d, None)
+    r3, _, _, flag3, _, _ = tracing.radius_at(cand, far, d, None)
     assert flag3 == "no_cross_section" and r3 == config.RADIUS_CLAMP_MM[0]
+
+
+def test_section_fills_window_on_a_slab(cand):
+    """A plane through a wide bright slab (bone-like) runs out of the window; the phantom branch does not."""
+    import copy
+    c = copy.copy(cand)
+    ct = cand.ct.copy()
+    ct[:, :, 5:9] = 500.0  # a bright slab 4 voxels thick spanning the whole y-z extent, away from the aorta
+    c.ct = ct
+    seed_idx = np.array([cand.mask.shape[0] / 2, cand.mask.shape[1] / 2, 7.0])
+    _, _, _, _, fills, cortex = tracing.radius_at(c, seed_idx, np.array([0.0, 0.0, 1.0]), None)
+    assert fills is True and cortex > 0.9  # 500 HU against a 300 HU lumen: cortical bone
+    ct[:, :, 5:9] = 320.0  # the same slab at lumen brightness: reaches the edge but is not bone
+    c.ct = ct
+    _, _, _, _, fills, cortex = tracing.radius_at(c, seed_idx, np.array([0.0, 0.0, 1.0]), None)
+    assert fills is True and cortex == 0.0

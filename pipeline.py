@@ -93,7 +93,7 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
                            for f in sorted({t.radius_flag for t in traces.values() if t.radius_flag})}
     meta["per_branch"] = {str(l): {"ostium_method": ostia[l].method, "trace_method": t.method, "stop": t.stop_reason,
                                    "path_mm": t.path_length_mm, "march_mm": t.march_length_mm, "bifurcation": t.bifurcation,
-                                   "radius_mm": round(t.radius_mm, 2), "radius_flag": t.radius_flag,
+                                   "radius_mm": round(t.radius_mm, 2), "radius_flag": t.radius_flag, "fills_window": t.section_fills_window, "cortex": round(t.section_cortex_fraction, 3),
                                    "pca_chord_deg": None if t.pca_chord_angle_deg is None else round(t.pca_chord_angle_deg, 1)}
                           for l, t in traces.items()}
     with _timed(meta, "filters"):
