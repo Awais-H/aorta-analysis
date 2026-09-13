@@ -156,7 +156,7 @@ a {{ color: inherit; }}
   padding: 0 24px; height: 64px;
 }}
 .brand {{ margin-right: auto; }}
-.brand h1 {{ font-size: 30px; font-weight: 750; margin: 0; letter-spacing: -0.03em; color: {CYAN}; }}
+.brand h1 {{ font-size: 38px; font-weight: 750; margin: 0; letter-spacing: -0.03em; color: {CYAN}; }}
 
 .picker {{ display: flex; align-items: center; gap: 8px; }}
 .picker label {{ font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: {MUTED}; }}
