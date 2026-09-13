@@ -46,3 +46,11 @@ def test_challenge_case_wraps_parent_and_daughters():
     assert len(out["daughters"]) == 1
     assert "meta" not in out
     assert out["daughters"][0]["seed_xyz_mm"] == [0.0, 0.0, 5.0]
+
+
+def test_challenge_case_empty_daughters_still_has_parent():
+    out = challenge_case({"case_id": "subject000", "daughters": [], "meta": {"threshold_hu": 200}})
+    assert out["case_id"] == "subject000"
+    assert out["parent"] == {"instance_id": "aorta"}
+    assert out["daughters"] == []
+    assert "meta" not in out
