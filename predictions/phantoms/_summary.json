@@ -1,0 +1,82 @@
+[
+  {
+    "case": "phantom01_standard",
+    "daughters": 4,
+    "runtime_s": 1.025,
+    "peak_mb": 262.9,
+    "flags": [],
+    "rejected": {}
+  },
+  {
+    "case": "phantom02_arched",
+    "daughters": 2,
+    "runtime_s": 0.763,
+    "peak_mb": 401.4,
+    "flags": [],
+    "rejected": {}
+  },
+  {
+    "case": "phantom03_nearby_pair",
+    "daughters": 2,
+    "runtime_s": 0.672,
+    "peak_mb": 410.7,
+    "flags": [],
+    "rejected": {}
+  },
+  {
+    "case": "phantom04_common_trunk",
+    "daughters": 1,
+    "runtime_s": 0.489,
+    "peak_mb": 417.2,
+    "flags": [],
+    "rejected": {}
+  },
+  {
+    "case": "phantom05_daughter_of_daughter",
+    "daughters": 1,
+    "runtime_s": 0.567,
+    "peak_mb": 419.6,
+    "flags": [],
+    "rejected": {}
+  },
+  {
+    "case": "phantom06_short_stub",
+    "daughters": 0,
+    "runtime_s": 0.401,
+    "peak_mb": 419.8,
+    "flags": [
+      "mask_touches_roi_boundary"
+    ],
+    "rejected": {}
+  },
+  {
+    "case": "phantom07_leaking",
+    "daughters": 0,
+    "runtime_s": 0.463,
+    "peak_mb": 425.7,
+    "flags": [
+      "mask_touches_roi_boundary"
+    ],
+    "rejected": {
+      "leak": 1
+    }
+  },
+  {
+    "case": "phantom08_near_cut_face",
+    "daughters": 1,
+    "runtime_s": 0.678,
+    "peak_mb": 425.9,
+    "flags": [],
+    "rejected": {
+      "secondary_branch": 1
+    }
+  },
+  {
+    "case": "phantom09_no_branches",
+    "daughters": 0,
+    "runtime_s": 0.378,
+    "peak_mb": 426.0,
+    "flags": [],
+    "rejected": {}
+  }
+]

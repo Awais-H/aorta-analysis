@@ -1,0 +1,38 @@
+{
+  "phantom01_standard": {
+    "eligible_daughters": 4,
+    "tests": "four branches at four levels, distractors, two cut faces"
+  },
+  "phantom02_arched": {
+    "eligible_daughters": 2,
+    "tests": "curved parent: the frame must not degenerate"
+  },
+  "phantom03_nearby_pair": {
+    "eligible_daughters": 2,
+    "tests": "two origins 8 mm apart stay two instances"
+  },
+  "phantom04_common_trunk": {
+    "eligible_daughters": 1,
+    "tests": "a trunk dividing at 3 mm is one origin"
+  },
+  "phantom05_daughter_of_daughter": {
+    "eligible_daughters": 1,
+    "tests": "a vessel off a daughter is not a direct daughter"
+  },
+  "phantom06_short_stub": {
+    "eligible_daughters": 0,
+    "tests": "a bump dying at 3 mm fails the 5 mm rule"
+  },
+  "phantom07_leaking": {
+    "eligible_daughters": 0,
+    "tests": "a stub opening into a blob is discarded, not truncated"
+  },
+  "phantom08_near_cut_face": {
+    "eligible_daughters": 1,
+    "tests": "a real origin 14 mm from a cut face survives exclusion"
+  },
+  "phantom09_no_branches": {
+    "eligible_daughters": 0,
+    "tests": "a bare tube yields a valid empty list"
+  }
+}

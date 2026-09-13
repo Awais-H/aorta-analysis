@@ -1,0 +1,96 @@
+{
+  "case_id": "phantom03_nearby_pair",
+  "daughters": [
+    {
+      "arc_length_mm": 80.441,
+      "clock_position": "9:39",
+      "confidence": 0.957,
+      "direction_xyz": [
+        -0.937607,
+        -0.347694,
+        0.00138
+      ],
+      "flags": [],
+      "followed_mm": 10.0,
+      "instance_id": "branch_001",
+      "ostium_xyz_mm": [
+        -8.308,
+        -2.894,
+        98.338
+      ],
+      "parent_instance_id": "aorta",
+      "parent_radius_mm": 8.252,
+      "path_length_mm": 10.0,
+      "radius_mm": 2.373,
+      "seed_xyz_mm": [
+        -13.299,
+        -4.836,
+        98.272
+      ],
+      "stop_reason": "max"
+    },
+    {
+      "arc_length_mm": 88.488,
+      "clock_position": "2:21",
+      "confidence": 0.829,
+      "direction_xyz": [
+        0.937545,
+        -0.347485,
+        0.016217
+      ],
+      "flags": [
+        "radius_drop"
+      ],
+      "followed_mm": 10.0,
+      "instance_id": "branch_002",
+      "ostium_xyz_mm": [
+        8.724,
+        -3.178,
+        90.136
+      ],
+      "parent_instance_id": "aorta",
+      "parent_radius_mm": 8.145,
+      "path_length_mm": 10.0,
+      "radius_mm": 2.3,
+      "seed_xyz_mm": [
+        14.239,
+        -5.241,
+        90.289
+      ],
+      "stop_reason": "max"
+    }
+  ],
+  "meta": {
+    "calibration": {
+      "degenerate": false,
+      "mu_ao": 485.4,
+      "sigma_ao": 30.0,
+      "t_bg": -49.1,
+      "t_calcium": 605.5,
+      "t_lumen": 436.2
+    },
+    "candidates_generated": 2,
+    "candidates_rejected": {},
+    "case_flags": [],
+    "config_hash": "5824ff945b3b",
+    "peak_memory_mb": 410.7,
+    "runtime_seconds": 0.672,
+    "software": "branchseed",
+    "stage_seconds": {
+      "calibrate": 0.028,
+      "detect": 0.001,
+      "geometry": 0.058,
+      "load": 0.021,
+      "measure": 0.003,
+      "prefilter": 0.007,
+      "resolve": 0.005,
+      "roi": 0.002,
+      "trace": 0.264,
+      "wall_map": 0.283
+    },
+    "version": "1.0.0"
+  },
+  "parent": {
+    "instance_id": "aorta"
+  }
+}

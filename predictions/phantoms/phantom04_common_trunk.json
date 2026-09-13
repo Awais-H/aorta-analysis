@@ -1,0 +1,66 @@
+{
+  "case_id": "phantom04_common_trunk",
+  "daughters": [
+    {
+      "arc_length_mm": 90.04,
+      "clock_position": "12:00",
+      "confidence": 0.446,
+      "direction_xyz": [
+        0.02392,
+        -0.999714,
+        0.000357
+      ],
+      "flags": [],
+      "followed_mm": 6.5,
+      "instance_id": "branch_001",
+      "ostium_xyz_mm": [
+        -0.152,
+        -9.371,
+        90.228
+      ],
+      "parent_instance_id": "aorta",
+      "parent_radius_mm": 8.289,
+      "path_length_mm": 5.5,
+      "radius_mm": 3.478,
+      "seed_xyz_mm": [
+        -0.099,
+        -15.001,
+        90.267
+      ],
+      "stop_reason": "bifurcation"
+    }
+  ],
+  "meta": {
+    "calibration": {
+      "degenerate": false,
+      "mu_ao": 484.9,
+      "sigma_ao": 30.2,
+      "t_bg": -48.9,
+      "t_calcium": 605.9,
+      "t_lumen": 435.0
+    },
+    "candidates_generated": 1,
+    "candidates_rejected": {},
+    "case_flags": [],
+    "config_hash": "5824ff945b3b",
+    "peak_memory_mb": 417.2,
+    "runtime_seconds": 0.489,
+    "software": "branchseed",
+    "stage_seconds": {
+      "calibrate": 0.023,
+      "detect": 0.001,
+      "geometry": 0.049,
+      "load": 0.017,
+      "measure": 0.002,
+      "prefilter": 0.006,
+      "resolve": 0.002,
+      "roi": 0.002,
+      "trace": 0.102,
+      "wall_map": 0.285
+    },
+    "version": "1.0.0"
+  },
+  "parent": {
+    "instance_id": "aorta"
+  }
+}

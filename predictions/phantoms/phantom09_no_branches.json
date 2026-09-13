@@ -1,0 +1,37 @@
+{
+  "case_id": "phantom09_no_branches",
+  "daughters": [],
+  "meta": {
+    "calibration": {
+      "degenerate": false,
+      "mu_ao": 484.6,
+      "sigma_ao": 30.1,
+      "t_bg": -48.9,
+      "t_calcium": 604.8,
+      "t_lumen": 435.9
+    },
+    "candidates_generated": 0,
+    "candidates_rejected": {},
+    "case_flags": [],
+    "config_hash": "5824ff945b3b",
+    "peak_memory_mb": 426.0,
+    "runtime_seconds": 0.378,
+    "software": "branchseed",
+    "stage_seconds": {
+      "calibrate": 0.02,
+      "detect": 0.0,
+      "geometry": 0.041,
+      "load": 0.017,
+      "measure": 0.001,
+      "prefilter": 0.005,
+      "resolve": 0.0,
+      "roi": 0.001,
+      "trace": 0.0,
+      "wall_map": 0.294
+    },
+    "version": "1.0.0"
+  },
+  "parent": {
+    "instance_id": "aorta"
+  }
+}

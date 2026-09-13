@@ -1,0 +1,7 @@
+{
+  "case_id": "phantom09_no_branches",
+  "daughters": [],
+  "parent": {
+    "instance_id": "aorta"
+  }
+}
