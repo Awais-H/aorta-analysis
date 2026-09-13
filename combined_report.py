@@ -113,6 +113,27 @@ def _write_3d_assets(cases: list[dict]) -> None:
         c["fig_js"] = name
 
 
+def challenge_daughter(d: dict) -> dict:
+    """The challenge JSON object for one daughter — nothing internal, nothing extra."""
+    return {
+        "instance_id": d["instance_id"],
+        "parent_instance_id": d.get("parent_instance_id", "aorta"),
+        "ostium_xyz_mm": d["ostium_xyz_mm"],
+        "seed_xyz_mm": d["seed_xyz_mm"],
+        "radius_mm": d["radius_mm"],
+        "direction_xyz": d["direction_xyz"],
+    }
+
+
+def challenge_case(pred: dict) -> dict:
+    """The case-level challenge JSON (parent + daughters), for the copy-all control."""
+    return {
+        "case_id": pred["case_id"],
+        "parent": pred.get("parent") or {"instance_id": "aorta"},
+        "daughters": [challenge_daughter(d) for d in pred.get("daughters", [])],
+    }
+
+
 def _load_cases() -> list[dict]:
     """case_id, daughters and the PNGs that exist for it, ordered by case number."""
     cases = []
@@ -122,15 +143,21 @@ def _load_cases() -> list[dict]:
         with open(p, encoding="utf-8") as f:
             pred = json.load(f)
         cid = pred["case_id"]
+        daughters = []
+        for d in pred.get("daughters", []):
+            payload = challenge_daughter(d)
+            daughters.append({
+                "id": payload["instance_id"],
+                "radius_mm": payload["radius_mm"],
+                "ostium": payload["ostium_xyz_mm"],
+                "seed": payload["seed_xyz_mm"],
+                "direction": payload["direction_xyz"],
+                "json": payload,
+            })
         cases.append({
             "case_id": cid,
-            "daughters": [{
-                "id": d["instance_id"],
-                "radius_mm": d["radius_mm"],
-                "ostium": d["ostium_xyz_mm"],
-                "seed": d["seed_xyz_mm"],
-                "direction": d["direction_xyz"],
-            } for d in pred.get("daughters", [])],
+            "daughters": daughters,
+            "json": challenge_case(pred),
             "clock_png": f"{cid}_clock.png" if os.path.exists(os.path.join(VC_DIR, f"{cid}_clock.png")) else None,
             "check_png": f"{cid}_check.png" if os.path.exists(os.path.join(VC_DIR, f"{cid}_check.png")) else None,
             "report": f"{cid}_report.html" if os.path.exists(os.path.join(VC_DIR, f"{cid}_report.html")) else None,
@@ -148,15 +175,16 @@ body {{
   -webkit-font-smoothing: antialiased;
 }}
 a {{ color: inherit; }}
+[hidden] {{ display: none !important; }}
 
 /* ---------- top bar ---------- */
 .topbar {{
   position: sticky; top: 0; z-index: 20; background: {PAPER};
-  border-bottom: 1px solid {LINE}; display: flex; align-items: center; gap: 20px;
-  padding: 0 24px; height: 64px;
+  border-bottom: 1px solid {LINE}; display: flex; align-items: center; gap: 16px;
+  padding: 0 20px; height: 56px;
 }}
 .brand {{ margin-right: auto; }}
-.brand h1 {{ font-size: 38px; font-weight: 750; margin: 0; letter-spacing: -0.03em; color: {CYAN}; }}
+.brand h1 {{ font-size: 28px; font-weight: 750; margin: 0; letter-spacing: -0.03em; color: {CYAN}; }}
 
 .picker {{ display: flex; align-items: center; gap: 8px; }}
 .picker label {{ font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: {MUTED}; }}
@@ -166,7 +194,7 @@ a {{ color: inherit; }}
 .combo input {{
   font: inherit; font-size: 14px; font-weight: 550; color: {INK};
   background: {PAPER}; border: 1.5px solid {INK}; border-radius: 8px;
-  padding: 9px 34px 9px 36px; width: 280px;
+  padding: 8px 34px 8px 36px; width: 240px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><circle cx='6' cy='6' r='4.4' fill='none' stroke='%236B6B6B' stroke-width='1.6'/><path d='M9.4 9.4 12.6 12.6' stroke='%236B6B6B' stroke-width='1.6' stroke-linecap='round'/></svg>");
   background-repeat: no-repeat; background-position: left 12px center;
 }}
@@ -204,10 +232,10 @@ a {{ color: inherit; }}
 
 /* ---------- case header ---------- */
 .casebar {{
-  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
-  padding: 22px 24px 18px; border-bottom: 1px solid {LINE};
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 14px 20px; border-bottom: 1px solid {LINE};
 }}
-.casebar h2 {{ margin: 0; font-size: 26px; font-weight: 680; letter-spacing: -0.02em; }}
+.casebar h2 {{ margin: 0; font-size: 20px; font-weight: 680; letter-spacing: -0.02em; }}
 .pill {{
   background: {CYAN}; color: {INK}; border-radius: 999px;
   padding: 5px 13px; font-size: 13px; font-weight: 600;
@@ -223,10 +251,10 @@ a {{ color: inherit; }}
 .ghost:hover {{ background: {CYAN}; border-color: {CYAN}; }}
 
 /* ---------- layout ---------- */
-.layout {{ display: grid; grid-template-columns: minmax(0,1fr) 372px; gap: 0; align-items: start; }}
+.layout {{ display: grid; grid-template-columns: minmax(0,1fr) 420px; gap: 0; align-items: start; }}
 @media (max-width: 1080px) {{ .layout {{ grid-template-columns: minmax(0,1fr); }} }}
 
-.viewer {{ padding: 20px 24px 40px; min-width: 0; }}
+.viewer {{ padding: 16px 20px 32px; min-width: 0; }}
 .segmented {{
   display: inline-flex; background: #F4F4F4; border-radius: 9px; padding: 3px; margin-bottom: 16px;
 }}
@@ -248,44 +276,73 @@ a {{ color: inherit; }}
 }}
 @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
 .frame.is3d {{ display: block; padding: 0; }}
-#plot3d {{ width: 100%; height: 72vh; min-height: 440px; }}
-.caption {{ font-size: 12px; color: {MUTED}; margin: 10px 2px 0; line-height: 1.55; }}
+#plot3d {{ width: 100%; height: 68vh; min-height: 400px; }}
+.caption {{ font-size: 12px; color: {MUTED}; margin: 8px 2px 0; line-height: 1.5; max-width: 72ch; }}
 
 /* ---------- branch panel ---------- */
-.panel {{ border-left: 1px solid {LINE}; padding: 20px 24px 40px; min-height: 60vh; }}
-.panel h3 {{
-  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; color: {MUTED};
-  margin: 0 0 14px; font-weight: 650;
+.panel {{
+  border-left: 1px solid {LINE}; padding: 16px 16px 28px;
+  position: sticky; top: 56px; max-height: calc(100vh - 56px); overflow: auto;
 }}
+@media (max-width: 1080px) {{
+  .panel {{ position: static; max-height: none; border-left: 0; border-top: 1px solid {LINE}; }}
+}}
+.panel-head {{
+  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
+  margin: 0 0 12px;
+}}
+.panel-head h3 {{
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; color: {MUTED};
+  margin: 0; font-weight: 650;
+}}
+.copybtn {{
+  font: inherit; font-size: 11px; font-weight: 600; color: {INK};
+  background: {PAPER}; border: 1px solid {LINE}; border-radius: 6px;
+  padding: 4px 8px; cursor: pointer; white-space: nowrap;
+}}
+.copybtn:hover {{ border-color: {INK}; }}
+.copybtn.done {{ border-color: {CYAN}; background: {CYAN}; }}
 .branch {{ border: 1px solid {LINE}; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }}
 .branch > summary {{
-  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-  padding: 13px 14px; user-select: none;
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px;
+  padding: 11px 12px; user-select: none;
 }}
 .branch > summary::-webkit-details-marker {{ display: none; }}
 .branch:hover {{ border-color: {CYAN}; }}
 .branch[open] {{ border-color: {INK}; }}
 .branch .idx {{
-  width: 26px; height: 26px; border-radius: 50%; background: {CYAN}; color: {INK}; flex: none;
+  width: 24px; height: 24px; border-radius: 50%; background: {CYAN}; color: {INK}; flex: none;
   display: grid; place-items: center; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
 }}
-.branch .label {{ display: flex; flex-direction: column; gap: 2px; min-width: 0; }}
+.branch .label {{ display: flex; flex-direction: column; gap: 1px; min-width: 0; }}
 .branch .name {{ font-size: 13px; font-weight: 600; }}
 .branch .sub {{ font-size: 11px; color: {MUTED}; }}
 .branch .arrowslot {{ margin-left: auto; flex: none; display: flex; opacity: 0.85; }}
 .branch .chev {{ flex: none; transition: transform 0.15s ease; }}
 .branch[open] .chev {{ transform: rotate(180deg); }}
-.branch .body {{ border-top: 1px solid {LINE}; padding: 12px 14px; }}
-.kv {{ display: grid; grid-template-columns: 74px 1fr; gap: 6px 10px; font-size: 12px; }}
+.branch .body {{ border-top: 1px solid {LINE}; padding: 10px; }}
+.fmt {{ display: flex; justify-content: flex-end; margin-bottom: 8px; }}
+.segmented.mini {{ margin: 0; }}
+.segmented.mini button {{ font-size: 11px; padding: 5px 10px; }}
+.kv {{ display: grid; grid-template-columns: 74px 1fr; gap: 6px 10px; font-size: 12px; padding: 2px 2px 4px; }}
 .kv dt {{ color: {MUTED}; }}
 .kv dd {{
   margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 11.5px; font-variant-numeric: tabular-nums;
 }}
-.note {{
-  font-size: 11.5px; color: {MUTED}; line-height: 1.6; margin-top: 16px;
-  border-top: 1px solid {LINE}; padding-top: 14px;
+.jsonwrap {{
+  position: relative; background: #F6F6F6; border-radius: 8px; overflow: hidden;
 }}
+.jsonwrap .copybtn {{ position: absolute; top: 8px; right: 8px; z-index: 1; }}
+.jsonwrap pre {{
+  margin: 0; padding: 10px 76px 10px 12px; overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px; line-height: 1.45; color: {INK};
+  font-variant-numeric: tabular-nums;
+}}
+.jsonwrap .jk {{ color: {MUTED}; }}
+.jsonwrap .jn {{ color: {CYAN}; }}
+.jsonwrap .js {{ color: {INK}; }}
 .empty-branches {{
   border: 1px dashed {LINE}; border-radius: 10px; padding: 22px 16px; text-align: center;
   font-size: 12.5px; color: {MUTED};
@@ -302,6 +359,51 @@ let renderToken = 0;              // guards against a slow 3D load painting over
 const $ = (s) => document.querySelector(s);
 const fmt = (v, n = 1) => Number(v).toFixed(n);
 const vec = (a, n = 2) => a.map((v) => Number(v).toFixed(n)).join(', ');
+let detailFmt = 'json';   // 'fields' | 'json' — last choice, applied to every card on render
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function prettyJson(obj) {
+  const esc = escapeHtml(JSON.stringify(obj, null, 2));
+  return esc.replace(
+    /("(?:\\\\u[a-fA-F0-9]{4}|\\\\[^u]|[^\\\\"])*")(\\s*:)?|\\b(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)\\b|\\b(true|false|null)\\b/g,
+    (m, str, colon, num, kw) => {
+      if (str) return colon ? `<span class="jk">${str}</span>${colon}` : `<span class="js">${str}</span>`;
+      if (num) return `<span class="jn">${num}</span>`;
+      return `<span class="js">${kw}</span>`;
+    }
+  );
+}
+
+function copyJson(btn, obj) {
+  const text = JSON.stringify(obj, null, 2);
+  const done = () => {
+    const prev = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = prev; btn.classList.remove('done'); }, 1100);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  const t = document.createElement('textarea');
+  t.value = text;
+  t.setAttribute('readonly', '');
+  t.style.position = 'fixed';
+  t.style.left = '-9999px';
+  document.body.appendChild(t);
+  t.select();
+  try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+  t.remove();
+  done();
+}
 
 // The panel arrow is the initial direction as the 3D view currently shows it, so the two agree at
 // a glance. Screen basis from the camera: right = normalise(forward x up), up = right x forward,
@@ -460,28 +562,29 @@ function render() {
   frame.classList.toggle('is3d', view === '3d');
   if (view === '3d') {
     render3d(c, token);
-    $('#caption').textContent = 'Drag to rotate, scroll to zoom, hover a marker for its measurements. '
-      + 'Red surface: the supplied aorta mask. Black line through it: the centreline. Cyan markers: the reported '
-      + 'ostia, sized by radius. Black stems: the initial direction, drawn 10 mm out from each ostium.';
+    $('#caption').textContent = 'Drag to rotate. Red: supplied aorta. Black: centreline and 10 mm directions. Cyan: ostia.';
   } else {
     const src = view === 'clock' ? c.clock_png : c.check_png;
     frame.innerHTML = src
       ? `<img src="${src}" alt="${c.case_id} ${view === 'clock' ? 'clock map' : 'verification projections'}">`
       : `<div class="empty">no ${view === 'clock' ? 'clock map' : 'verification'} image for this case</div>`;
     $('#caption').textContent = view === 'clock'
-      ? 'Aortic wall unrolled. Horizontal: clock position (12 anterior, 3 patient\\u2019s left, 6 posterior, 9 patient\\u2019s right). Vertical: height from the superior end of the supplied segment. Marker area scales with radius; the left panel is the local aortic diameter.'
-      : 'Coronal and sagittal projections of the candidate voxels. Pink: the supplied aorta mask. Cyan dots: reported ostia. Red: initial direction, drawn 10 mm from the ostium. Blue: centreline.';
+      ? 'Wall unrolled: 12 anterior, 3 patient left, 6 posterior. Height is from the superior cut. Marker size is radius.'
+      : 'Pink mask, cyan ostia, red 10 mm directions, blue centreline.';
   }
   document.querySelectorAll('.segmented button').forEach((b) =>
     b.setAttribute('aria-selected', String(b.dataset.view === view)));
 
-  // branches
+  // branches — each card is the official challenge JSON for that instance
   $('#branchCount').textContent = n ? `Detected branches (${n})` : 'Detected branches';
+  const copyCase = $('#copyCase');
+  copyCase.hidden = n === 0;
+  copyCase.onclick = () => copyJson(copyCase, c.json);
   $('#branches').innerHTML = n === 0
     ? `<div class="empty-branches">No eligible daughters on the supplied segment.<br>
        Anatomy outside the supplied coverage cannot be assessed.</div>`
     : c.daughters.map((d, i) => `
-      <details class="branch">
+      <details class="branch"${i === 0 ? ' open' : ''}>
         <summary>
           <span class="idx">${String(i + 1).padStart(2, '0')}</span>
           <span class="label">
@@ -492,18 +595,29 @@ function render() {
           ${CHEV}
         </summary>
         <div class="body">
-          <dl class="kv">
+          <div class="fmt">
+            <div class="segmented mini" role="tablist">
+              <button type="button" data-fmt="fields" aria-selected="${detailFmt === 'fields'}">Fields</button>
+              <button type="button" data-fmt="json" aria-selected="${detailFmt === 'json'}">JSON</button>
+            </div>
+          </div>
+          <dl class="kv"${detailFmt === 'json' ? ' hidden' : ''}>
             <dt>Ostium</dt><dd>${vec(d.ostium, 1)} mm</dd>
             <dt>Seed</dt><dd>${vec(d.seed, 1)} mm</dd>
             <dt>Direction</dt><dd>${vec(d.direction, 3)}</dd>
             <dt>Radius</dt><dd>${fmt(d.radius_mm, 2)} mm</dd>
           </dl>
+          <div class="jsonwrap"${detailFmt === 'fields' ? ' hidden' : ''}>
+            <button type="button" class="copybtn" data-copy="${i}">Copy</button>
+            <pre>${prettyJson(d.json)}</pre>
+          </div>
         </div>
       </details>`).join('');
 }
 
 function go(i) {
   current = Math.max(0, Math.min(CASES.length - 1, i));
+  if (comboOpen) closeCombo();
   render();
 }
 
@@ -602,6 +716,34 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'ArrowLeft') go(current - 1);
     if (e.key === 'ArrowRight') go(current + 1);
   });
+  $('#branches').addEventListener('click', (e) => {
+    const fmtBtn = e.target.closest('[data-fmt]');
+    if (fmtBtn) {
+      e.preventDefault();
+      detailFmt = fmtBtn.dataset.fmt;
+      const body = fmtBtn.closest('.body');
+      if (!body) return;
+      body.querySelectorAll('[data-fmt]').forEach((b) =>
+        b.setAttribute('aria-selected', String(b.dataset.fmt === detailFmt)));
+      const kv = body.querySelector('.kv');
+      const jw = body.querySelector('.jsonwrap');
+      if (kv) kv.hidden = detailFmt === 'json';
+      if (jw) jw.hidden = detailFmt === 'fields';
+      return;
+    }
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    e.preventDefault();
+    const d = CASES[current].daughters[Number(btn.dataset.copy)];
+    if (d) copyJson(btn, d.json);
+  });
+  $('#branches').addEventListener('toggle', (e) => {
+    const card = e.target;
+    if (!(card instanceof HTMLDetailsElement) || !card.open) return;
+    $('#branches').querySelectorAll('details.branch').forEach((el) => {
+      if (el !== card) el.open = false;
+    });
+  }, true);
   render();
 });
 """
@@ -669,7 +811,10 @@ def build() -> str:
   </div>
 
   <aside class="panel">
-    <h3 id="branchCount">Detected branches</h3>
+    <div class="panel-head">
+      <h3 id="branchCount">Detected branches</h3>
+      <button type="button" class="copybtn" id="copyCase">Copy case JSON</button>
+    </div>
     <div id="branches"></div>
   </aside>
 </div>
