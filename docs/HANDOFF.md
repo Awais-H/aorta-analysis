@@ -117,6 +117,37 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
   sheets; one coincides with a structure case 21's notes list as unresolved.
 - Matching cutoff (we assume 5 mm), subjects 18/24/25 in or out, scoring machine OS and Python.
 
+## Next on `precision-review` (agreed 13 Sep, late)
+
+The dev-set F1 has stopped measuring the engine: recall is 17 of 19 with both misses explained,
+and every remaining false positive is something the draft references cannot adjudicate. Two jobs
+that need no organiser answer, in this order:
+
+1. **Adjudicate the five unflagged false positives by eye.** Subject 21 patches 7, 12, 14 and
+   subject 22 patches 23, 28 (their measurements are under "false positives kept" in
+   `results/reference_ledger.txt`; branch ids in `results/predictions/`). For each: is there a
+   contrast-filled tube leaving the aortic lumen here that can be followed 5 mm? Use
+   `python gallery.py --cases 21 22 --pred-dir out/predictions` and `review_markers.py` with
+   ITK-SNAP (recipe in README; subject 22's threshold is 105 HU, so bone and disc are bright
+   there). Record each verdict in SPEC section 1 next to the false-positive review. A real vessel
+   means our precision is real and the number is the reference's gap; an artefact has a
+   signature we have not found, and gets a rule only with an anatomical argument and a full
+   regression (see "How to work").
+2. **The 1.5 mm pseudo-labelled check on subjects 1 to 15.** The hidden set is assumed to be
+   1.5 mm like cases 16 to 25. Resample each 0.8 mm case (CT linear, mask nearest neighbour,
+   SimpleITK, same physical frame) to 1.5 mm isotropic, run the pipeline on the resampled pair,
+   and score the coarse predictions against the native 0.8 mm predictions as pseudo-references
+   with `scorer.match` at the 5 mm cutoff: which branches are lost or gained at coarse
+   resolution, how the ostium error and direction error grow, which rules flip. Fifteen cases,
+   three times the labelled set, in the hidden set's regime. Report per case and aggregate in a
+   new `results/coarse_check.txt`, and write what it says into SPEC (a new findings block in
+   section 1 and a line in D7). Do not tune anything to it; it is a measurement.
+
+Then, if time allows, the perturbation-stability check (mask eroded and dilated by one voxel,
+threshold shifted a few HU; which predictions flip) and the two cut-face candidates (21 patch 8,
+20 patch 4) against the "flat crop ends are not origins" rule, counting first how many kept
+branches on all 25 cases have their ostium voxel on a face.
+
 ## What remains, in order
 
 1. Submission mechanics that wait on organiser question 6: vendored wheels (`pip download -r
