@@ -30,8 +30,8 @@ ARROW_LENGTH_MM = config.TRACE_MAX_MM  # arrows drawn as long as the traced path
 
 def _projection_axes(cand: Candidates):
     """Coronal (rows z, cols x) and sagittal (rows z, cols y) MIPs of the candidate voxels."""
-    cor = cand.candidates.max(axis=1).astype(float)
-    sag = cand.candidates.max(axis=2).astype(float)
+    cor = cand.bright_shell.max(axis=1).astype(float)
+    sag = cand.bright_shell.max(axis=2).astype(float)
     mcor = cand.mask.max(axis=1).astype(float)
     msag = cand.mask.max(axis=2).astype(float)
     return cor, sag, mcor, msag

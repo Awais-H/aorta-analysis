@@ -1,5 +1,6 @@
 """D3 instance separation: wall-layer connected components define instances (B); a watershed
-seeded from them through the candidate voxels grows each one (D).
+seeded from them through the raw thresholded shell grows each one (D). The opening is applied
+to the wall layer only, so a thin branch that survives at the wall is followed at full width.
 
 Wall-patch labelling ported from triage.py lines 146 to 152 (the atlas wall_patches column is this
 count before any filtering). Labels are ordered by wall-patch area, largest first, so the ordering
@@ -25,7 +26,7 @@ log = logging.getLogger("branchseed.instances")
 
 @dataclass
 class Instances:
-    labels: np.ndarray                 # int32 (z, y, x): watershed region of each branch, 0 background
+    labels: np.ndarray                 # int32 (z, y, x): watershed region of each branch through the raw shell, 0 background
     wall_labels: np.ndarray            # int32 (z, y, x): the wall-patch component of each label
     wall_indices: dict = field(default_factory=dict)   # label -> (k, 3) int zyx voxel indices of the wall patch
     wall_area_mm2: dict = field(default_factory=dict)  # label -> wall-patch voxel count x in-plane voxel area (atlas convention)
@@ -38,7 +39,7 @@ class Instances:
 
 
 def build(cand: Candidates) -> Instances:
-    wall = cand.candidates & (cand.distance_mm <= config.WALL_LAYER_MM)
+    wall = cand.opened & (cand.distance_mm <= config.WALL_LAYER_MM)
     wl, nw = ndimage.label(wall)
     if nw == 0:
         log.info("no wall patches")
@@ -51,7 +52,7 @@ def build(cand: Candidates) -> Instances:
     wl = relabel[wl]
     sizes = sizes[order]
 
-    labels = watershed(cand.distance_mm, markers=wl, mask=cand.candidates).astype(np.int32)
+    labels = watershed(cand.distance_mm, markers=wl, mask=cand.bright_shell).astype(np.int32)
 
     a_mm2 = float(cand.spacing[1] * cand.spacing[2])
     vox_ml = float(np.prod(cand.spacing)) / 1000.0

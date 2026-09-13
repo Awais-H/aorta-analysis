@@ -4,8 +4,9 @@ Ported from triage.py: mask components (lines 84 to 90), adaptive threshold (96 
 opening (136 to 145). The crop and resample live in io_utils; this module calls them.
 
 Output contract (SPEC.md D9): working CT (float32, ISO mm), working mask (largest component),
-opened candidate array (bool, bright voxels in the shell after the opening), distance-from-mask
-array (mm), spacing, the working SimpleITK image handle, the mask fragment log, the threshold.
+the raw thresholded shell (bool, bright voxels in the 15 mm shell), the opened array (bool, the
+same after the 0.8 mm opening; used ONLY to define the wall layer, D2), distance-from-mask array
+(mm), spacing, the working SimpleITK image handle, the mask fragment log, the threshold.
 """
 from __future__ import annotations
 
@@ -26,7 +27,8 @@ log = logging.getLogger("branchseed.candidates")
 class Candidates:
     ct: np.ndarray            # float32 (z, y, x) HU on the working grid
     mask: np.ndarray          # bool, largest connected component of the supplied mask
-    candidates: np.ndarray    # bool, bright voxels in the shell after the opening
+    bright_shell: np.ndarray  # bool, raw thresholded shell: what growth (D3) and tracing (D5) consume
+    opened: np.ndarray        # bool, bright_shell after the opening: defines the wall layer only (D2, D3)
     distance_mm: np.ndarray   # float32, Euclidean distance from the mask in mm (0 inside)
     spacing: np.ndarray       # (3,) zyx mm
     image: sitk.Image         # working image handle, the argument for io_utils.index_to_mm
@@ -91,6 +93,6 @@ def build(image: sitk.Image, mask_image: sitk.Image) -> Candidates:
     cand = bright & shell
     cand_open = ndimage.binary_opening(cand, structure=opening_structure(grid.spacing))
     log.info("threshold %.1f HU; %d bright shell voxels, %d after opening", thr, int(cand.sum()), int(cand_open.sum()))
-    return Candidates(ct=grid.ct, mask=grid.mask, candidates=cand_open, distance_mm=dist,
+    return Candidates(ct=grid.ct, mask=grid.mask, bright_shell=cand, opened=cand_open, distance_mm=dist,
                       spacing=grid.spacing, image=grid.image, threshold_hu=float(thr),
                       fragment_log=frag, hu_stats=hu_stats, grid_info=grid.info)
