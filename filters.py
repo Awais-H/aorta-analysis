@@ -21,6 +21,17 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    patch 5: the two false positives the eye review had called the iliac division).
 2. min_trace_mm    plaque / eligibility: traced path under MIN_TRACE_MM (Frangi secondary is
                    disabled while FRANGI_MIN_RESPONSE is 0).
+   path_at_image_edge  eligibility at the volume boundary, added 13 Sep (night): the first
+                   SEED_DISTANCE_MM of the traced path run within IMAGE_EDGE_MARGIN_VOXELS native
+                   voxels of a face where the native image ends. Every cross-section there is
+                   truncated by the volume, so the 5 mm followability the PDF requires cannot be
+                   verified; the reference notes for case 20 exclude the posterior tracks at its
+                   superior crop limit for exactly that reason. Counted on all 25 cases: 2 of 147
+                   kept branches (20 patch 4, the excluded track; 6 patch 5, the aortic lumen
+                   outside the mask at the inferior image edge), no reference, and the next
+                   nearest kept path is more than two voxels from any image face. Not the same
+                   thing as the mask's end faces (rule 1): a cut face inside the volume leaves the
+                   vessel's cross-sections intact and is judged on its own evidence.
 3. departure_mm    FLAG ONLY (no_departure): the far end of the traced path is still within
                    DEPARTURE_MM of the aorta surface. Rethought against the anatomy and the
                    references: a branch that leaves the aorta and then runs along it is still a
@@ -195,6 +206,30 @@ def terminal_division(cand: Candidates, frame) -> dict:
     return out
 
 
+def image_edge_distance_mm(cand: Candidates, path_mm: np.ndarray, reach_mm: float = config.SEED_DISTANCE_MM) -> float:
+    """Smallest distance from the traced path's first `reach_mm` to a face of the native image.
+    A working-grid face counts only where the crop reached the native volume's edge; elsewhere
+    the crop's CROP_PAD_MM of padding lies beyond it and the face is not an image boundary.
+    Returns inf when the grid information is missing or no face is an image boundary."""
+    info = getattr(cand, "grid_info", None) or {}
+    crop, native = info.get("crop_zyx"), info.get("native_shape_zyx")
+    if not crop or not native or path_mm is None or len(path_mm) == 0:
+        return float("inf")
+    pts = [tracing.point_along(path_mm, s) for s in np.arange(0.0, reach_mm + 1e-6, config.TRACE_STEP_MM / 2)]
+    pts = np.array([p for p in pts if p is not None])
+    if len(pts) == 0:
+        return float("inf")
+    idx = io_utils.mm_to_index(cand.image, pts)  # (N, 3) zyx continuous, working grid
+    shape = np.array(cand.mask.shape, float)
+    best = float("inf")
+    for ax in range(3):
+        if crop[ax][0] == 0:
+            best = min(best, float((idx[:, ax] * cand.spacing[ax]).min()))
+        if crop[ax][1] >= native[ax]:
+            best = min(best, float(((shape[ax] - 1 - idx[:, ax]) * cand.spacing[ax]).min()))
+    return max(best, 0.0)
+
+
 def departure_mm(cand: Candidates, path_mm: np.ndarray) -> float:
     """Distance from the aorta surface at the far end of the traced path (trilinear)."""
     idx = io_utils.mm_to_index(cand.image, path_mm[-1])
@@ -305,6 +340,12 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
             res.rejections += [(label, r, v) for r, v in hits]
             res.flags[label], res.measurements[label] = flags, m
             continue
+        # 2: the first 5 mm run along the image boundary, so followability cannot be verified
+        edge = image_edge_distance_mm(cand, tr.path_mm)
+        m["image_edge_mm"] = None if not np.isfinite(edge) else round(edge, 2)
+        native_sp = (getattr(cand, "grid_info", None) or {}).get("native_spacing_zyx_mm")
+        if np.isfinite(edge) and native_sp and edge < config.IMAGE_EDGE_MARGIN_VOXELS * max(native_sp):
+            hits.append(("path_at_image_edge", float(edge)))
         if tr.method == "axis":
             flags.append("axis_fallback")
         if tr.bifurcation:

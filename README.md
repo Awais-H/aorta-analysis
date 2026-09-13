@@ -50,7 +50,15 @@ python scorer.py ledger --cases 19-23 --out results/reference_ledger.txt
 python sweeps.py --out results/sweeps.txt
 ```
 
-`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not, and records run.py's wall time and peak memory per case. `python sweeps.py --loo --out results/leave_one_out.txt` is the leave-one-out check of the constants (SPEC.md section 3). `ledger` writes, for every reference branch, the nearest wall patch, its fate in the filters and every measurement the rules saw, plus the surviving false positives. `sweeps.py` varies one constant at a time and reports the TP/FP curve (SPEC.md section 3: the shape matters, not the peak). All four result files are committed after every change to the pipeline.
+```bash
+python coarse_check.py --out results/coarse_check.txt
+```
+
+```bash
+python perturb_check.py --out results/perturbation_check.txt
+```
+
+`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not, and records run.py's wall time and peak memory per case. `python sweeps.py --loo --out results/leave_one_out.txt` is the leave-one-out check of the constants (SPEC.md section 3). `ledger` writes, for every reference branch, the nearest wall patch, its fate in the filters and every measurement the rules saw, plus the surviving false positives. `sweeps.py` varies one constant at a time and reports the TP/FP curve (SPEC.md section 3: the shape matters, not the peak). `coarse_check.py` resamples the fifteen 0.8 mm cases to the 1.5 mm of the references and the presumed hidden set, runs the pipeline on the coarse pair and matches the result against the native prediction of the same case: which branches are lost or gained at coarse resolution, how far the ostia, directions and seeds move, and which rules flip (a measurement, not a tuning set). `perturb_check.py` runs every case with the mask eroded and dilated by one voxel and with the threshold shifted by 10 HU either way, matches each perturbed prediction to the unperturbed one and names every branch that flips, and on the labelled cases re-counts the reference matches per perturbation. All result files are committed after every change to the pipeline.
 
 ## Clinician report
 
@@ -67,6 +75,12 @@ python gallery.py --cases 22 --pred-dir out/predictions --out out/gallery
 ```
 
 Writes sheets of CT crops, six candidates per sheet: axial through the ostium, axial through the seed 5 mm out, coronal and sagittal, with the mask outlined and the ostium, seed and direction drawn. Add `--rejected` to include every rejected wall patch. `review_markers.py` writes the same candidates as 2 mm spheres on the native grid (kept = labels 1..N, rejected = 101..) with an ITK-SNAP label file, plus a per-branch table with voxel indices for the slice sliders.
+
+```bash
+python review_dense.py --case 22 --labels 23 28 --out out/review/dense
+```
+
+For one candidate the sheet cannot settle (a 2 to 3 mm vessel is one or two grey voxels on an axial slice at 1.5 mm): twelve native axial slices through the ostium with the traced path drawn, oblique reformats along the traced chord, perpendicular sections every 2 mm out to 10 mm (a daughter is a round bright dot at the centre that persists to 5 mm), and reformats along the aortic axis parallel to the wall (a vessel passing in contact is a band through the ostium on both sides), plus the HU and distance-from-mask profile along the path. Candidates are named by wall-patch label as in the ledger, or by `--branches branch_005`.
 
 To view in ITK-SNAP (the sponsor's recipe): File → Open Main Image → the case's `origNN.nii.gz`; Segmentation → Open Segmentation → `subjectNNN_pred_markers.nii.gz`; Segmentation → Label Definitions → Import → `subjectNNN_labels.txt`. In Cursor Inspector type the voxel index from the review table; in Zoom Inspector set 6 px/mm and Center on cursor. For the 3D view, Tools → Preferences → 3D Rendering, turn Gaussian smoothing off, then Update. Workspace → Save Workspace keeps the setup.
 
@@ -89,4 +103,7 @@ To view in ITK-SNAP (the sponsor's recipe): File → Open Main Image → the cas
 | `sweeps.py` | section 3 sensitivity sweeps |
 | `gallery.py` | D7 failure gallery: crop sheets per candidate |
 | `review_markers.py` | ITK-SNAP marker volumes and per-branch review tables |
+| `review_dense.py` | dense views for one candidate: perpendicular sections along the path, wall-parallel reformats |
+| `coarse_check.py` | the 1.5 mm pseudo-labelled check: fine cases resampled to the hidden set's resolution and scored against themselves |
+| `perturb_check.py` | the perturbation-stability check: mask eroded and dilated, threshold shifted; which predictions flip |
 | `triage.py` | per-case atlas tool used to build `docs/atlas_all.csv` |

@@ -258,3 +258,34 @@ def test_same_origin_as_a_rejected_structure_is_rejected(tmp_path):
     # and through apply(): nothing kept shares the blob's origin voxel
     for l in res.kept:
         assert np.linalg.norm(ostia[l].mm - ostia[blob].mm) > config.ISO_SPACING_MM
+
+
+def test_image_edge_distance_counts_only_native_faces(cand, traces):
+    # the phantom's mask spans the whole z extent, so the two z faces of the working grid are image
+    # faces; in x and y the crop keeps CROP_PAD_MM of padding, so those faces are not
+    info = cand.grid_info
+    assert info["crop_zyx"][0] == [0, info["native_shape_zyx"][0]]
+    assert info["crop_zyx"][2][0] > 0
+    tr = traces[min(traces)]
+    assert filters.image_edge_distance_mm(cand, tr.path_mm) > 5.0  # the branch leaves at mid height
+    # a path lying on the superior image face
+    top = io_utils.index_to_mm(cand.image, np.array([[cand.mask.shape[0] - 1, 10.0, 10.0], [cand.mask.shape[0] - 1, 12.0, 10.0]]))
+    assert filters.image_edge_distance_mm(cand, top) < 0.01
+    # a path on the x face of the working grid, which is a cropped face, not an image face
+    side = io_utils.index_to_mm(cand.image, np.array([[10.0, 10.0, 0.0], [12.0, 10.0, 0.0]]))
+    assert filters.image_edge_distance_mm(cand, side) == float("inf") or filters.image_edge_distance_mm(cand, side) > 5.0
+
+
+def test_path_at_image_edge_is_rejected(cand, inst, ostia, traces):
+    label = min(traces)
+    tr = copy.copy(traces[label])
+    top = cand.mask.shape[0] - 1
+    idx = io_utils.mm_to_index(cand.image, tr.path_mm)
+    idx[:, 0] = top  # slide the whole path onto the superior image face
+    tr.path_mm = io_utils.index_to_mm(cand.image, idx)
+    tr.seed_mm = tracing.point_along(tr.path_mm, config.SEED_DISTANCE_MM)
+    res = filters.apply(cand, inst, ostia, {**traces, label: tr})
+    assert ("path_at_image_edge", 0.0) in [(r, round(v, 2)) for l, r, v in res.rejections if l == label]
+    assert label not in res.kept
+    res2 = filters.apply(cand, inst, ostia, traces)
+    assert label in res2.kept and res2.measurements[label]["image_edge_mm"] > 5.0

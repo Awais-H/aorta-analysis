@@ -1,4 +1,4 @@
-Dev-set scores, commit 3ee4cce, 2026-09-13 04:37
+Dev-set scores, commit be05e89, 2026-09-13 06:27
 References: docs/references (draft, expert review pending). Matching: Hungarian on ostium distance.
 seed_on_branch = predicted seed voxel carries the matched reference label; radius scored only where the reference radius is not null.
 
@@ -9,12 +9,12 @@ cutoff   tp  fp  fn   prec    rec     f1  ostium_mm  dir_deg  seed_on_branch  ra
    8mm    2   0   1   1.00   0.67   0.80       1.30     15.7             1/2          n/a(0)
    matched at 5 mm: branch_001->branch_003 1.71 mm, branch_002->branch_001 0.9 mm
 
-subject020: 5 predicted, 4 reference (2 with radius)
+subject020: 4 predicted, 4 reference (2 with radius)
 cutoff   tp  fp  fn   prec    rec     f1  ostium_mm  dir_deg  seed_on_branch  radius_abs_mm(n)
-   3mm    3   2   1   0.60   0.75   0.67       1.60     11.5             3/3         0.14(2)
-   5mm    4   1   0   0.80   1.00   0.89       1.99     17.4             3/4         0.14(2)
-   8mm    4   1   0   0.80   1.00   0.89       1.99     17.4             3/4         0.14(2)
-   matched at 5 mm: branch_001->branch_001 2.32 mm, branch_002->branch_004 3.17 mm, branch_004->branch_002 1.83 mm, branch_005->branch_003 0.64 mm
+   3mm    3   1   1   0.75   0.75   0.75       1.60     11.5             3/3         0.14(2)
+   5mm    4   0   0   1.00   1.00   1.00       1.99     17.4             3/4         0.14(2)
+   8mm    4   0   0   1.00   1.00   1.00       1.99     17.4             3/4         0.14(2)
+   matched at 5 mm: branch_001->branch_001 2.32 mm, branch_002->branch_004 3.17 mm, branch_003->branch_002 1.83 mm, branch_004->branch_003 0.64 mm
 
 subject021: 10 predicted, 3 reference (0 with radius)
 cutoff   tp  fp  fn   prec    rec     f1  ostium_mm  dir_deg  seed_on_branch  radius_abs_mm(n)
@@ -39,6 +39,6 @@ cutoff   tp  fp  fn   prec    rec     f1  ostium_mm  dir_deg  seed_on_branch  ra
 
 AGGREGATE over 5 cases (micro-averaged)
 cutoff   tp  fp  fn   prec    rec     f1  ostium_mm  dir_deg  seed_on_branch  radius_abs_mm(n)
-   3mm   16  14   3   0.53   0.84   0.65       1.27     25.1           14/16         0.29(3)
-   5mm   17  13   2   0.57   0.89   0.69       1.35     26.3           14/17         0.29(3)
-   8mm   17  13   2   0.57   0.89   0.69       1.35     26.3           14/17         0.29(3)
+   3mm   16  13   3   0.55   0.84   0.67       1.27     25.1           14/16         0.29(3)
+   5mm   17  12   2   0.59   0.89   0.71       1.35     26.3           14/17         0.29(3)
+   8mm   17  12   2   0.59   0.89   0.71       1.35     26.3           14/17         0.29(3)
