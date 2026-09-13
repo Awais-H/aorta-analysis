@@ -38,6 +38,17 @@ SWEEPS = {
 }
 
 
+# constants that change the traces themselves: the trace is recomputed per value and the
+# instance-quality metrics (direction error, seed on the reference daughter) are reported too.
+# 13 Sep: a lateral cap on the section centroid and a per-step turn clamp were evaluated here
+# and rejected (SPEC D5): every setting lost a labelled true positive or added false positives
+TRACE_SWEEPS = {
+    "TRACE_MAX_TURN_DEG": [45.0, 60.0, 90.0, 120.0],
+    "MIN_CROSS_SECTION_VOXELS": [2, 3, 4, 5],
+    "TRACE_SLAB_HALF_MM": [0.5, 0.8, 1.0],
+}
+
+
 def prepare(cases):
     prepped = {}
     for n in cases:
@@ -51,14 +62,40 @@ def prepare(cases):
         ostia = ostium.locate(cand, inst)
         traces = tracing.trace_all(cand, inst, ostia)
         fr = frame_mod.build(cand)
-        prepped[n] = (cand, inst, ostia, traces, fr, ref)
+        prepped[n] = (cand, inst, ostia, traces, fr, ref, scorer.case_files(n).get("labels"))
     return prepped
+
+
+def evaluate_traces(prepped):
+    """Re-trace every case with the current config and score TP, FP, direction error and seed on
+    branch at the working cutoff (scorer.score_case does the matching)."""
+    import pipeline
+    tp = fp = fn = 0
+    dirs, seeds = [], []
+    per_case = {}
+    for n, (cand, inst, ostia, _, fr, ref, labels) in prepped.items():
+        traces = tracing.trace_all(cand, inst, ostia)
+        res = filters.apply(cand, inst, ostia, traces, fr)
+        result = pipeline.assemble(f"subject{n:03d}", res.kept, ostia, traces)
+        sc = scorer.score_case(result, ref, cutoffs=(config.MATCH_CUTOFF_MM,), label_path=labels)[f"{config.MATCH_CUTOFF_MM:g}mm"]
+        tp += sc["tp"]; fp += sc["fp"]; fn += sc["fn"]
+        d = sc.get("mean_direction_deg")
+        if sc["tp"] and d == d:
+            dirs.append((d, sc["tp"]))
+        hits, tot = sc.get("seed_on_branch", (0, 0))
+        seeds.append((hits, tot))
+        per_case[n] = (sc["tp"], sc["fp"], d, f"{hits}/{tot}")
+    p = tp / (tp + fp) if tp + fp else 0.0
+    r = tp / (tp + fn) if tp + fn else 0.0
+    f1 = 2 * p * r / (p + r) if p + r else 0.0
+    dmean = sum(d * w for d, w in dirs) / sum(w for _, w in dirs) if dirs else float("nan")
+    return tp, fp, fn, f1, per_case, dmean, (sum(h for h, _ in seeds), sum(t for _, t in seeds))
 
 
 def evaluate(prepped):
     tp = fp = fn = 0
     per_case = {}
-    for n, (cand, inst, ostia, traces, fr, ref) in prepped.items():
+    for n, (cand, inst, ostia, traces, fr, ref, _) in prepped.items():
         res = filters.apply(cand, inst, ostia, traces, fr)
         pred = [{"instance_id": f"L{l}", "ostium_xyz_mm": list(ostia[l].mm)} for l in res.kept]
         pairs = scorer.match(pred, ref["daughters"], config.MATCH_CUTOFF_MM)
@@ -91,6 +128,18 @@ def main(argv=None):
             tp, fp, fn, f1, pc = evaluate(prepped)
             mark = "*" if v == current else " "
             lines.append(f"  {mark}{v:>6}  TP {tp:>2}  FP {fp:>3}  FN {fn:>2}  F1 {f1:.2f}   " + "  ".join(f"s{n}:({t},{f})" for n, (t, f) in pc.items()))
+        setattr(config, name, current)
+        lines.append("")
+    lines.append("Tracing constants (traces recomputed per value; columns add mean direction error and seed-on-branch at the cutoff):")
+    for name, values in TRACE_SWEEPS.items():
+        current = getattr(config, name)
+        lines.append(f"{name} (config: {current})")
+        for v in values:
+            setattr(config, name, v)
+            tp, fp, fn, f1, pc, dmean, (sh, sn) = evaluate_traces(prepped)
+            mark = "*" if v == current else " "
+            lines.append(f"  {mark}{v:>6}  TP {tp:>2}  FP {fp:>3}  FN {fn:>2}  F1 {f1:.2f}  dir {dmean:5.1f} deg  seed {sh}/{sn}   "
+                         + "  ".join(f"s{n}:({t},{f},{'n/a' if d is None or d != d else round(d)}deg,{s})" for n, (t, f, d, s) in pc.items()))
         setattr(config, name, current)
         lines.append("")
     text = "\n".join(lines) + "\n"

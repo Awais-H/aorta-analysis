@@ -1,4 +1,4 @@
-Reference ledger, commit 89bd721, 2026-09-13 04:16
+Reference ledger, commit 3ee4cce, 2026-09-13 04:39
 For each reference branch: nearest wall patch by ostium distance, kept or rejected (rule = value), measurements, flags.
 Then every kept patch further than the match cutoff from all references (false positives).
 

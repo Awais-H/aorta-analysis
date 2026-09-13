@@ -34,7 +34,8 @@ what remains, and how to work.
 
 Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 13 false
 positives, F1 0.69, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
-branch 14 of 17. Of the 13: three are one looping vessel on subject 21 that the annotators also
+branch 14 of 17 (the three misses and the 26 deg mean are explained in SPEC section 1, instance-quality
+review: merged pair on 23, a bend on 19, a strip end on 20; not chased). Of the 13: three are one looping vessel on subject 21 that the annotators also
 could not tie to the aorta (known failure class), three are 2.0 to 2.4 mm borderline origins,
 two are at the cut faces, five are unflagged 3 mm vessels at lumbar positions (SPEC section 1,
 false-positive review). Invariants on all 25 cases: no crash, under 10 s per case. Files:
@@ -88,6 +89,14 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
     `same_origin_rejected`), otherwise rejecting a blob releases its twin patch.
 16. **Subject 21's looping vessel is a recorded failure class**, not a rule: hug ratio, opposed
     directions and origin-to-seed taper were each measured and each also fires on a real vessel.
+17. **The three off-label seeds and subject 23's direction error are resolution and reference
+    limits, not tracer bugs** (SPEC section 1, instance-quality review): 23 is the merged lumbar
+    pair (seed on the neighbour's mask, matched to the other), 19 a bend the straight fallback
+    misses by 2 mm, 20 a strip whose two ends are alike. All 17 seeds lie in our own lumen.
+18. **Tracer stabilisation (lateral cap, turn clamp) was implemented, swept and reverted**: every
+    setting lost a labelled true positive or added false positives (the grid is in SPEC D5).
+    The tracer's fragility is doing eligibility work; a smoother march needs an explicit
+    followability test first.
 12. **Centreline endpoints are end-face centroids**, not the geodesic rim points: the rim-to-axis
     stretch of the path is cut one radius in and the face (boundary voxels with normals within
     60 deg of the tangent) is averaged. Rule 1 picks the endpoints up automatically; the labelled
