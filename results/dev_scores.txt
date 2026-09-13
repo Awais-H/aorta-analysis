@@ -1,4 +1,4 @@
-Dev-set scores, commit 7822434, 2026-09-13 02:04
+Dev-set scores, commit 01f7177, 2026-09-13 03:26
 References: docs/references (draft, expert review pending). Matching: Hungarian on ostium distance.
 seed_on_branch = predicted seed voxel carries the matched reference label; radius scored only where the reference radius is not null.
 

@@ -84,3 +84,13 @@ PEAK_MEMORY_CAP_GB = 4.0    # half of the organiser 8 GB machine, so the OS and 
 # ------------------------------------------------------------------------ output
 OUTPUT_MM_DECIMALS = 3      # mm values written to JSON: sub-voxel precision is meaningless beyond this
 OUTPUT_DIRECTION_DECIMALS = 4  # direction components: keeps the unit norm within 1e-3 after rounding
+
+# ------------------------------------------------------------------------ frame (D8)
+CENTRELINE_STEP_MM = 1.0    # centreline resampled at 1 mm arc length: finer than any working voxel, coarse enough that heights and clock lookups are cheap
+CENTRELINE_SMOOTH_MM = 3.0  # Gaussian sigma along the arc applied to the voxel-chain path: removes the one-voxel zigzag of a grid path without flattening a bend (the tightest aortic bends in the set have radii of several centimetres)
+CENTRELINE_COST_POWER = 2.0  # geodesic cost = (inside distance)^-2: a wall-hugging shortcut across a bend costs more than the extra length of staying central, so the path follows the axis (1st power lets the path cut corners on the tortuous cases)
+CENTRELINE_CORE_FRACTION = 0.5  # a path point is 'central' once its inside distance reaches half the median along the path; the geodesic endpoints sit on the end-face rim and the first stretch of the path runs from the rim to the axis, so those points are replaced by the end-face centroid
+END_FACE_NORMAL_DEG = 60.0  # an end-face voxel's outward normal is within 60 deg of the outward centreline tangent (a lateral-wall voxel's normal is near 90 deg); accommodates a tapered end (subject 20) and an oblique cut
+END_FACE_LATERAL_FACTOR = 1.5  # end-face voxels lie within 1.5 x the local aortic radius of the extended axis, so a neighbouring structure fused to the mask at the cut is not counted
+CLOCK_ANTERIOR_MIN_SIN = 0.25  # 12 o'clock is the patient's anterior projected into the plane perpendicular to the local tangent (the surgeon's convention at every level; the transported frame drifts 43 deg from it on subject 3). The projection is undefined when the tangent runs antero-posteriorly; below this sine (tangent within about 15 deg of the y axis, which the abdominal aorta never does) the rotation-minimising transport is used instead
+CENTRELINE_SWEEP_DOWNSAMPLE = 2  # the two farthest-point sweeps that find the end rims run on a mask downsampled by this factor (endpoints identical on the longest case, 6 x faster); only the central path itself runs at working resolution

@@ -122,12 +122,23 @@ def load_case(image_path: str, mask_path: str) -> tuple[sitk.Image, sitk.Image, 
 # ------------------------------------------------------------------ index <-> mm
 
 
+def grid_affine(image: sitk.Image) -> tuple[np.ndarray, np.ndarray]:
+    """(M, o) with physical_xyz = M @ index_xyz + o: SimpleITK's own map, M = direction @ diag(spacing).
+    Used for arrays of points; single points still go through TransformIndexToPhysicalPoint."""
+    D = np.array(image.GetDirection(), dtype=np.float64).reshape(3, 3)
+    S = np.array(image.GetSpacing(), dtype=np.float64)
+    return D * S[None, :], np.array(image.GetOrigin(), dtype=np.float64)
+
+
 def index_to_mm(image: sitk.Image, idx_zyx) -> np.ndarray:
     """Map (z, y, x) indices on `image`'s grid to (x, y, z) physical mm.
 
-    THE only place TransformIndexToPhysicalPoint is called (CLAUDE.md rule). Integer indices go
-    through TransformIndexToPhysicalPoint as the challenge PDF requires; fractional indices (path
-    points, centroids) through the continuous variant, which is the same affine map.
+    THE only place TransformIndexToPhysicalPoint is called (CLAUDE.md rule). A single integer index
+    goes through TransformIndexToPhysicalPoint as the challenge PDF requires (every reported ostium
+    is converted this way); a single fractional index (path point, centroid) through the continuous
+    variant. Arrays of points use the image's affine (direction x spacing, plus origin), which is
+    the same map (tests/test_io_utils.py checks the two agree to 1e-9) without a Python loop over
+    SimpleITK calls: the frame converts tens of thousands of boundary voxels per case.
     Accepts one index of shape (3,) or an array of shape (N, 3); returns the same leading shape.
     """
     idx = np.asarray(idx_zyx, dtype=np.float64)
@@ -136,7 +147,10 @@ def index_to_mm(image: sitk.Image, idx_zyx) -> np.ndarray:
         if np.all(np.abs(xyz - np.round(xyz)) < 1e-9):
             return np.asarray(image.TransformIndexToPhysicalPoint([int(round(v)) for v in xyz]), dtype=np.float64)
         return np.asarray(image.TransformContinuousIndexToPhysicalPoint([float(v) for v in xyz]), dtype=np.float64)
-    return np.stack([index_to_mm(image, row) for row in idx], axis=0) if len(idx) else np.zeros((0, 3))
+    if len(idx) == 0:
+        return np.zeros((0, 3))
+    M, o = grid_affine(image)
+    return idx[:, ::-1] @ M.T + o[None, :]
 
 
 def mm_to_index(image: sitk.Image, xyz_mm) -> np.ndarray:
@@ -144,7 +158,10 @@ def mm_to_index(image: sitk.Image, xyz_mm) -> np.ndarray:
     p = np.asarray(xyz_mm, dtype=np.float64)
     if p.ndim == 1:
         return np.asarray(image.TransformPhysicalPointToContinuousIndex([float(v) for v in p]), dtype=np.float64)[::-1]
-    return np.stack([mm_to_index(image, row) for row in p], axis=0) if len(p) else np.zeros((0, 3))
+    if len(p) == 0:
+        return np.zeros((0, 3))
+    M, o = grid_affine(image)
+    return ((p - o[None, :]) @ np.linalg.inv(M).T)[:, ::-1]
 
 
 def mm_vector_to_index(image: sitk.Image, xyz_mm, vec_mm) -> np.ndarray:

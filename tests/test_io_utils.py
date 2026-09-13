@@ -115,3 +115,31 @@ def test_empty_mask_raises(phantom):
     image, mask_image, _ = io_utils.load_case(phantom["image"], phantom["mask"])
     with pytest.raises(ValueError):
         io_utils.crop_and_resample(image, np.zeros(sitk.GetArrayViewFromImage(mask_image).shape, bool))
+
+
+def test_array_conversion_matches_simpleitk(phantom):
+    """The vectorised affine path for arrays is the same map as TransformIndexToPhysicalPoint."""
+    import io_utils
+    img = phantom["sitk_image"]
+    rng = np.random.default_rng(1)
+    idx = np.column_stack([rng.integers(0, s, 50) for s in img.GetSize()[::-1]]).astype(float)
+    idx[25:] += rng.uniform(-0.5, 0.5, (25, 3))
+    bulk = io_utils.index_to_mm(img, idx)
+    single = np.stack([io_utils.index_to_mm(img, row) for row in idx])
+    assert np.allclose(bulk, single, atol=1e-9)
+    back = io_utils.mm_to_index(img, bulk)
+    back_single = np.stack([io_utils.mm_to_index(img, row) for row in bulk])
+    assert np.allclose(back, idx, atol=1e-9) and np.allclose(back_single, idx, atol=1e-9)
+
+
+def test_array_conversion_with_rotated_direction(tmp_path):
+    from conftest import make_phantom
+    import io_utils
+    c, s = np.cos(np.radians(7.0)), np.sin(np.radians(7.0))
+    ph = make_phantom(tmp_path / "rot", direction=[[c, -s, 0], [s, c, 0], [0, 0, 1]], size_xyz=(40, 40, 30))
+    img = ph["sitk_image"]
+    idx = np.array([[0, 0, 0], [29, 39, 39], [10.5, 20.25, 3.75]], float)
+    bulk = io_utils.index_to_mm(img, idx)
+    single = np.stack([io_utils.index_to_mm(img, row) for row in idx])
+    assert np.allclose(bulk, single, atol=1e-9)
+    assert np.allclose(io_utils.mm_to_index(img, bulk), idx, atol=1e-9)

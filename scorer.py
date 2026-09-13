@@ -343,7 +343,7 @@ def invariants_report(cases: list, pred_dir: str = PRED_DIR, data_dir: str = DAT
     runs = predict(cases, pred_dir, data_dir)
     lines = [f"D7 invariant checks on {len(cases)} cases, commit {_git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
              "Runtime is run.py wall time including interpreter start-up. Peak memory is not measured on this platform.",
-             "Filters are still the eligibility-only stub, so ostium-separation violations are expected.", ""]
+             "Region-reach violations are the raw watershed basin flooding neighbouring bright tissue (information only; rule 4 uses the proximal 10 mm).", ""]
     summary = []
     for n, rec in runs.items():
         cid = rec["case_id"]
