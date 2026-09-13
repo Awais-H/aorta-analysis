@@ -1,0 +1,412 @@
+{
+  "status": "passed",
+  "scope": "File validity and structural QA only; not anatomical correctness, exhaustive detection, or expert approval.",
+  "failures": [],
+  "cases": [
+    {
+      "case_id": "case_19",
+      "geometry": [
+        {
+          "file": "daughters19_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta_and_daughters19_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta19.nii.gz",
+          "native_geometry_preserved": true
+        }
+      ],
+      "no_parent_overlap": true,
+      "source_copies_byte_identical": true,
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "branches": [
+        {
+          "instance_id": "branch_001",
+          "voxel_count": 19,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 3,
+          "seed_distance_to_nearest_label_voxel_mm": 0.19737083416734597,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.273,
+          "seed_nearest_native_voxel_label": 1,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.0,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_002",
+          "voxel_count": 14,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 2,
+          "seed_distance_to_nearest_label_voxel_mm": 0.944416795004855,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.303,
+          "seed_nearest_native_voxel_label": 2,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.303,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_003",
+          "voxel_count": 34,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 3,
+          "seed_distance_to_nearest_label_voxel_mm": 0.5564593959055552,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.786,
+          "seed_nearest_native_voxel_label": 3,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.786,
+          "centerline_fraction_within_half_voxel_diagonal": 0.927
+        }
+      ]
+    },
+    {
+      "case_id": "case_20",
+      "geometry": [
+        {
+          "file": "daughters20_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta_and_daughters20_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta20.nii.gz",
+          "native_geometry_preserved": true
+        }
+      ],
+      "no_parent_overlap": true,
+      "source_copies_byte_identical": true,
+      "labels": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "branches": [
+        {
+          "instance_id": "branch_001",
+          "voxel_count": 18,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 9,
+          "seed_distance_to_nearest_label_voxel_mm": 0.8414741792334327,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.283,
+          "seed_nearest_native_voxel_label": 1,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.283,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_002",
+          "voxel_count": 17,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 3,
+          "seed_distance_to_nearest_label_voxel_mm": 0.3675447982451606,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.13,
+          "seed_nearest_native_voxel_label": 2,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.074,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_003",
+          "voxel_count": 18,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 1,
+          "seed_distance_to_nearest_label_voxel_mm": 1.04769555539372,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.328,
+          "seed_nearest_native_voxel_label": 3,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.027,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_004",
+          "voxel_count": 15,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 1,
+          "seed_distance_to_nearest_label_voxel_mm": 0.4405127422379991,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.448,
+          "seed_nearest_native_voxel_label": 4,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.448,
+          "centerline_fraction_within_half_voxel_diagonal": 0.976
+        }
+      ]
+    },
+    {
+      "case_id": "case_21",
+      "geometry": [
+        {
+          "file": "daughters21_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta_and_daughters21_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta21.nii.gz",
+          "native_geometry_preserved": true
+        }
+      ],
+      "no_parent_overlap": true,
+      "source_copies_byte_identical": true,
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "branches": [
+        {
+          "instance_id": "branch_001",
+          "voxel_count": 86,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 11,
+          "seed_distance_to_nearest_label_voxel_mm": 0.5025219023939546,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.081,
+          "seed_nearest_native_voxel_label": 1,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.081,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_002",
+          "voxel_count": 44,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 4,
+          "seed_distance_to_nearest_label_voxel_mm": 0.7998877302887492,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.22,
+          "seed_nearest_native_voxel_label": 2,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.164,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_003",
+          "voxel_count": 64,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 9,
+          "seed_distance_to_nearest_label_voxel_mm": 0.9138835848018269,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.07,
+          "seed_nearest_native_voxel_label": 3,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 0.998,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        }
+      ]
+    },
+    {
+      "case_id": "case_22",
+      "geometry": [
+        {
+          "file": "daughters22_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta_and_daughters22_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta22.nii.gz",
+          "native_geometry_preserved": true
+        }
+      ],
+      "no_parent_overlap": true,
+      "source_copies_byte_identical": true,
+      "labels": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "branches": [
+        {
+          "instance_id": "branch_001",
+          "voxel_count": 33,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 6,
+          "seed_distance_to_nearest_label_voxel_mm": 0.39980756569594067,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.301,
+          "seed_nearest_native_voxel_label": 1,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.061,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_002",
+          "voxel_count": 52,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 7,
+          "seed_distance_to_nearest_label_voxel_mm": 0.44961745720656404,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.061,
+          "seed_nearest_native_voxel_label": 2,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.061,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_003",
+          "voxel_count": 101,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 12,
+          "seed_distance_to_nearest_label_voxel_mm": 0.6926774778677701,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 0.983,
+          "seed_nearest_native_voxel_label": 3,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 0.951,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_004",
+          "voxel_count": 159,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 22,
+          "seed_distance_to_nearest_label_voxel_mm": 1.0073240809681896,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.102,
+          "seed_nearest_native_voxel_label": 4,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.102,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_005",
+          "voxel_count": 145,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 18,
+          "seed_distance_to_nearest_label_voxel_mm": 0.6982400018952551,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.447,
+          "seed_nearest_native_voxel_label": 5,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 0.915,
+          "centerline_fraction_within_half_voxel_diagonal": 0.976
+        },
+        {
+          "instance_id": "branch_006",
+          "voxel_count": 33,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 4,
+          "seed_distance_to_nearest_label_voxel_mm": 0.2484119028494242,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.415,
+          "seed_nearest_native_voxel_label": 6,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.415,
+          "centerline_fraction_within_half_voxel_diagonal": 0.976
+        }
+      ]
+    },
+    {
+      "case_id": "case_23",
+      "geometry": [
+        {
+          "file": "daughters23_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta_and_daughters23_draft.nii.gz",
+          "native_geometry_preserved": true
+        },
+        {
+          "file": "aorta23.nii.gz",
+          "native_geometry_preserved": true
+        }
+      ],
+      "no_parent_overlap": true,
+      "source_copies_byte_identical": true,
+      "labels": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "branches": [
+        {
+          "instance_id": "branch_001",
+          "voxel_count": 26,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 12,
+          "seed_distance_to_nearest_label_voxel_mm": 0.3886331354704016,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.271,
+          "seed_nearest_native_voxel_label": 1,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.095,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        },
+        {
+          "instance_id": "branch_002",
+          "voxel_count": 16,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 1,
+          "seed_distance_to_nearest_label_voxel_mm": 0.5273635378661111,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.811,
+          "seed_nearest_native_voxel_label": 2,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.366,
+          "centerline_fraction_within_half_voxel_diagonal": 0.878
+        },
+        {
+          "instance_id": "branch_003",
+          "voxel_count": 14,
+          "connected_components_26": 1,
+          "parent_face_contact_voxels": 6,
+          "seed_distance_to_nearest_label_voxel_mm": 0.49999999821999763,
+          "trace_length_mm": 10.0,
+          "review_status": "expert_review_pending",
+          "centerline_max_distance_to_label_voxel_mm": 1.297,
+          "seed_nearest_native_voxel_label": 3,
+          "seed_inside_assigned_native_voxel": true,
+          "first_5mm_max_distance_to_label_voxel_mm": 1.225,
+          "centerline_fraction_within_half_voxel_diagonal": 1.0
+        }
+      ]
+    }
+  ]
+}

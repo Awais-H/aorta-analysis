@@ -1,0 +1,126 @@
+[
+  {
+    "points_voxel": [
+      [
+        114,
+        128,
+        150
+      ],
+      [
+        115,
+        128,
+        150
+      ],
+      [
+        116,
+        127,
+        150
+      ],
+      [
+        116,
+        125.8,
+        149
+      ],
+      [
+        116.3,
+        125,
+        148
+      ],
+      [
+        117.5,
+        125,
+        147
+      ],
+      [
+        120,
+        124.8,
+        147
+      ]
+    ],
+    "origin_diameter_estimate_mm": 2.5,
+    "confidence": "moderate",
+    "notes": "Small posterolateral direct connection followed on axial and coronal CT; diameter is close to the 2 mm eligibility boundary at 1.5 mm voxel spacing. Expert confirmation needed. Reviewed lower threshold includes visibly contrast-filled partial-volume voxels near the curved seed (250 HU), without manually filling voxels.",
+    "threshold_hu": 230
+  },
+  {
+    "points_voxel": [
+      [
+        109,
+        125,
+        149
+      ],
+      [
+        109,
+        123.7,
+        149
+      ],
+      [
+        108,
+        122,
+        148.3
+      ],
+      [
+        106.8,
+        121.3,
+        148.8
+      ],
+      [
+        105.5,
+        121,
+        149.6
+      ],
+      [
+        104,
+        121,
+        151
+      ]
+    ],
+    "origin_diameter_estimate_mm": 2.3,
+    "confidence": "moderate",
+    "notes": "Separate posterior ostium from the contralateral branch. Contrast-filled course bends laterally around the vertebral body. Borderline origin diameter requires expert review.",
+    "threshold_hu": 220
+  },
+  {
+    "points_voxel": [
+      [
+        106.5,
+        133.7,
+        164.8
+      ],
+      [
+        105.4,
+        134.3,
+        164.6
+      ],
+      [
+        104,
+        134.7,
+        165.2
+      ],
+      [
+        103.2,
+        135.8,
+        166
+      ],
+      [
+        103.4,
+        137.2,
+        166.8
+      ],
+      [
+        103.5,
+        138.4,
+        165.7
+      ],
+      [
+        103.3,
+        139.3,
+        164.5
+      ]
+    ],
+    "origin_diameter_estimate_mm": 2.7,
+    "confidence": "moderate",
+    "threshold_hu": 250,
+    "notes": "Anterior curved daughter near a calcified ostium. Preserves the visible upward/anterior bend before the inferior continuation; adjacent small tract/possible early bifurcation and calcified root require expert review. Do not count adjacent overlapping projection as a second daughter without confirmation."
+  }
+]

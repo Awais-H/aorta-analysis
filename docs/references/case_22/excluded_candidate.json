@@ -1,0 +1,41 @@
+[
+  {
+    "location_voxel": [
+      115,
+      127,
+      177
+    ],
+    "points_voxel": [
+      [
+        115,
+        127,
+        177
+      ],
+      [
+        113.7,
+        127,
+        177
+      ],
+      [
+        112,
+        126,
+        178
+      ],
+      [
+        110.5,
+        125.5,
+        179
+      ],
+      [
+        109,
+        124.5,
+        180
+      ]
+    ],
+    "reason": "Second thin posterior-lateral structure appears to connect at a separate level and follow for about5mm, but lumen is only~1voxel to2voxels across with partial-volume brightness. Cannot establish >=2mm origin confidently from native1.5mm data. Needs expert adjudication; omission can reduce recall.",
+    "estimated_origin_diameter_mm_range": [
+      1.5,
+      2.5
+    ]
+  }
+]

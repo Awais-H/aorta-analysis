@@ -1,0 +1,43 @@
+{
+  "points_voxel": [
+    [
+      145,
+      163,
+      167
+    ],
+    [
+      145,
+      162,
+      167
+    ],
+    [
+      143.8,
+      161,
+      167.4
+    ],
+    [
+      142.5,
+      160.5,
+      168
+    ],
+    [
+      141.3,
+      159.3,
+      168.2
+    ],
+    [
+      140,
+      159,
+      169
+    ],
+    [
+      139,
+      158,
+      169
+    ]
+  ],
+  "origin_diameter_estimate_mm": 2.1,
+  "confidence": "low",
+  "threshold_hu": 210,
+  "notes": "Small posterior daughter with visible curved contrast-filled continuation. Origin and proximal voxels are strongly affected by partial volume; particularly borderline for the 2 mm minimum and must be adjudicated before scoring."
+}

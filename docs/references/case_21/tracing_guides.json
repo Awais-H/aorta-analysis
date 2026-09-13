@@ -1,0 +1,26 @@
+[
+  {
+    "points_voxel": [[98.5,126.8,188.5],[100.5,127.0,187.5],[102.0,127.0,186.0],[103.0,127.0,184.5],[104.0,127.0,183.2],[105.5,127.0,181.8]],
+    "origin_diameter_estimate_mm": 5.5,
+    "confidence": "high",
+    "notes": "Clear direct positive-x lateral branch; proximal lumen curves inferiorly. Visible connection in axial slices187-190. Stop at10mm, before downstream vessels.",
+    "threshold_hu": 250,
+    "search_radius_mm": 4.0
+  },
+  {
+    "points_voxel": [[86.0,121.5,191.8],[83.5,121.5,192.0],[81.0,121.5,192.6],[79.5,121.0,193.5]],
+    "origin_diameter_estimate_mm": 4.5,
+    "confidence": "high",
+    "notes": "Clear negative-x lateral direct branch; axial192 demonstrates ostium continuity, then courses outward and slightly superiorly.",
+    "threshold_hu": 250,
+    "search_radius_mm": 3.5
+  },
+  {
+    "points_voxel": [[97.0,130.0,195.7],[97.0,131.8,195.2],[96.5,133.0,193.5],[96.0,134.0,191.5],[95.5,134.8,190.5]],
+    "origin_diameter_estimate_mm": 4.5,
+    "confidence": "high",
+    "notes": "Clear anterior direct branch originates below superior crop boundary, extends anteriorly and inferiorly. Separate brighter anterior vessel above z197 is not a separate covered origin.",
+    "threshold_hu": 250,
+    "search_radius_mm": 3.5
+  }
+]
