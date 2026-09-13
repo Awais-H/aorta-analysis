@@ -1,0 +1,2277 @@
+{
+ "001": {
+  "full_size_zyx": [
+   174,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.782,
+   0.782
+  ],
+  "crop_size_zyx": [
+   174,
+   107,
+   98
+  ],
+  "size_zyx": [
+   174,
+   107,
+   98
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.782,
+   0.782
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 33001,
+  "mask_volume_ml": 16.1,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 300.6,
+  "hu_in_mask_std": 26.7,
+  "hu_in_mask_median": 303.0,
+  "adaptive_threshold_hu": 247.1,
+  "mask_z_slices": [
+   0,
+   173
+  ],
+  "mask_z_extent_mm": 139.2,
+  "equiv_diam_mm_min_med_max": [
+   10.6,
+   11.9,
+   14.3
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 142.6,
+  "tortuosity_path_over_chord": 1.03,
+  "max_lateral_centroid_deviation_mm": 6.5,
+  "bright_fraction_in_1vox_ring": 0.476,
+  "bright_fraction_in_2to3vox_ring": 0.083,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 14,
+  "wall_patches_over_5mm2": 11,
+  "wall_patch_areas_mm2_top8": [
+   174.3,
+   118.6,
+   116.8,
+   26.9,
+   26.9,
+   16.5,
+   11.6,
+   10.4
+  ],
+  "aorta_xsec_mm2_median": 111.3,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 5
+ },
+ "002": {
+  "full_size_zyx": [
+   176,
+   241,
+   251
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.686,
+   0.686
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   176,
+   139,
+   99
+  ],
+  "size_zyx": [
+   176,
+   139,
+   99
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 41767,
+  "mask_volume_ml": 21.4,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 335.9,
+  "hu_in_mask_std": 64.9,
+  "hu_in_mask_median": 357.9,
+  "adaptive_threshold_hu": 206.1,
+  "mask_z_slices": [
+   0,
+   175
+  ],
+  "mask_z_extent_mm": 140.8,
+  "equiv_diam_mm_min_med_max": [
+   11.6,
+   13.1,
+   17.2
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 149.0,
+  "tortuosity_path_over_chord": 1.028,
+  "max_lateral_centroid_deviation_mm": 19.1,
+  "bright_fraction_in_1vox_ring": 0.145,
+  "bright_fraction_in_2to3vox_ring": 0.031,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 11,
+  "wall_patches_over_5mm2": 7,
+  "wall_patch_areas_mm2_top8": [
+   108.8,
+   58.9,
+   57.6,
+   51.8,
+   37.8,
+   9.6,
+   7.0
+  ],
+  "aorta_xsec_mm2_median": 133.8,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 6
+ },
+ "003": {
+  "full_size_zyx": [
+   207,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   false
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.732,
+   0.732
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   207,
+   134,
+   133
+  ],
+  "size_zyx": [
+   207,
+   134,
+   133
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 82752,
+  "mask_volume_ml": 42.4,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 319.8,
+  "hu_in_mask_std": 47.6,
+  "hu_in_mask_median": 330.9,
+  "adaptive_threshold_hu": 224.5,
+  "mask_z_slices": [
+   0,
+   205
+  ],
+  "mask_z_extent_mm": 164.8,
+  "equiv_diam_mm_min_med_max": [
+   13.9,
+   17.6,
+   21.9
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 188.8,
+  "tortuosity_path_over_chord": 1.134,
+  "max_lateral_centroid_deviation_mm": 20.6,
+  "bright_fraction_in_1vox_ring": 0.279,
+  "bright_fraction_in_2to3vox_ring": 0.031,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 6,
+  "wall_patches_over_5mm2": 6,
+  "wall_patch_areas_mm2_top8": [
+   159.4,
+   106.9,
+   88.3,
+   74.9,
+   22.4,
+   10.2
+  ],
+  "aorta_xsec_mm2_median": 241.9,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4
+ },
+ "004": {
+  "full_size_zyx": [
+   180,
+   264,
+   391
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.625,
+   0.625
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   180,
+   128,
+   102
+  ],
+  "size_zyx": [
+   180,
+   128,
+   102
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 41453,
+  "mask_volume_ml": 21.2,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 438.6,
+  "hu_in_mask_std": 82.9,
+  "hu_in_mask_median": 473.4,
+  "adaptive_threshold_hu": 272.9,
+  "mask_z_slices": [
+   0,
+   179
+  ],
+  "mask_z_extent_mm": 144.0,
+  "equiv_diam_mm_min_med_max": [
+   11.1,
+   12.5,
+   18.3
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 149.6,
+  "tortuosity_path_over_chord": 1.025,
+  "max_lateral_centroid_deviation_mm": 16.4,
+  "bright_fraction_in_1vox_ring": 0.102,
+  "bright_fraction_in_2to3vox_ring": 0.043,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 17,
+  "wall_patches_over_5mm2": 8,
+  "wall_patch_areas_mm2_top8": [
+   167.7,
+   145.3,
+   78.7,
+   58.2,
+   41.0,
+   19.8,
+   9.0,
+   7.0
+  ],
+  "aorta_xsec_mm2_median": 122.6,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 7
+ },
+ "005": {
+  "full_size_zyx": [
+   185,
+   290,
+   303
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.9,
+   0.9
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   185,
+   133,
+   115
+  ],
+  "size_zyx": [
+   185,
+   133,
+   115
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 83924,
+  "mask_volume_ml": 43.0,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 249.5,
+  "hu_in_mask_std": 29.3,
+  "hu_in_mask_median": 254.4,
+  "adaptive_threshold_hu": 190.9,
+  "mask_z_slices": [
+   0,
+   184
+  ],
+  "mask_z_extent_mm": 148.0,
+  "equiv_diam_mm_min_med_max": [
+   16.3,
+   18.4,
+   23.3
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 160.7,
+  "tortuosity_path_over_chord": 1.075,
+  "max_lateral_centroid_deviation_mm": 16.6,
+  "bright_fraction_in_1vox_ring": 0.308,
+  "bright_fraction_in_2to3vox_ring": 0.053,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 13,
+  "wall_patches_over_5mm2": 9,
+  "wall_patch_areas_mm2_top8": [
+   242.6,
+   185.0,
+   146.6,
+   74.9,
+   60.8,
+   42.2,
+   39.7,
+   7.7
+  ],
+  "aorta_xsec_mm2_median": 265.0,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 5
+ },
+ "006": {
+  "full_size_zyx": [
+   208,
+   243,
+   290
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.774,
+   0.774
+  ],
+  "crop_size_zyx": [
+   208,
+   142,
+   137
+  ],
+  "size_zyx": [
+   208,
+   142,
+   137
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.774,
+   0.774
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 83912,
+  "mask_volume_ml": 40.2,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 261.6,
+  "hu_in_mask_std": 29.4,
+  "hu_in_mask_median": 267.0,
+  "adaptive_threshold_hu": 202.7,
+  "mask_z_slices": [
+   0,
+   207
+  ],
+  "mask_z_extent_mm": 166.4,
+  "equiv_diam_mm_min_med_max": [
+   13.4,
+   16.9,
+   21.4
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 192.0,
+  "tortuosity_path_over_chord": 1.141,
+  "max_lateral_centroid_deviation_mm": 21.8,
+  "bright_fraction_in_1vox_ring": 0.318,
+  "bright_fraction_in_2to3vox_ring": 0.042,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 7,
+  "wall_patches_over_5mm2": 6,
+  "wall_patch_areas_mm2_top8": [
+   168.3,
+   161.8,
+   118.0,
+   93.5,
+   70.1,
+   18.0
+  ],
+  "aorta_xsec_mm2_median": 225.3,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4
+ },
+ "007": {
+  "full_size_zyx": [
+   155,
+   295,
+   379
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.862,
+   0.862
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   155,
+   123,
+   108
+  ],
+  "size_zyx": [
+   155,
+   123,
+   108
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 40066,
+  "mask_volume_ml": 20.5,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 240.9,
+  "hu_in_mask_std": 28.4,
+  "hu_in_mask_median": 247.4,
+  "adaptive_threshold_hu": 184.1,
+  "mask_z_slices": [
+   0,
+   154
+  ],
+  "mask_z_extent_mm": 124.0,
+  "equiv_diam_mm_min_med_max": [
+   12.7,
+   13.8,
+   16.9
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 128.7,
+  "tortuosity_path_over_chord": 1.023,
+  "max_lateral_centroid_deviation_mm": 13.8,
+  "bright_fraction_in_1vox_ring": 0.273,
+  "bright_fraction_in_2to3vox_ring": 0.039,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 11,
+  "wall_patches_over_5mm2": 8,
+  "wall_patch_areas_mm2_top8": [
+   156.2,
+   110.7,
+   74.9,
+   20.5,
+   17.3,
+   11.5,
+   7.0,
+   6.4
+  ],
+  "aorta_xsec_mm2_median": 150.4,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4
+ },
+ "008": {
+  "full_size_zyx": [
+   176,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.647,
+   0.647
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   176,
+   206,
+   105
+  ],
+  "size_zyx": [
+   176,
+   206,
+   105
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 38923,
+  "mask_volume_ml": 19.9,
+  "mask_components": 2,
+  "mask_fragment_sizes": [
+   38869,
+   54
+  ],
+  "mask_largest_fraction": 0.9986,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 398.6,
+  "hu_in_mask_std": 72.2,
+  "hu_in_mask_median": 413.9,
+  "adaptive_threshold_hu": 254.3,
+  "mask_z_slices": [
+   0,
+   175
+  ],
+  "mask_z_extent_mm": 140.8,
+  "equiv_diam_mm_min_med_max": [
+   10.7,
+   12.3,
+   17.6
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 147.2,
+  "tortuosity_path_over_chord": 1.026,
+  "max_lateral_centroid_deviation_mm": 17.6,
+  "bright_fraction_in_1vox_ring": 0.479,
+  "bright_fraction_in_2to3vox_ring": 0.064,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 38,
+  "wall_patches_over_5mm2": 9,
+  "wall_patch_areas_mm2_top8": [
+   153.6,
+   138.2,
+   80.6,
+   73.0,
+   42.9,
+   20.5,
+   12.2,
+   11.5
+  ],
+  "aorta_xsec_mm2_median": 119.7,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 9
+ },
+ "009": {
+  "full_size_zyx": [
+   157,
+   323,
+   443
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.85,
+   0.85
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   157,
+   135,
+   134
+  ],
+  "size_zyx": [
+   157,
+   135,
+   134
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 69740,
+  "mask_volume_ml": 35.7,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 395.6,
+  "hu_in_mask_std": 51.1,
+  "hu_in_mask_median": 410.6,
+  "adaptive_threshold_hu": 293.3,
+  "mask_z_slices": [
+   0,
+   156
+  ],
+  "mask_z_extent_mm": 125.6,
+  "equiv_diam_mm_min_med_max": [
+   15.2,
+   18.5,
+   23.4
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 139.2,
+  "tortuosity_path_over_chord": 1.096,
+  "max_lateral_centroid_deviation_mm": 23.6,
+  "bright_fraction_in_1vox_ring": 0.093,
+  "bright_fraction_in_2to3vox_ring": 0.012,
+  "voxels_over_600HU_in_3vox_ring": 5,
+  "wall_patches_total": 5,
+  "wall_patches_over_5mm2": 4,
+  "wall_patch_areas_mm2_top8": [
+   51.8,
+   40.3,
+   27.5,
+   6.4
+  ],
+  "aorta_xsec_mm2_median": 267.5,
+  "largest_patch_over_40pct_aorta": false,
+  "shell_blobs_over_1ml": 2
+ },
+ "010": {
+  "full_size_zyx": [
+   181,
+   380,
+   437
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.961,
+   0.961
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   181,
+   211,
+   121
+  ],
+  "size_zyx": [
+   181,
+   211,
+   121
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 77920,
+  "mask_volume_ml": 39.9,
+  "mask_components": 13,
+  "mask_fragment_sizes": [
+   77881,
+   10,
+   10,
+   4,
+   3,
+   2,
+   2,
+   2
+  ],
+  "mask_largest_fraction": 0.9995,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 363.6,
+  "hu_in_mask_std": 40.7,
+  "hu_in_mask_median": 369.2,
+  "adaptive_threshold_hu": 282.2,
+  "mask_z_slices": [
+   0,
+   180
+  ],
+  "mask_z_extent_mm": 144.8,
+  "equiv_diam_mm_min_med_max": [
+   14.6,
+   18.5,
+   20.9
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 155.5,
+  "tortuosity_path_over_chord": 1.057,
+  "max_lateral_centroid_deviation_mm": 19.0,
+  "bright_fraction_in_1vox_ring": 0.11,
+  "bright_fraction_in_2to3vox_ring": 0.024,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 8,
+  "wall_patches_over_5mm2": 6,
+  "wall_patch_areas_mm2_top8": [
+   159.4,
+   129.3,
+   105.0,
+   74.2,
+   17.3,
+   12.8
+  ],
+  "aorta_xsec_mm2_median": 270.1,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 3
+ },
+ "011": {
+  "full_size_zyx": [
+   162,
+   389,
+   438
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.839,
+   0.839
+  ],
+  "crop_size_zyx": [
+   162,
+   114,
+   112
+  ],
+  "size_zyx": [
+   162,
+   114,
+   112
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.839,
+   0.839
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 42419,
+  "mask_volume_ml": 23.9,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 423.4,
+  "hu_in_mask_std": 73.3,
+  "hu_in_mask_median": 448.0,
+  "adaptive_threshold_hu": 276.8,
+  "mask_z_slices": [
+   0,
+   161
+  ],
+  "mask_z_extent_mm": 129.6,
+  "equiv_diam_mm_min_med_max": [
+   13.2,
+   14.6,
+   20.0
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 138.2,
+  "tortuosity_path_over_chord": 1.056,
+  "max_lateral_centroid_deviation_mm": 14.5,
+  "bright_fraction_in_1vox_ring": 0.054,
+  "bright_fraction_in_2to3vox_ring": 0.028,
+  "voxels_over_600HU_in_3vox_ring": 6,
+  "wall_patches_total": 23,
+  "wall_patches_over_5mm2": 5,
+  "wall_patch_areas_mm2_top8": [
+   96.4,
+   78.8,
+   77.4,
+   64.8,
+   9.2
+  ],
+  "aorta_xsec_mm2_median": 167.5,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 0
+ },
+ "012": {
+  "full_size_zyx": [
+   183,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.782,
+   0.782
+  ],
+  "crop_size_zyx": [
+   183,
+   129,
+   110
+  ],
+  "size_zyx": [
+   183,
+   129,
+   110
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.782,
+   0.782
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 56094,
+  "mask_volume_ml": 27.4,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 266.7,
+  "hu_in_mask_std": 36.1,
+  "hu_in_mask_median": 272.0,
+  "adaptive_threshold_hu": 194.4,
+  "mask_z_slices": [
+   0,
+   182
+  ],
+  "mask_z_extent_mm": 146.4,
+  "equiv_diam_mm_min_med_max": [
+   14.0,
+   15.1,
+   17.7
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 149.3,
+  "tortuosity_path_over_chord": 1.013,
+  "max_lateral_centroid_deviation_mm": 14.4,
+  "bright_fraction_in_1vox_ring": 0.151,
+  "bright_fraction_in_2to3vox_ring": 0.029,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 8,
+  "wall_patches_over_5mm2": 4,
+  "wall_patch_areas_mm2_top8": [
+   89.3,
+   70.3,
+   64.8,
+   60.5
+  ],
+  "aorta_xsec_mm2_median": 179.8,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4
+ },
+ "013": {
+  "full_size_zyx": [
+   159,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.858,
+   0.858
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   159,
+   132,
+   100
+  ],
+  "size_zyx": [
+   159,
+   132,
+   100
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 43012,
+  "mask_volume_ml": 22.0,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 283.2,
+  "hu_in_mask_std": 23.2,
+  "hu_in_mask_median": 284.8,
+  "adaptive_threshold_hu": 236.9,
+  "mask_z_slices": [
+   0,
+   158
+  ],
+  "mask_z_extent_mm": 127.2,
+  "equiv_diam_mm_min_med_max": [
+   12.1,
+   13.7,
+   19.1
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 132.0,
+  "tortuosity_path_over_chord": 1.017,
+  "max_lateral_centroid_deviation_mm": 17.2,
+  "bright_fraction_in_1vox_ring": 0.209,
+  "bright_fraction_in_2to3vox_ring": 0.013,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 5,
+  "wall_patches_over_5mm2": 5,
+  "wall_patch_areas_mm2_top8": [
+   41.0,
+   27.5,
+   26.9,
+   23.7,
+   19.2
+  ],
+  "aorta_xsec_mm2_median": 147.2,
+  "largest_patch_over_40pct_aorta": false,
+  "shell_blobs_over_1ml": 1
+ },
+ "014": {
+  "full_size_zyx": [
+   169,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.702,
+   0.702
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   169,
+   132,
+   101
+  ],
+  "size_zyx": [
+   169,
+   132,
+   101
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 47639,
+  "mask_volume_ml": 24.4,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 420.1,
+  "hu_in_mask_std": 62.5,
+  "hu_in_mask_median": 436.0,
+  "adaptive_threshold_hu": 295.1,
+  "mask_z_slices": [
+   0,
+   168
+  ],
+  "mask_z_extent_mm": 135.2,
+  "equiv_diam_mm_min_med_max": [
+   13.1,
+   13.7,
+   20.1
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 140.4,
+  "tortuosity_path_over_chord": 1.023,
+  "max_lateral_centroid_deviation_mm": 14.9,
+  "bright_fraction_in_1vox_ring": 0.23,
+  "bright_fraction_in_2to3vox_ring": 0.025,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 7,
+  "wall_patches_over_5mm2": 4,
+  "wall_patch_areas_mm2_top8": [
+   86.4,
+   74.2,
+   62.7,
+   48.0
+  ],
+  "aorta_xsec_mm2_median": 147.8,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 3
+ },
+ "015": {
+  "full_size_zyx": [
+   168,
+   512,
+   512
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   0.8,
+   0.726,
+   0.726
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   168,
+   161,
+   115
+  ],
+  "size_zyx": [
+   168,
+   161,
+   115
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 58684,
+  "mask_volume_ml": 30.0,
+  "mask_components": 2,
+  "mask_fragment_sizes": [
+   58683,
+   1
+  ],
+  "mask_largest_fraction": 1.0,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "16-bit signed integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 413.9,
+  "hu_in_mask_std": 50.5,
+  "hu_in_mask_median": 430.2,
+  "adaptive_threshold_hu": 312.9,
+  "mask_z_slices": [
+   0,
+   167
+  ],
+  "mask_z_extent_mm": 134.4,
+  "equiv_diam_mm_min_med_max": [
+   13.7,
+   15.4,
+   22.9
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 145.9,
+  "tortuosity_path_over_chord": 1.019,
+  "max_lateral_centroid_deviation_mm": 28.8,
+  "bright_fraction_in_1vox_ring": 0.056,
+  "bright_fraction_in_2to3vox_ring": 0.036,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 15,
+  "wall_patches_over_5mm2": 5,
+  "wall_patch_areas_mm2_top8": [
+   167.7,
+   140.8,
+   108.2,
+   88.3,
+   20.5
+  ],
+  "aorta_xsec_mm2_median": 185.9,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 2
+ },
+ "016": {
+  "full_size_zyx": [
+   98,
+   319,
+   319
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   184,
+   165,
+   135
+  ],
+  "size_zyx": [
+   184,
+   165,
+   135
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 150173,
+  "mask_volume_ml": 76.9,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 213.9,
+  "hu_in_mask_std": 82.4,
+  "hu_in_mask_median": 232.4,
+  "adaptive_threshold_hu": 104.6,
+  "mask_z_slices": [
+   0,
+   182
+  ],
+  "mask_z_extent_mm": 146.4,
+  "equiv_diam_mm_min_med_max": [
+   19.7,
+   26.1,
+   29.4
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 171.7,
+  "tortuosity_path_over_chord": 1.12,
+  "max_lateral_centroid_deviation_mm": 25.8,
+  "bright_fraction_in_1vox_ring": 0.088,
+  "bright_fraction_in_2to3vox_ring": 0.035,
+  "voxels_over_600HU_in_3vox_ring": 13,
+  "wall_patches_total": 47,
+  "wall_patches_over_5mm2": 11,
+  "wall_patch_areas_mm2_top8": [
+   149.8,
+   97.3,
+   80.0,
+   25.6,
+   23.0,
+   20.5,
+   18.6,
+   7.7
+  ],
+  "aorta_xsec_mm2_median": 535.0,
+  "largest_patch_over_40pct_aorta": false,
+  "shell_blobs_over_1ml": 1
+ },
+ "017": {
+  "full_size_zyx": [
+   179,
+   288,
+   288
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   98,
+   103,
+   96
+  ],
+  "size_zyx": [
+   98,
+   103,
+   96
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 13758,
+  "mask_volume_ml": 7.0,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 444.9,
+  "hu_in_mask_std": 123.2,
+  "hu_in_mask_median": 509.8,
+  "adaptive_threshold_hu": 229.4,
+  "mask_z_slices": [
+   37,
+   96
+  ],
+  "mask_z_extent_mm": 48.0,
+  "equiv_diam_mm_min_med_max": [
+   12.3,
+   13.6,
+   14.8
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 50.2,
+  "tortuosity_path_over_chord": 1.04,
+  "max_lateral_centroid_deviation_mm": 5.5,
+  "bright_fraction_in_1vox_ring": 0.147,
+  "bright_fraction_in_2to3vox_ring": 0.067,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 8,
+  "wall_patches_over_5mm2": 4,
+  "wall_patch_areas_mm2_top8": [
+   202.9,
+   20.5,
+   10.9,
+   8.3
+  ],
+  "aorta_xsec_mm2_median": 145.3,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 3,
+  "bright_beyond_bottom_face_fraction": 0.809
+ },
+ "018": {
+  "full_size_zyx": [
+   317,
+   333,
+   333
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   394,
+   219,
+   163
+  ],
+  "size_zyx": [
+   394,
+   219,
+   163
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 313526,
+  "mask_volume_ml": 160.5,
+  "mask_components": 2,
+  "mask_fragment_sizes": [
+   286237,
+   27289
+  ],
+  "mask_largest_fraction": 0.913,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 102.5,
+  "hu_in_mask_std": 62.0,
+  "hu_in_mask_median": 105.2,
+  "adaptive_threshold_hu": 100.0,
+  "mask_z_slices": [
+   37,
+   392
+  ],
+  "mask_z_extent_mm": 284.8,
+  "equiv_diam_mm_min_med_max": [
+   20.2,
+   25.4,
+   31.3
+  ],
+  "aneurysm_suspect": true,
+  "centroid_path_mm": 315.1,
+  "tortuosity_path_over_chord": 1.074,
+  "max_lateral_centroid_deviation_mm": 39.1,
+  "bright_fraction_in_1vox_ring": 0.077,
+  "bright_fraction_in_2to3vox_ring": 0.081,
+  "voxels_over_600HU_in_3vox_ring": 5,
+  "wall_patches_total": 153,
+  "wall_patches_over_5mm2": 41,
+  "wall_patch_areas_mm2_top8": [
+   160.6,
+   157.4,
+   156.2,
+   117.8,
+   106.2,
+   85.1,
+   81.3,
+   68.5
+  ],
+  "aorta_xsec_mm2_median": 506.6,
+  "largest_patch_over_40pct_aorta": false,
+  "shell_blobs_over_1ml": 4,
+  "bright_beyond_bottom_face_fraction": 0.484
+ },
+ "019": {
+  "full_size_zyx": [
+   169,
+   250,
+   250
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   124,
+   103,
+   105
+  ],
+  "size_zyx": [
+   124,
+   103,
+   105
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 30802,
+  "mask_volume_ml": 15.8,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 520.4,
+  "hu_in_mask_std": 143.5,
+  "hu_in_mask_median": 554.2,
+  "adaptive_threshold_hu": 249.4,
+  "mask_z_slices": [
+   37,
+   122
+  ],
+  "mask_z_extent_mm": 68.8,
+  "equiv_diam_mm_min_med_max": [
+   16.0,
+   17.2,
+   18.3
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 72.1,
+  "tortuosity_path_over_chord": 1.058,
+  "max_lateral_centroid_deviation_mm": 4.2,
+  "bright_fraction_in_1vox_ring": 0.221,
+  "bright_fraction_in_2to3vox_ring": 0.066,
+  "voxels_over_600HU_in_3vox_ring": 44,
+  "wall_patches_total": 6,
+  "wall_patches_over_5mm2": 3,
+  "wall_patch_areas_mm2_top8": [
+   460.8,
+   19.8,
+   5.8
+  ],
+  "aorta_xsec_mm2_median": 233.0,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 5,
+  "bright_beyond_bottom_face_fraction": 0.885
+ },
+ "020": {
+  "full_size_zyx": [
+   201,
+   299,
+   299
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   122,
+   122,
+   103
+  ],
+  "size_zyx": [
+   122,
+   122,
+   103
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 24620,
+  "mask_volume_ml": 12.6,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 424.9,
+  "hu_in_mask_std": 122.1,
+  "hu_in_mask_median": 482.8,
+  "adaptive_threshold_hu": 217.3,
+  "mask_z_slices": [
+   37,
+   120
+  ],
+  "mask_z_extent_mm": 67.2,
+  "equiv_diam_mm_min_med_max": [
+   4.7,
+   16.1,
+   16.7
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 76.3,
+  "tortuosity_path_over_chord": 1.088,
+  "max_lateral_centroid_deviation_mm": 13.1,
+  "bright_fraction_in_1vox_ring": 0.154,
+  "bright_fraction_in_2to3vox_ring": 0.071,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 10,
+  "wall_patches_over_5mm2": 7,
+  "wall_patch_areas_mm2_top8": [
+   443.5,
+   60.2,
+   28.2,
+   11.5,
+   10.2,
+   9.6,
+   9.0
+  ],
+  "aorta_xsec_mm2_median": 202.9,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4,
+  "bright_beyond_bottom_face_fraction": 1.0
+ },
+ "021": {
+  "full_size_zyx": [
+   202,
+   217,
+   217
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   163,
+   112,
+   135
+  ],
+  "size_zyx": [
+   163,
+   112,
+   135
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 58235,
+  "mask_volume_ml": 29.8,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 513.3,
+  "hu_in_mask_std": 160.6,
+  "hu_in_mask_median": 563.8,
+  "adaptive_threshold_hu": 253.7,
+  "mask_z_slices": [
+   37,
+   162
+  ],
+  "mask_z_extent_mm": 100.8,
+  "equiv_diam_mm_min_med_max": [
+   17.4,
+   18.6,
+   23.6
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 122.2,
+  "tortuosity_path_over_chord": 1.212,
+  "max_lateral_centroid_deviation_mm": 19.0,
+  "bright_fraction_in_1vox_ring": 0.159,
+  "bright_fraction_in_2to3vox_ring": 0.077,
+  "voxels_over_600HU_in_3vox_ring": 191,
+  "wall_patches_total": 43,
+  "wall_patches_over_5mm2": 12,
+  "wall_patch_areas_mm2_top8": [
+   451.8,
+   110.7,
+   79.4,
+   69.1,
+   58.9,
+   35.2,
+   28.2,
+   28.2
+  ],
+  "aorta_xsec_mm2_median": 273.0,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 7,
+  "bright_beyond_bottom_face_fraction": 0.808
+ },
+ "022": {
+  "full_size_zyx": [
+   280,
+   247,
+   247
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   300,
+   141,
+   109
+  ],
+  "size_zyx": [
+   300,
+   141,
+   109
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 106874,
+  "mask_volume_ml": 54.7,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 221.8,
+  "hu_in_mask_std": 59.7,
+  "hu_in_mask_median": 232.7,
+  "adaptive_threshold_hu": 104.7,
+  "mask_z_slices": [
+   37,
+   299
+  ],
+  "mask_z_extent_mm": 210.4,
+  "equiv_diam_mm_min_med_max": [
+   13.0,
+   16.8,
+   22.1
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 220.0,
+  "tortuosity_path_over_chord": 1.035,
+  "max_lateral_centroid_deviation_mm": 20.9,
+  "bright_fraction_in_1vox_ring": 0.223,
+  "bright_fraction_in_2to3vox_ring": 0.086,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 63,
+  "wall_patches_over_5mm2": 28,
+  "wall_patch_areas_mm2_top8": [
+   563.2,
+   279.0,
+   203.5,
+   134.4,
+   82.6,
+   50.6,
+   41.0,
+   39.7
+  ],
+  "aorta_xsec_mm2_median": 221.4,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 6,
+  "bright_beyond_bottom_face_fraction": 0.81
+ },
+ "023": {
+  "full_size_zyx": [
+   179,
+   244,
+   244
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   105,
+   107,
+   99
+  ],
+  "size_zyx": [
+   105,
+   107,
+   99
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 19328,
+  "mask_volume_ml": 9.9,
+  "mask_components": 4,
+  "mask_fragment_sizes": [
+   19226,
+   78,
+   16,
+   8
+  ],
+  "mask_largest_fraction": 0.9947,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 324.9,
+  "hu_in_mask_std": 90.7,
+  "hu_in_mask_median": 364.8,
+  "adaptive_threshold_hu": 164.2,
+  "mask_z_slices": [
+   43,
+   104
+  ],
+  "mask_z_extent_mm": 49.6,
+  "equiv_diam_mm_min_med_max": [
+   15.1,
+   15.8,
+   16.6
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 51.1,
+  "tortuosity_path_over_chord": 1.035,
+  "max_lateral_centroid_deviation_mm": 4.5,
+  "bright_fraction_in_1vox_ring": 0.201,
+  "bright_fraction_in_2to3vox_ring": 0.128,
+  "voxels_over_600HU_in_3vox_ring": 0,
+  "wall_patches_total": 9,
+  "wall_patches_over_5mm2": 6,
+  "wall_patch_areas_mm2_top8": [
+   434.6,
+   134.4,
+   43.5,
+   28.8,
+   27.5,
+   12.2
+  ],
+  "aorta_xsec_mm2_median": 195.8,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 4,
+  "bright_beyond_bottom_face_fraction": 0.952
+ },
+ "024": {
+  "full_size_zyx": [
+   90,
+   216,
+   237
+  ],
+  "mask_touches_z_boundary_full": [
+   true,
+   true
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "header_fallback": "nibabel_orthonormalized",
+  "header_rotation_deg": 176.51,
+  "crop_size_zyx": [
+   169,
+   163,
+   135
+  ],
+  "size_zyx": [
+   169,
+   163,
+   135
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.06,
+   0.05,
+   -0.06,
+   -1.0,
+   0.0,
+   0.05,
+   -0.0,
+   1.0
+  ],
+  "mask_voxels": 137864,
+  "mask_volume_ml": 70.6,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 71.2,
+  "hu_in_mask_std": 83.9,
+  "hu_in_mask_median": 78.0,
+  "adaptive_threshold_hu": 100.0,
+  "mask_z_slices": [
+   0,
+   167
+  ],
+  "mask_z_extent_mm": 134.4,
+  "equiv_diam_mm_min_med_max": [
+   21.3,
+   25.8,
+   28.8
+  ],
+  "aneurysm_suspect": false,
+  "centroid_path_mm": 157.4,
+  "tortuosity_path_over_chord": 1.107,
+  "max_lateral_centroid_deviation_mm": 26.8,
+  "bright_fraction_in_1vox_ring": 0.08,
+  "bright_fraction_in_2to3vox_ring": 0.056,
+  "voxels_over_600HU_in_3vox_ring": 14,
+  "wall_patches_total": 73,
+  "wall_patches_over_5mm2": 27,
+  "wall_patch_areas_mm2_top8": [
+   80.0,
+   37.1,
+   26.9,
+   25.0,
+   18.6,
+   15.4,
+   15.4,
+   14.1
+  ],
+  "aorta_xsec_mm2_median": 524.8,
+  "largest_patch_over_40pct_aorta": false,
+  "shell_blobs_over_1ml": 1
+ },
+ "025": {
+  "full_size_zyx": [
+   421,
+   236,
+   236
+  ],
+  "mask_touches_z_boundary_full": [
+   false,
+   false
+  ],
+  "native_spacing_zyx_mm": [
+   1.5,
+   1.5,
+   1.5
+  ],
+  "resampled_to_iso_mm": 0.8,
+  "crop_size_zyx": [
+   504,
+   197,
+   148
+  ],
+  "size_zyx": [
+   504,
+   197,
+   148
+  ],
+  "spacing_zyx_mm": [
+   0.8,
+   0.8,
+   0.8
+  ],
+  "direction": [
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   -1.0,
+   0.0,
+   0.0,
+   0.0,
+   1.0
+  ],
+  "mask_voxels": 384400,
+  "mask_volume_ml": 196.8,
+  "mask_components": 1,
+  "grid_match": true,
+  "dtypes": [
+   "16-bit signed integer",
+   "8-bit unsigned integer"
+  ],
+  "mask_unique_values": [
+   0,
+   1
+  ],
+  "hu_in_mask_mean": 442.5,
+  "hu_in_mask_std": 96.1,
+  "hu_in_mask_median": 476.0,
+  "adaptive_threshold_hu": 250.2,
+  "mask_z_slices": [
+   37,
+   465
+  ],
+  "mask_z_extent_mm": 343.2,
+  "equiv_diam_mm_min_med_max": [
+   12.8,
+   20.6,
+   45.2
+  ],
+  "aneurysm_suspect": true,
+  "centroid_path_mm": 418.6,
+  "tortuosity_path_over_chord": 1.217,
+  "max_lateral_centroid_deviation_mm": 33.0,
+  "bright_fraction_in_1vox_ring": 0.108,
+  "bright_fraction_in_2to3vox_ring": 0.054,
+  "voxels_over_600HU_in_3vox_ring": 21,
+  "wall_patches_total": 142,
+  "wall_patches_over_5mm2": 38,
+  "wall_patch_areas_mm2_top8": [
+   1015.0,
+   365.4,
+   357.8,
+   216.3,
+   129.9,
+   128.0,
+   109.4,
+   105.6
+  ],
+  "aorta_xsec_mm2_median": 334.7,
+  "largest_patch_over_40pct_aorta": true,
+  "shell_blobs_over_1ml": 14,
+  "bright_beyond_top_face_fraction": 0.0,
+  "bright_beyond_bottom_face_fraction": 0.941
+ }
+}
