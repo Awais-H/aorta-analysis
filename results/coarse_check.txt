@@ -1,0 +1,173 @@
+1.5 mm pseudo-labelled check, commit 2d6e17b, 2026-09-13 05:55
+Each fine case is resampled to 1.5 mm isotropic (CT linear, mask nearest neighbour, same physical frame) and the
+coarse predictions are matched to the native predictions (pseudo-references) with the scorer at the 5 mm cutoff.
+The native predictions are not ground truth: a branch 'lost' may be a native false positive and one 'gained' may be real.
+This is a measurement of the resolution regime of the hidden set, not a tuning set (SPEC section 3).
+
+== subject001: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 6 kept of 14 patches (0.8 s), coarse 5 kept of 21 patches (0.7 s); threshold 247 -> 218 HU
+  matched 4, lost 2, gained 1
+    branch_001 <- native branch_001 (patch 2, diam 7.87): ostium 0.84 mm, direction 8 deg, radius 3.25 vs 2.69, seed 0.33 mm apart, seed in native region yes  flags ['radius_inscribed_fallback']
+    branch_002 <- native branch_002 (patch 3, diam 8.23): ostium 2.86 mm, direction 46 deg, radius 2.57 vs 2.76, seed 0.70 mm apart, seed in native region yes  flags ['radius_inscribed_fallback']
+    branch_003 <- native branch_003 (patch 4, diam 4.12): ostium 0.96 mm, direction 23 deg, radius 1.82 vs 1.28, seed 1.17 mm apart, seed in native region yes  flags ['no_departure', 'tangential', 'elongated_patch']
+    branch_004 <- native branch_004 (patch 6, diam 3.7): ostium 1.36 mm, direction 18 deg, radius 1.78 vs 1.67, seed 0.26 mm apart, seed in native region yes
+    LOST native branch_005 (patch 11, diam 4.19, wall 11 vox, flags ['area_growth']): contact erased: no coarse wall voxel within 3 mm of the native ostium (nearest 8.0 mm)
+    LOST native branch_006 (patch 12, diam 2.19, wall 8 vox, flags ['borderline_diameter']): contact erased: no coarse wall voxel within 3 mm of the native ostium (nearest 10.8 mm)
+    GAINED coarse branch_005 (patch 11, diam 8.98, wall 3 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 12.6 mm)
+  coarse invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject002: native 0.69x0.69x0.80 mm -> 1.5 mm iso; native 5 kept of 16 patches (1.0 s), coarse 5 kept of 18 patches (1.1 s); threshold 206 -> 179 HU
+  matched 4, lost 1, gained 1
+    branch_001 <- native branch_001 (patch 1, diam 6.74): ostium 0.86 mm, direction 15 deg, radius 3.21 vs 2.96, seed 0.68 mm apart, seed in native region yes
+    branch_002 <- native branch_003 (patch 3, diam 6.23): ostium 1.02 mm, direction 5 deg, radius 2.81 vs 2.66, seed 0.93 mm apart, seed in native region yes
+    branch_003 <- native branch_002 (patch 2, diam 6.14): ostium 0.31 mm, direction 4 deg, radius 2.73 vs 2.62, seed 0.10 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 6.02): ostium 1.15 mm, direction 14 deg, radius 2.82 vs 2.59, seed 0.45 mm apart, seed in native region yes
+    LOST native branch_005 (patch 5, diam 2.85, wall 74 vox, flags ['no_departure', 'tangential', 'elongated_patch']): merged: coarse patch 5 touches the native ostium (1.0 mm) and was kept, unmatched; its own ostium is 6.3 mm away
+    GAINED coarse branch_005 (patch 5, diam 5.16, wall 55 vox, trace march/max, flags ['no_departure', 'elongated_patch']): split: native patch 5 touches the coarse ostium (0.8 mm) and was kept, unmatched; its own ostium is 5.6 mm away
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject003: native 0.73x0.73x0.80 mm -> 1.5 mm iso; native 4 kept of 8 patches (2.3 s), coarse 4 kept of 14 patches (1.4 s); threshold 224 -> 206 HU
+  matched 4, lost 0, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 9.05): ostium 1.42 mm, direction 13 deg, radius 2.69 vs 2.59, seed 1.04 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 7.13): ostium 0.52 mm, direction 6 deg, radius 2.98 vs 3.02, seed 0.52 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 6.78): ostium 0.62 mm, direction 8 deg, radius 2.72 vs 2.78, seed 0.59 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 5.43): ostium 2.48 mm, direction 25 deg, radius 2.23 vs 2.27, seed 1.31 mm apart, seed in native region yes
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject004: native 0.62x0.62x0.80 mm -> 1.5 mm iso; native 9 kept of 27 patches (0.6 s), coarse 10 kept of 21 patches (0.5 s); threshold 263 -> 206 HU
+  matched 6, lost 3, gained 4
+    branch_001 <- native branch_001 (patch 1, diam 9.11): ostium 3.45 mm, direction 14 deg, radius 3.40 vs 3.34, seed 2.70 mm apart, seed in native region yes  flags ['elongated_patch']
+    branch_002 <- native branch_005 (patch 5, diam 9.34): ostium 1.83 mm, direction 52 deg, radius 3.36 vs 1.82, seed 3.42 mm apart, seed in native region yes  flags ['radius_inscribed_fallback', 'tangential']
+    branch_003 <- native branch_003 (patch 3, diam 6.14): ostium 0.82 mm, direction 9 deg, radius 2.96 vs 2.71, seed 0.89 mm apart, seed in native region yes
+    branch_004 <- native branch_006 (patch 6, diam 3.17): ostium 0.93 mm, direction 7 deg, radius 1.85 vs 1.25, seed 0.94 mm apart, seed in native region yes  flags ['no_departure', 'elongated_patch']
+    branch_005 <- native branch_004 (patch 4, diam 5.53): ostium 1.73 mm, direction 20 deg, radius 3.02 vs 2.64, seed 0.52 mm apart, seed in native region yes
+    branch_007 <- native branch_008 (patch 8, diam 2.13): ostium 1.41 mm, direction 51 deg, radius 0.50 vs 1.16, seed 3.34 mm apart, seed in native region no  flags ['axis_fallback', 'radius_no_cross_section']
+    LOST native branch_002 (patch 2, diam 8.99, wall 224 vox, flags []): merged: coarse patch 1 touches the native ostium (1.1 mm) and was kept, matched to native branch_001; its own ostium is 8.1 mm away
+    LOST native branch_007 (patch 7, diam 6.26, wall 15 vox, flags []): coarse patch 2 touches the native ostium (0.5 mm) but was REJECTED proximal_volume_ml (wall 517 vox, diam 7.75, path 6.0)
+    LOST native branch_009 (patch 11, diam 7.74, wall 5 vox, flags ['bifurcation', 'radius_inscribed_fallback', 'elongated_patch']): merged: coarse patch 3 touches the native ostium (0.8 mm) and was kept, matched to native branch_005; its own ostium is 5.7 mm away
+    GAINED coarse branch_006 (patch 7, diam 5.86, wall 48 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged']): native patch 12 at 1.1 mm was REJECTED min_trace_mm (wall 5 vox, diam None, path 0.0)
+    GAINED coarse branch_008 (patch 13, diam 2.15, wall 7 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged', 'borderline_diameter']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 22.1 mm)
+    GAINED coarse branch_009 (patch 15, diam 7.38, wall 6 vox, trace march/max, flags ['radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 3.9 mm)
+    GAINED coarse branch_010 (patch 16, diam 4.34, wall 5 vox, trace march/max, flags ['elongated_patch']): native patch 16 at 1.7 mm was REJECTED tiny_patch (wall 2 vox, diam 2.84, path 10.0)
+  coarse invariants: 3 violation(s): branch_007: radius 0.50 mm outside [1.0, 8.0]; branch_007: seed voxel is not bright (199 HU); branch_008: seed voxel is not bright (174 HU) (plus 10 watershed regions reaching over 15 mm, information only)
+
+== subject005: native 0.90x0.90x0.80 mm -> 1.5 mm iso; native 5 kept of 14 patches (0.7 s), coarse 6 kept of 20 patches (0.6 s); threshold 191 -> 175 HU
+  matched 5, lost 0, gained 1
+    branch_001 <- native branch_001 (patch 1, diam 9.48): ostium 2.21 mm, direction 14 deg, radius 3.83 vs 4.09, seed 1.92 mm apart, seed in native region yes  flags ['axis_fallback']
+    branch_002 <- native branch_002 (patch 2, diam 9.16): ostium 2.61 mm, direction 47 deg, radius 4.06 vs 3.54, seed 1.40 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 8.93): ostium 1.72 mm, direction 21 deg, radius 3.28 vs 3.32, seed 0.51 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 6.96): ostium 0.94 mm, direction 10 deg, radius 2.71 vs 2.62, seed 0.38 mm apart, seed in native region yes
+    branch_006 <- native branch_005 (patch 5, diam 3.95): ostium 0.30 mm, direction 2 deg, radius 0.81 vs 1.13, seed 0.27 mm apart, seed in native region yes
+    GAINED coarse branch_005 (patch 5, diam 4.78, wall 90 vox, trace march/vanished, flags ['no_departure']): native patch 7 at 0.3 mm was REJECTED min_trace_mm (wall 42 vox, diam None, path 2.0)
+  coarse invariants: 1 violation(s): branch_006: radius 0.81 mm outside [1.0, 8.0] (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject006: native 0.77x0.77x0.80 mm -> 1.5 mm iso; native 6 kept of 7 patches (0.9 s), coarse 5 kept of 7 patches (0.8 s); threshold 203 -> 184 HU
+  matched 5, lost 1, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 9.84): ostium 0.89 mm, direction 8 deg, radius 3.39 vs 3.37, seed 0.63 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 6.57): ostium 3.67 mm, direction 27 deg, radius 2.31 vs 3.19, seed 3.30 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 7.89): ostium 2.04 mm, direction 41 deg, radius 3.06 vs 2.68, seed 1.29 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 10.47): ostium 1.07 mm, direction 12 deg, radius 2.46 vs 2.38, seed 0.49 mm apart, seed in native region yes
+    branch_005 <- native branch_005 (patch 5, diam 4.32): ostium 0.75 mm, direction 1 deg, radius 2.36 vs 2.48, seed 0.73 mm apart, seed in native region yes  flags ['near_cut_face', 'no_departure', 'elongated_patch']
+    LOST native branch_006 (patch 6, diam 4.32, wall 30 vox, flags ['near_cut_face']): coarse patch 6 at 1.2 mm REJECTED min_trace_mm (wall 54 vox, diam None, path 2.0)
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject007: native 0.86x0.86x0.80 mm -> 1.5 mm iso; native 5 kept of 12 patches (0.5 s), coarse 6 kept of 12 patches (0.4 s); threshold 184 -> 164 HU
+  matched 4, lost 1, gained 2
+    branch_001 <- native branch_002 (patch 2, diam 6.85): ostium 2.41 mm, direction 14 deg, radius 3.13 vs 3.52, seed 2.43 mm apart, seed in native region yes  flags ['radius_inscribed_fallback', 'tangential', 'elongated_patch', 'section_merged']
+    branch_002 <- native branch_004 (patch 4, diam 8.34): ostium 1.62 mm, direction 5 deg, radius 1.75 vs 2.29, seed 1.63 mm apart, seed in native region no  flags ['radius_inscribed_fallback', 'section_merged']
+    branch_003 <- native branch_003 (patch 3, diam 7.09): ostium 0.64 mm, direction 20 deg, radius 3.16 vs 3.52, seed 2.02 mm apart, seed in native region yes  flags ['axis_fallback']
+    branch_004 <- native branch_005 (patch 11, diam 6.52): ostium 1.04 mm, direction 18 deg, radius 4.78 vs 5.50, seed 0.92 mm apart, seed in native region yes  flags ['radius_inscribed_fallback', 'section_merged']
+    LOST native branch_001 (patch 1, diam 7.52, wall 244 vox, flags ['axis_fallback']): merged: coarse patch 1 touches the native ostium (0.8 mm) and was kept, matched to native branch_002; its own ostium is 11.3 mm away
+    GAINED coarse branch_005 (patch 11, diam 2.09, wall 7 vox, trace march/max, flags ['radius_inscribed_fallback', 'section_merged', 'borderline_diameter']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 13.6 mm)
+    GAINED coarse branch_006 (patch 12, diam 5.08, wall 4 vox, trace axis/vanished, flags ['axis_fallback', 'radius_no_cross_section', 'near_cut_face']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 17.0 mm)
+  coarse invariants: 2 violation(s): branch_006: radius 0.50 mm outside [1.0, 8.0]; branch_006: seed voxel is not bright (72 HU) (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject008: native 0.65x0.65x0.80 mm -> 1.5 mm iso; native 8 kept of 32 patches (1.3 s), coarse 6 kept of 31 patches (0.6 s); threshold 252 -> 227 HU
+  matched 4, lost 4, gained 2
+    branch_001 <- native branch_002 (patch 2, diam 7.45): ostium 1.65 mm, direction 23 deg, radius 3.48 vs 3.36, seed 0.86 mm apart, seed in native region yes  flags ['radius_inscribed_fallback']
+    branch_002 <- native branch_001 (patch 1, diam 7.89): ostium 2.25 mm, direction 30 deg, radius 3.75 vs 3.54, seed 0.98 mm apart, seed in native region yes  flags ['radius_inscribed_fallback', 'section_merged']
+    branch_003 <- native branch_004 (patch 4, diam 6.4): ostium 1.06 mm, direction 16 deg, radius 2.86 vs 2.88, seed 0.29 mm apart, seed in native region yes
+    branch_004 <- native branch_003 (patch 3, diam 6.82): ostium 1.58 mm, direction 17 deg, radius 2.83 vs 2.78, seed 0.50 mm apart, seed in native region yes
+    LOST native branch_005 (patch 6, diam 8.28, wall 37 vox, flags ['radius_inscribed_fallback', 'no_departure', 'section_merged']): coarse patch 1 at 1.7 mm REJECTED min_trace_mm (wall 592 vox, diam None, path 3.0)
+    LOST native branch_006 (patch 7, diam 4.42, wall 17 vox, flags ['no_departure']): merged: coarse patch 7 touches the native ostium (2.7 mm) and was kept, unmatched; its own ostium is 7.3 mm away
+    LOST native branch_007 (patch 8, diam 2.68, wall 17 vox, flags []): contact erased: no coarse wall voxel within 3 mm of the native ostium (nearest 9.2 mm)
+    LOST native branch_008 (patch 9, diam 2.07, wall 14 vox, flags ['borderline_diameter']): coarse patch 13 at 0.4 mm REJECTED origin_diameter_mm (wall 10 vox, diam 1.95, path 10.0)
+    GAINED coarse branch_005 (patch 6, diam 9.17, wall 55 vox, trace axis/bifurcation, flags ['axis_fallback', 'radius_inscribed_fallback', 'section_merged']): native patch 32 at 1.2 mm was REJECTED bone,tiny_patch (wall 1 vox, diam None, path 10.0)
+    GAINED coarse branch_006 (patch 7, diam 6.19, wall 41 vox, trace march/vanished, flags ['no_departure', 'elongated_patch']): native patch 21 at 1.6 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject009: native 0.85x0.85x0.80 mm -> 1.5 mm iso; native 4 kept of 4 patches (0.8 s), coarse 3 kept of 8 patches (0.7 s); threshold 296 -> 266 HU
+  matched 3, lost 1, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 5.51): ostium 0.87 mm, direction 13 deg, radius 2.05 vs 2.06, seed 0.36 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 4.68): ostium 1.18 mm, direction 15 deg, radius 2.14 vs 2.14, seed 0.13 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 3.89): ostium 0.78 mm, direction 15 deg, radius 3.01 vs 2.76, seed 0.55 mm apart, seed in native region yes
+    LOST native branch_004 (patch 4, diam 2.46, wall 19 vox, flags ['borderline_diameter']): coarse patch 5 at 1.0 mm REJECTED min_trace_mm (wall 6 vox, diam None, path 3.0)
+  coarse invariants: clean (plus 2 watershed regions reaching over 15 mm, information only)
+
+== subject010: native 0.96x0.96x0.80 mm -> 1.5 mm iso; native 4 kept of 7 patches (1.1 s), coarse 4 kept of 7 patches (0.7 s); threshold 282 -> 260 HU
+  matched 4, lost 0, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 10.07): ostium 0.48 mm, direction 98 deg, radius 4.07 vs 3.23, seed 4.93 mm apart, seed in native region yes  flags ['no_departure', 'section_merged']
+    branch_002 <- native branch_002 (patch 2, diam 8.17): ostium 3.77 mm, direction 40 deg, radius 3.08 vs 2.34, seed 1.87 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 6.5): ostium 2.33 mm, direction 30 deg, radius 2.72 vs 3.28, seed 1.49 mm apart, seed in native region no
+    branch_004 <- native branch_004 (patch 4, diam 7.27): ostium 1.03 mm, direction 10 deg, radius 2.58 vs 2.77, seed 0.92 mm apart, seed in native region yes
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject011: native 0.84x0.84x0.80 mm -> 1.5 mm iso; native 5 kept of 23 patches (0.6 s), coarse 6 kept of 14 patches (0.5 s); threshold 277 -> 220 HU
+  matched 5, lost 0, gained 1
+    branch_001 <- native branch_002 (patch 2, diam 6.65): ostium 1.08 mm, direction 20 deg, radius 3.27 vs 3.10, seed 1.31 mm apart, seed in native region yes
+    branch_002 <- native branch_001 (patch 1, diam 6.48): ostium 1.95 mm, direction 18 deg, radius 2.87 vs 2.88, seed 1.90 mm apart, seed in native region yes  flags ['no_departure']
+    branch_003 <- native branch_003 (patch 3, diam 6.78): ostium 0.82 mm, direction 10 deg, radius 2.75 vs 2.56, seed 0.40 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 5.61): ostium 0.25 mm, direction 3 deg, radius 2.98 vs 2.78, seed 0.24 mm apart, seed in native region yes
+    branch_006 <- native branch_005 (patch 6, diam 2.11): ostium 0.72 mm, direction 6 deg, radius 0.94 vs 1.03, seed 0.55 mm apart, seed in native region yes  flags ['borderline_diameter']
+    GAINED coarse branch_005 (patch 6, diam 5.12, wall 13 vox, trace march/vanished, flags ['no_departure']): native patch 7 at 1.8 mm was REJECTED min_trace_mm (wall 7 vox, diam None, path 2.0)
+  coarse invariants: 2 violation(s): branch_005: radius 0.69 mm outside [1.0, 8.0]; branch_006: radius 0.94 mm outside [1.0, 8.0] (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject012: native 0.78x0.78x0.80 mm -> 1.5 mm iso; native 5 kept of 8 patches (0.7 s), coarse 4 kept of 7 patches (0.5 s); threshold 194 -> 165 HU
+  matched 4, lost 1, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 7.21): ostium 1.02 mm, direction 4 deg, radius 3.47 vs 3.39, seed 1.17 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 6.66): ostium 0.37 mm, direction 4 deg, radius 2.84 vs 2.90, seed 0.36 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 6.68): ostium 0.46 mm, direction 4 deg, radius 2.97 vs 2.92, seed 0.43 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 6.07): ostium 1.35 mm, direction 10 deg, radius 2.65 vs 2.68, seed 1.16 mm apart, seed in native region yes
+    LOST native branch_005 (patch 6, diam 2.43, wall 7 vox, flags ['borderline_diameter']): contact erased: no coarse wall voxel within 3 mm of the native ostium (nearest 26.2 mm)
+  coarse invariants: clean (plus 3 watershed regions reaching over 15 mm, information only)
+
+== subject013: native 0.86x0.86x0.80 mm -> 1.5 mm iso; native 5 kept of 5 patches (0.6 s), coarse 5 kept of 5 patches (0.4 s); threshold 231 -> 213 HU
+  matched 5, lost 0, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 5.46): ostium 1.24 mm, direction 15 deg, radius 2.26 vs 2.22, seed 1.13 mm apart, seed in native region yes
+    branch_002 <- native branch_004 (patch 4, diam 3.58): ostium 0.92 mm, direction 8 deg, radius 1.47 vs 1.36, seed 0.94 mm apart, seed in native region yes
+    branch_003 <- native branch_002 (patch 2, diam 4.45): ostium 1.67 mm, direction 20 deg, radius 1.51 vs 1.48, seed 0.16 mm apart, seed in native region yes
+    branch_004 <- native branch_003 (patch 3, diam 3.68): ostium 1.12 mm, direction 15 deg, radius 1.45 vs 1.40, seed 0.25 mm apart, seed in native region yes
+    branch_005 <- native branch_005 (patch 5, diam 3.66): ostium 1.16 mm, direction 12 deg, radius 1.53 vs 1.70, seed 0.22 mm apart, seed in native region yes
+  coarse invariants: clean (plus 5 watershed regions reaching over 15 mm, information only)
+
+== subject014: native 0.70x0.70x0.80 mm -> 1.5 mm iso; native 4 kept of 9 patches (0.7 s), coarse 4 kept of 12 patches (0.5 s); threshold 296 -> 272 HU
+  matched 4, lost 0, gained 0
+    branch_001 <- native branch_001 (patch 1, diam 6.26): ostium 0.50 mm, direction 8 deg, radius 2.59 vs 2.49, seed 0.77 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 5.48): ostium 0.86 mm, direction 22 deg, radius 2.46 vs 2.53, seed 1.10 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 6.05): ostium 0.85 mm, direction 6 deg, radius 2.15 vs 2.25, seed 0.70 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 5.81): ostium 1.30 mm, direction 8 deg, radius 1.96 vs 2.06, seed 0.87 mm apart, seed in native region yes
+  coarse invariants: clean (plus 4 watershed regions reaching over 15 mm, information only)
+
+== subject015: native 0.73x0.73x0.80 mm -> 1.5 mm iso; native 5 kept of 15 patches (1.4 s), coarse 8 kept of 13 patches (0.7 s); threshold 311 -> 275 HU
+  matched 5, lost 0, gained 3
+    branch_001 <- native branch_001 (patch 1, diam 8.14): ostium 1.55 mm, direction 23 deg, radius 4.34 vs 3.91, seed 0.68 mm apart, seed in native region yes
+    branch_002 <- native branch_002 (patch 2, diam 6.73): ostium 1.36 mm, direction 5 deg, radius 3.52 vs 3.47, seed 1.70 mm apart, seed in native region yes
+    branch_003 <- native branch_003 (patch 3, diam 7.44): ostium 2.34 mm, direction 32 deg, radius 3.60 vs 3.35, seed 0.34 mm apart, seed in native region yes
+    branch_004 <- native branch_004 (patch 4, diam 6.94): ostium 0.56 mm, direction 5 deg, radius 3.20 vs 3.13, seed 0.45 mm apart, seed in native region yes
+    branch_005 <- native branch_005 (patch 5, diam 3.57): ostium 2.74 mm, direction 10 deg, radius 1.38 vs 1.28, seed 3.07 mm apart, seed in native region no  flags ['no_departure', 'tangential', 'elongated_patch']
+    GAINED coarse branch_006 (patch 6, diam 5.07, wall 12 vox, trace march/max, flags ['section_merged']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 8.8 mm)
+    GAINED coarse branch_007 (patch 7, diam 5.56, wall 9 vox, trace march/max, flags ['near_cut_face', 'section_merged']): native patch 14 at 1.2 mm was REJECTED min_trace_mm,tiny_patch (wall 1 vox, diam None, path 0.0)
+    GAINED coarse branch_008 (patch 8, diam 9.3, wall 4 vox, trace axis/vanished, flags ['axis_fallback', 'radius_inscribed_fallback', 'elongated_patch', 'section_merged']): new contact: no native wall voxel within 3 mm of the coarse ostium (nearest 4.8 mm)
+  coarse invariants: clean (plus 8 watershed regions reaching over 15 mm, information only)
+
+AGGREGATE over 15 cases (coarse vs native, 5 mm cutoff)
+  matched 66, lost 14, gained 15: precision 0.81, recall 0.82, F1 0.82
+  matched branches: ostium error mean 1.36 mm (median 1.10, max 3.77); direction error mean 17.5 deg (median 14.2, over 30 deg: 9); radius abs error mean 0.24 mm; seed-to-seed mean 1.07 mm; coarse seed inside the native branch region 62/66
+  per case (matched/lost/gained): 1: 4/2/1, 2: 4/1/1, 3: 4/0/0, 4: 6/3/4, 5: 5/0/1, 6: 5/1/0, 7: 4/1/2, 8: 4/4/2, 9: 3/1/0, 10: 4/0/0, 11: 5/0/1, 12: 4/1/0, 13: 5/0/0, 14: 4/0/0, 15: 5/0/3
+  native origin diameter (mm) of matched vs lost branches:
+       0-2.5: matched   2, lost   4  (67% lost)
+     2.5-3.5: matched   1, lost   2  (67% lost)
+       3.5-5: matched  11, lost   3  (21% lost)
+         >=5: matched  52, lost   5  (9% lost)
+  why a native branch is lost at 1.5 mm (fate of the nearest coarse wall patch): merged_into_kept 5, contact_erased 4, min_trace_mm 3, proximal_volume_ml 1, origin_diameter_mm 1
+  where a coarse-only branch comes from (fate of the nearest native wall patch): new_contact 7, min_trace_mm 3, min_trace_mm,tiny_patch 2, split_from_kept 1, tiny_patch 1, bone,tiny_patch 1
+  coarse invariant violations: 8
