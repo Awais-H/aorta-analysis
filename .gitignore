@@ -1,0 +1,10 @@
+*.DS_Store
+*.pyc
+.pytest_cache/
+.venv/
+__pycache__/
+data/phantoms/
+outputs/
+vendor/*.tar.gz
+vendor/*.whl
+venv/

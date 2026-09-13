@@ -1,0 +1,108 @@
+# Branchseed configuration. Every tunable constant in the pipeline lives here.
+# Values marked "derived" in the design doc are computed at runtime from the
+# aorta mask; this file holds only the fixed and fitted constants.
+
+roi:
+  dilation_mm: 30.0            # shell around the mask bbox that we search
+  subvolume_half_mm: 15.0      # per-candidate trace cube half-width
+  subvolume_spacing_mm: 0.5    # the only place we upsample
+  isotropy_tolerance: 1.05     # max/min spacing above this -> resample
+
+calibrate:
+  erosion_mm: 2.0
+  lumen_percentile: 5.0
+  calcium_sigma: 4.0
+  max_sigma_ratio: 0.25        # sigma/mu above this -> degenerate flag
+  min_contrast_hu: 150.0       # mu below this -> probably non-contrast scan
+  min_interior_voxels: 500
+
+geometry:
+  spur_prune_factor: 1.0       # x local radius
+  centreline_step_mm: 1.0
+  spline_smoothing: 0.5        # x number of raw path points
+  endcap_normal_deg: 35.0
+  endcap_plane_mm: 3.0
+  endcap_arc_factor: 3.0       # x local radius, arc window near each endpoint
+  endcap_radial_factor: 1.5    # x local radius, radial window at each endpoint
+  end_radius_window_mm: 12.0   # window over which the end radius is stabilised
+  max_extension_mm: 25.0       # centreline extrapolation towards each cut face
+  min_skeleton_voxels: 10
+  normal_smooth_voxels: 1.0
+
+wallmap:
+  probe_inner_mm: 1.0
+  probe_outer_mm: 6.0
+  probe_radius_mm: 1.0
+  probe_samples: 11
+  probe_disc_samples: 4        # plus the centre sample
+  angular_bins: 128
+  ray_step_mm: 0.25
+  ray_max_factor: 2.5          # x local radius
+  wall_gap_mm: 1.0             # run of background that confirms a wall crossing
+  frame_validate_arc_mm: 3.0
+  calcium_reject_frac: 0.5     # more than this fraction calcium -> invalid pixel
+
+detect:
+  peak_footprint: [3, 3]
+  min_region_px: 2            # tuned on the phantom suite; a 2 mm branch clears
+                              # the threshold on only ~3 pixels
+  threshold_sigma_offset: 0.0  # threshold = t_lumen + k * sigma_ao
+  split_distance_mm: 4.0       # two maxima further apart than this -> watershed
+
+trace:
+  step_mm: 0.5
+  # Propagation threshold, relative to t_lumen in units of sigma_ao. Negative
+  # and permissive on purpose: a 2 mm-radius vessel at 1.5 mm spacing is
+  # partial-volume dimmed well below the aortic lumen value, so tracing at
+  # t_lumen would kill exactly the small branches we care about. The
+  # strong-match test below then runs at the strict t_lumen.
+  propagate_sigma_offset: -2.0
+  max_mm: 10.0
+  eligible_mm: 5.0
+  leak_ratio: 1.5
+  leak_lookback_mm: 3.0
+  radius_ratio: 0.90           # diagnostic only, never a stop condition
+  strong_match_frac: 0.5
+  # Distance below which the geodesic wavefront is still adapting to the shape
+  # of the wall patch rather than to the branch lumen. The bifurcation test and
+  # the radius diagnostic only run beyond it; otherwise every candidate splits
+  # spuriously in its first millimetre.
+  stable_from_mm: 2.0
+  min_component_voxels: 8
+  split_persist_mm: 1.0
+  source_dilate_voxels: 1
+
+measure:
+  seed_mm: 5.0
+  xsec_half_mm: 6.0
+  xsec_spacing_mm: 0.25
+  peak_window_mm: 1.0
+  bg_annulus_mm: [5.0, 6.0]
+  radius_min_mm: 0.4
+  radius_max_mm: 8.0
+  radius_parent_frac: 0.5      # radius above this x parent radius -> flag
+  surface_projection_iters: 5
+
+resolve:
+  # Riffaud feature space: x = followed length in mm, y = x / parent radius.
+  # Keep when w_len*x + w_rel*y + bias >= 0. The line passes through
+  # (5 mm, 0.50) and (10 mm, 0.30), so a 5 mm reach is kept on an aorta of
+  # radius up to ~10 mm and rejected on a 15 mm one.
+  # UNFITTED DEFAULT: weighted towards the relative axis and deliberately
+  # permissive, because precision is defended by principled tests (leak,
+  # contact brightness, HU band) while an unfitted discriminant that deletes
+  # true positives cannot be recovered. Fit on the dev subset - see README.
+  bump_boundary: [0.4, 10.0, -7.0]
+  hu_band_sigma: 6.0
+  contact_probe_mm: [1.0, 2.0]
+  secondary_overlap_frac: 0.30
+  secondary_probe_mm: 2.0
+  claimed_dilate_mm: 1.0
+  eccentricity_max: 3.0
+
+output:
+  round_decimals: 3            # sub-micron on coordinates is noise
+  direction_decimals: 6        # a unit vector rounded to 3 dp is only unit to 1e-3
+
+viz:
+  dpi: 150
