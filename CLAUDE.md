@@ -22,4 +22,4 @@ Expected: 4 to 6 branches, runtime under 10 s.
 
 ## Current status
 (update this line as modules land)
-Skeleton complete: every D9 module stubbed to the data contract, config.py holds every constant, tests/ has one fake-data test file per module, run.py runs end to end on subject 10. Real logic: io_utils, candidates, instances (wall patches + watershed), scorer. Stubs: ostium (centroid snap), tracing (straight line along the wall normal), filters (eligibility rule only), frame (slice centroids), report (PNG + table).
+Skeleton aligned with the updated SPEC (opening for the wall layer only, watershed and tracing on the raw shell, chord direction, 2.0 mm origin diameter, atomic JSON). Scorer reads docs/references and writes results/dev_scores.txt; invariants sweep writes results/invariants.txt. All 25 cases run without a crash. Real logic: io_utils, candidates, instances, scorer. Stubs: ostium (centroid snap), tracing (straight line along the wall normal), filters (eligibility rule only: precision 0.12 on cases 19-23), frame (slice centroids), report (PNG + table). Next per SPEC section 5: ostium and tracing, then filters rules 1, 3, 4, 7.
