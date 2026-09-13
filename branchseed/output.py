@@ -1,8 +1,13 @@
 """Stage 8 - serialisation.
 
 Every emitted point traverses exactly one chain, in one function: subvolume
-index -> ROI continuous index -> physical millimetres. Voxel indices are never
-emitted.
+index -> ROI continuous index -> physical millimetres. The mandated output
+(:func:`build_output`) never emits voxel indices.
+
+:func:`build_voxel_output` produces a companion, non-mandated payload with
+coordinates in the original image's voxel units instead, for callers who want
+to overlay results on the source NIfTI directly. It is written to a separate
+file via ``--voxel-output`` and never substitutes for the mm output.
 """
 
 from __future__ import annotations
@@ -93,6 +98,78 @@ def build_output(
         "parent": {"instance_id": "aorta"},
         "daughters": daughters,
         "meta": meta,
+    }
+
+
+def daughter_voxel_record(candidate: Candidate, grid: CaseGrid, cfg: Config) -> Optional[dict]:
+    """The same daughter, with coordinates in the *original* image's voxel
+    units instead of physical millimetres.
+
+    This is not the mandated output - the brief requires physical millimetres
+    via ``TransformIndexToPhysicalPoint`` - but a voxel-space file is handy for
+    overlaying on the original NIfTI in a plain array viewer. Coordinates are
+    continuous indices (equivalent to
+    ``sitk_ref.TransformPhysicalPointToContinuousIndex``), not rounded to
+    integer voxels, so the mapping back to the mm output is exact.
+    """
+    decimals = cfg.output.round_decimals
+    ostium_ijk = grid.physical_to_original_index(grid.to_physical(candidate.ostium_xyz_roi))
+    seed_ijk = grid.physical_to_original_index(grid.to_physical(candidate.seed_xyz_roi))
+    direction = np.asarray(candidate.direction, dtype=np.float64)
+    norm = np.linalg.norm(direction)
+    if norm < 1e-9:
+        return None
+    direction = direction / norm
+
+    for array in (ostium_ijk, seed_ijk, direction):
+        if not np.all(np.isfinite(array)):
+            return None
+    if candidate.radius_mm is None or not np.isfinite(candidate.radius_mm):
+        return None
+
+    # A direction has no single length in voxel space when spacing is
+    # anisotropic, so this is offered purely for drawing an arrow in an image
+    # viewer that works in voxel coordinates, renormalised to unit length in
+    # that (distorted) space rather than claiming physical equivalence.
+    direction_ijk = grid.physical_direction_to_original_index(direction)
+    direction_ijk = direction_ijk / max(np.linalg.norm(direction_ijk), 1e-9)
+
+    mean_spacing = float(np.mean(grid.orig_spacing_mm))
+
+    return {
+        "instance_id": candidate.instance_id,
+        "parent_instance_id": "aorta",
+        "ostium_ijk_voxel": _round(ostium_ijk, decimals),
+        "seed_ijk_voxel": _round(seed_ijk, decimals),
+        "radius_voxels": _round(candidate.radius_mm / max(mean_spacing, 1e-9), decimals),
+        "direction_ijk": _round(direction_ijk, cfg.output.direction_decimals),
+        # Kept for cross-reference against the mandated mm output.
+        "radius_mm": _round(candidate.radius_mm, decimals),
+    }
+
+
+def build_voxel_output(
+    case_id: str,
+    accepted: Sequence[Candidate],
+    grid: Optional[CaseGrid],
+    cfg: Config,
+) -> dict:
+    """A companion output with coordinates in the original image's voxel
+    units. Not the mandated schema - see :func:`build_output` for that."""
+    daughters: List[dict] = []
+    if grid is not None:
+        for candidate in accepted:
+            record = daughter_voxel_record(candidate, grid, cfg)
+            if record is not None:
+                daughters.append(record)
+    for n, record in enumerate(daughters, start=1):
+        record["instance_id"] = f"branch_{n:03d}"
+
+    return {
+        "case_id": case_id,
+        "parent": {"instance_id": "aorta"},
+        "units": "voxel indices (continuous) in the original --image grid",
+        "daughters": daughters,
     }
 
 

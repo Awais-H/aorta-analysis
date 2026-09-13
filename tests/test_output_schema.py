@@ -141,3 +141,60 @@ def test_cli_writes_figures_when_asked(tmp_path, standard_phantom):
     assert completed.returncode == 0, completed.stderr[-3000:]
     for name in ("demo_wallmap.png", "demo_3d.png", "demo_mip.png", "branchseed.log"):
         assert (viz_dir / name).exists(), name
+
+
+def test_voxel_output_round_trips_against_sitk(standard_phantom, cfg):
+    """Voxel-unit coordinates must equal SimpleITK's own physical->index
+    transform on the original image, and converting them back must recover
+    the mandated mm output exactly."""
+    from branchseed.output import build_voxel_output
+
+    result = process_images(standard_phantom.image, standard_phantom.mask, cfg, "v")
+    voxel_payload = build_voxel_output(
+        result.payload["case_id"], result.accepted, result.grid, cfg
+    )
+    assert voxel_payload["daughters"], "expected daughters on the standard phantom"
+
+    image = standard_phantom.image
+    for mm_daughter, voxel_daughter in zip(result.payload["daughters"], voxel_payload["daughters"]):
+        assert voxel_daughter["instance_id"] == mm_daughter["instance_id"]
+        for mm_key, voxel_key in (("ostium_xyz_mm", "ostium_ijk_voxel"),
+                                  ("seed_xyz_mm", "seed_ijk_voxel")):
+            expected = np.asarray(
+                image.TransformPhysicalPointToContinuousIndex(mm_daughter[mm_key])
+            )
+            np.testing.assert_allclose(voxel_daughter[voxel_key], expected, atol=1e-2)
+
+        # radius_voxels must convert back to (approximately) radius_mm.
+        spacing = np.mean(image.GetSpacing())
+        np.testing.assert_allclose(
+            voxel_daughter["radius_voxels"] * spacing, mm_daughter["radius_mm"], atol=1e-2
+        )
+        np.testing.assert_allclose(np.linalg.norm(voxel_daughter["direction_ijk"]), 1.0, atol=1e-6)
+
+
+def test_voxel_output_via_cli(tmp_path, standard_phantom):
+    """--voxel-output writes a second file without disturbing the mandated one."""
+    from branchseed.config import load_config
+
+    image_path, mask_path = tmp_path / "image.nii.gz", tmp_path / "mask.nii.gz"
+    sitk.WriteImage(standard_phantom.image, str(image_path))
+    sitk.WriteImage(standard_phantom.mask, str(mask_path))
+    mm_out = tmp_path / "prediction.json"
+    voxel_out = tmp_path / "prediction_voxel.json"
+
+    completed = subprocess.run(
+        [sys.executable, "run.py", "--image", str(image_path), "--aorta-mask", str(mask_path),
+         "--output", str(mm_out), "--voxel-output", str(voxel_out)],
+        cwd=ROOT, capture_output=True, text=True, timeout=900,
+    )
+    assert completed.returncode == 0, completed.stderr[-3000:]
+
+    mm_payload = json.loads(mm_out.read_text())
+    voxel_payload = json.loads(voxel_out.read_text())
+    assert len(voxel_payload["daughters"]) == len(mm_payload["daughters"]) == 4
+    assert "units" in voxel_payload
+    for daughter in voxel_payload["daughters"]:
+        assert "ostium_ijk_voxel" in daughter
+        assert "seed_ijk_voxel" in daughter
+        assert len(daughter["ostium_ijk_voxel"]) == 3

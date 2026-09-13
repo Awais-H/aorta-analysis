@@ -88,6 +88,22 @@ candidates appear as hollow markers labelled with the rule that dropped them.
 Clock position is defined in the local vessel frame, which diverges from the
 patient axial plane in the arch. This is stated on the figure.
 
+## Optional voxel-unit output
+
+The mandated output reports physical millimetres, per the brief. For
+overlaying results on the source NIfTI in a plain array viewer,
+`--voxel-output PATH` writes a second, non-mandated file alongside it with
+the same daughters in the **original image's** continuous voxel indices
+(`ostium_ijk_voxel`, `seed_ijk_voxel`, `radius_voxels`, `direction_ijk`),
+equivalent to `sitk_ref.TransformPhysicalPointToContinuousIndex`. It never
+replaces `--output`, and a failure to write it never affects the mandated
+result.
+
+```
+python run.py --image image.nii.gz --aorta-mask aorta_mask.nii.gz \
+    --output prediction.json --voxel-output prediction_voxel.json
+```
+
 ## Verification figures
 
 `figures/` holds three views per case for four synthetic cases: the unrolled

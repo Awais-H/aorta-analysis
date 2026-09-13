@@ -33,6 +33,9 @@ def parse_args(argv=None) -> argparse.Namespace:
     parser.add_argument("--case-id", default=None, help="case identifier for the output")
     parser.add_argument("--viz-dir", default=None,
                         help="optional directory for the wall map and verification figures")
+    parser.add_argument("--voxel-output", default=None,
+                        help="optional path for a companion output in original-image voxel "
+                             "units (continuous indices), alongside the mandated mm output")
     parser.add_argument("--log-level", default="INFO",
                         choices=["DEBUG", "INFO", "WARNING", "ERROR"])
     return parser.parse_args(argv)
@@ -48,7 +51,7 @@ def main(argv=None) -> int:
     log = logging.getLogger("branchseed.run")
 
     from branchseed.config import load_config
-    from branchseed.output import write_output
+    from branchseed.output import build_voxel_output, write_output
     from branchseed.pipeline import process_case
 
     cfg = load_config(args.config, overrides=args.set)
@@ -61,6 +64,16 @@ def main(argv=None) -> int:
 
     result = process_case(args.image, args.aorta_mask, cfg, case_id=args.case_id)
     write_output(result.payload, args.output)
+
+    if args.voxel_output:
+        try:
+            voxel_payload = build_voxel_output(
+                result.payload.get("case_id", "case"), result.accepted, result.grid, cfg
+            )
+            write_output(voxel_payload, args.voxel_output)
+        except Exception:                                    # noqa: BLE001
+            # Optional output: never let it take down the mandated result.
+            log.exception("voxel-unit output failed; the mm output is unaffected")
 
     if viz_dir is not None:
         try:

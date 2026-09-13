@@ -92,6 +92,26 @@ class CaseGrid:
         ratio = self.roi_spacing_mm / self.orig_spacing_mm
         return pts * ratio + np.asarray(self.crop_origin_idx, dtype=np.float64)
 
+    def physical_to_original_index(self, pt_mm: np.ndarray) -> np.ndarray:
+        """Physical mm -> original-image continuous index (xyz).
+
+        Equivalent to ``sitk_ref.TransformPhysicalPointToContinuousIndex``, but
+        vectorised. Used only for the voxel-unit output variant; the mandated
+        output never calls this.
+        """
+        return self.to_original_index(self.to_index(pt_mm))
+
+    def physical_direction_to_original_index(self, vec_phys: np.ndarray) -> np.ndarray:
+        """A physical unit direction, expressed as a displacement in the
+        original image's continuous-index units.
+
+        Not unit length in general: anisotropic spacing changes a direction's
+        length under this map, which is exactly why the mandated
+        ``direction_xyz`` is physical and this method exists only for the
+        voxel-unit output variant, where it is renormalised for display.
+        """
+        return self.to_mm_direction(vec_phys) / self.orig_spacing_mm
+
     def to_index(self, pt_mm: np.ndarray) -> np.ndarray:
         """Physical mm -> ROI continuous index (xyz). Inverse of to_physical."""
         pts = np.asarray(pt_mm, dtype=np.float64) - self.roi_origin_mm
