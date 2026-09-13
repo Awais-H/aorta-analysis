@@ -15,6 +15,15 @@ The challenge PDF is docs/Branchseed_challenge.pdf. SPEC.md wins if they conflic
 - data/subjectNNN/origN.nii and maskN.nii. Some are gzipped despite the extension. Subject 24 has a non-orthonormal header.
 - atlas_all.csv has per-case stats; expected wall-patch counts are in the wall_patches column.
 - Draft reference annotations for cases 19 to 23 are in docs/references/case_NN/annotations.json; the per-case daughter label volumes are data/subjectNNN/daughtersNN_draft.nii.gz.
+- Reference annotations for cases 19-23 are in docs/references/case_XX/annotations.json
+  (SimpleITK LPS mm; schema is a superset of the required output). Read docs/references/README.md
+  for the annotation policy: 2.0 mm minimum origin diameter, ostium on the supplied mask boundary,
+  direction = normalised (seed - ostium). These are drafts; see each case's review_notes.md.
+- Daughter instance masks for the seed-on-branch test: data/subjectXXX/daughtersXX_draft.nii.gz
+  (0 = background, 1..N = branch_001..branch_N, same grid as the CT).
+- docs/atlas_all.csv has per-case stats for all 25; wall_patches is the expected candidate count
+  before filtering. Regression priority is cases 19-23, then 16-17, then 18 and 24 (allowed to fail).
+- The scorer (scorer.py) is a day-one deliverable and reads docs/references/ directly.
 
 ## Smoke test
 python run.py --image data/subject010/orig10.nii --aorta-mask data/subject010/mask10.nii --output /tmp/s10.json
