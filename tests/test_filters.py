@@ -141,12 +141,12 @@ def test_end_face_contact_geometry(cand, inst, phantom):
     faces = fr.end_faces()
     (e_top, t_top), (e_bot, t_bot) = faces
     assert t_top[2] > 0.9 and t_bot[2] < -0.9  # outward tangents point out of the segment
-    h, t = filters.end_face_contact(cand, inst.wall_indices[1], faces)
+    h, t, _ = filters.end_face_contact(cand, inst.wall_indices[1], faces)
     assert h < -config.END_FACE_MM  # the mid-height branch is far below both end planes
     # a synthetic patch at the very top slice touches the superior face
     top = np.argwhere(cand.mask[-1:])
     top[:, 0] = cand.mask.shape[0] - 1
-    h2, _ = filters.end_face_contact(cand, top, faces)
+    h2, _, _ = filters.end_face_contact(cand, top, faces)
     assert h2 >= -config.END_FACE_MM
 
 
@@ -191,3 +191,70 @@ def test_merge_duplicates_by_shared_path():
     d = (4, [0, 6, 0], [0, 1, 0], 30.0, np.array([[0, 6 + t, 0] for t in range(0, 11)], float))
     kept, rej = filters.merge_duplicates([a, d])
     assert kept == [1, 4]
+
+
+def test_iliac_division_rejected_only_on_a_bifurcating_end(tmp_path):
+    # mask on the middle 60% of the aorta; below it the aorta splits into two 8 mm iliacs
+    ph = make_phantom(tmp_path / "iliac", mask_z_fraction=0.6, iliac_split=True, size_xyz=(80, 64, 90))
+    cand, inst, ostia, traces, fr, res = _run(ph)
+    assert res.terminal_division["detected"]
+    assert len(res.terminal_division["lumens_mm"]) >= 2 and min(res.terminal_division["lumens_mm"][:2]) >= 6.0
+    rules = {r for _, r, _ in res.rejections}
+    assert "iliac_division" in rules
+    # the mid-height side branch is untouched
+    b = _branch_label(inst, ostia, ph)
+    assert b in res.kept
+    # no kept candidate touches the inferior face any more
+    for l in res.kept:
+        assert not ("near_cut_face" in res.flags[l] and res.measurements[l]["origin_diameter_mm"] >= config.ILIAC_CANDIDATE_MIN_DIAMETER_MM)
+    # the plain cropped aorta (one continuing lumen) does not trigger the division
+    ph2 = make_phantom(tmp_path / "plain", mask_z_fraction=0.6)
+    _, _, _, _, _, res2 = _run(ph2)
+    assert not res2.terminal_division["detected"]
+    assert "iliac_division" not in {r for _, r, _ in res2.rejections}
+
+
+def test_blob_at_seed_rejects_a_wide_bright_region(tmp_path):
+    # a 13 mm-radius sphere touching the aorta (an organ or vertebral body): the section 5 mm in
+    # is over 20 mm across, so its inscribed circle fills the 16 mm window
+    ph = make_phantom(tmp_path / "blob", blob=True, blob_radius_mm=13.0, size_xyz=(72, 80, 60))
+    cand, inst, ostia, traces, fr, res = _run(ph)
+    blob_labels = [l for l, r, v in res.rejections if r == "blob_at_seed"]
+    assert blob_labels, res.rejections
+    for l in blob_labels:
+        assert res.measurements[l]["seed_inscribed_mm"] >= config.BLOB_INSCRIBED_RADIUS_MM
+    b = _branch_label(inst, ostia, ph)
+    assert b in res.kept and res.measurements[b]["seed_inscribed_mm"] < config.BLOB_INSCRIBED_RADIUS_MM
+
+
+def test_end_face_contact_reports_which_end(cand, inst, phantom):
+    fr = frame_mod.build(cand)
+    faces = fr.end_faces()
+    top = np.argwhere(cand.mask[-1:])
+    top[:, 0] = cand.mask.shape[0] - 1
+    h, _, which = filters.end_face_contact(cand, top, faces)
+    assert which == 0 and h >= -config.END_FACE_MM
+    bottom = np.argwhere(cand.mask[:1])
+    h, _, which = filters.end_face_contact(cand, bottom, faces)
+    assert which == 1 and h >= -config.END_FACE_MM
+
+
+def test_same_origin_as_a_rejected_structure_is_rejected(tmp_path):
+    # the wide-blob phantom: take the blob's label, add a fake survivor on its ostium voxel and
+    # check the twin is rejected with the blob rather than surfacing as a daughter
+    ph = make_phantom(tmp_path / "blob2", blob=True, blob_radius_mm=13.0, size_xyz=(72, 80, 60))
+    cand, inst, ostia, traces, fr, res = _run(ph)
+    blob = next(l for l, r, v in res.rejections if r == "blob_at_seed")
+    good = _branch_label(inst, ostia, ph)
+    # a survivor whose ostium coincides with the blob's, with the good branch's trace
+    survivors = [(good, ostia[good].mm, traces[good].direction_xyz, 10.0, traces[good].path_mm),
+                 (999, ostia[blob].mm + 0.3, traces[good].direction_xyz, 5.0, traces[good].path_mm)]
+    import filters as f
+    rej = [(blob, "blob_at_seed", 9.0)]
+    structural = ("bone", "blob_at_seed", "proximal_volume_ml", "iliac_division", "end_face")
+    bad = [(l, ostia[l].mm) for l, r, _ in rej if r in structural]
+    twins = [item[0] for item in survivors if any(np.linalg.norm(np.subtract(item[1], bo)) <= config.ISO_SPACING_MM for _, bo in bad)]
+    assert twins == [999]
+    # and through apply(): nothing kept shares the blob's origin voxel
+    for l in res.kept:
+        assert np.linalg.norm(ostia[l].mm - ostia[blob].mm) > config.ISO_SPACING_MM

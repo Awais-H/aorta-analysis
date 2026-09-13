@@ -43,26 +43,6 @@
         0.0712,
         -0.443
       ]
-    },
-    {
-      "instance_id": "branch_003",
-      "parent_instance_id": "aorta",
-      "ostium_xyz_mm": [
-        10.043,
-        -148.657,
-        230.0
-      ],
-      "seed_xyz_mm": [
-        12.078,
-        -146.667,
-        232.442
-      ],
-      "radius_mm": 1.269,
-      "direction_xyz": [
-        0.5427,
-        0.5307,
-        0.651
-      ]
     }
   ]
 }

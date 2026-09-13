@@ -68,7 +68,7 @@ def _dist_to_polyline(P, poly):
 def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0, 100.0),
                  size_xyz=(72, 64, 60), with_branch=True, gz_under_nii=False, mask_fragment=False,
                  direction=None, branch_kind="straight", mask_z_fraction=1.0, parallel_vessel=False,
-                 blob=False, hugging=False):
+                 blob=False, hugging=False, iliac_split=False, blob_radius_mm=9.0):
     """Write orig.nii and mask.nii into out_dir; return a dict with paths and ground truth.
 
     mask_z_fraction < 1 keeps the mask on the middle fraction of the aorta only, so the bright
@@ -111,12 +111,22 @@ def make_phantom(out_dir, spacing_xyz=(0.8, 0.8, 0.8), origin_xyz=(-25.0, -30.0,
         hug_tube = ((Y - yaxis) ** 2 + (X - cx) ** 2 <= 1.5 ** 2) & (Z >= zc - 10.0) & (Z <= zc + 10.0)
         ct[hug_tube & ~aorta] = LUMEN_HU
     if blob:
-        by = cy + AORTA_R + 8.5  # 9 mm sphere overlapping the aorta surface by 0.5 mm
-        ct[((X - cx) ** 2 + (Y - by) ** 2 + (Z - zc) ** 2 <= 9.0 ** 2) & ~aorta] = LUMEN_HU
+        by = cy + AORTA_R + blob_radius_mm - 0.5  # sphere overlapping the aorta surface by 0.5 mm
+        ct[((X - cx) ** 2 + (Y - by) ** 2 + (Z - zc) ** 2 <= blob_radius_mm ** 2) & ~aorta] = LUMEN_HU
     mask = aorta.astype(np.uint8)
     if mask_z_fraction < 1.0:
         keep = np.abs(Z - zc) <= mask_z_fraction * (z[-1] - z[0]) / 2
         mask[~keep] = 0
+    if iliac_split:
+        # below the mask's inferior end the bright aorta is replaced by two 4 mm-radius tubes
+        # diverging at 35 deg in the x-z plane (the common iliacs); the aorta above is untouched
+        z_lo = zc - mask_z_fraction * (z[-1] - z[0]) / 2
+        below = Z < z_lo
+        ct[below & aorta] = TISSUE_HU
+        for sgn in (-1.0, 1.0):
+            ax_x = cx + sgn * (2.0 + (z_lo - Z) * np.tan(np.radians(35.0)))
+            tube = below & ((X - ax_x) ** 2 + (Y - cy) ** 2 <= 4.0 ** 2)
+            ct[tube] = LUMEN_HU
     if mask_fragment:
         mask[1, 1, 1] = 1  # a stray voxel far from the aorta
 

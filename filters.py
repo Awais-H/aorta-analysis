@@ -8,6 +8,17 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    END_FACE_MM of the end plane at a centreline endpoint) AND direction within
                    END_FACE_ANGLE_DEG of the outward centreline tangent; a patch over
                    END_FACE_AREA_SHORTCUT x the aortic cross-section short-circuits the angle test.
+   iliac_division  the terminal division of the aorta is outside the task (PDF; the reference
+                   checklist applies "the agreed exclusion of the terminal iliac division", and
+                   case 23's notes exclude its iliac split). Signature, measured on all 25 cases:
+                   in the slab LUMEN_PROBE_MM beyond the inferior face, within
+                   LUMEN_PROBE_LATERAL_FACTOR aortic radii of the axis, two bright lumens both over
+                   ILIAC_LUMEN_MIN_DIAMETER_MM and alike to ILIAC_LUMEN_RATIO_MIN (subjects 17, 22,
+                   23: 9 to 13 mm each; 19, 20, 21: one 17 to 20 mm lumen, the aorta continuing).
+                   Then a candidate touching the inferior face with an origin over
+                   ILIAC_CANDIDATE_MIN_DIAMETER_MM is one of the iliacs. Rule 1's continuation
+                   test already removes the larger one; this removes the other (22 patch 24, 23
+                   patch 5: the two false positives the eye review had called the iliac division).
 2. min_trace_mm    plaque / eligibility: traced path under MIN_TRACE_MM (Frangi secondary is
                    disabled while FRANGI_MIN_RESPONSE is 0).
 3. departure_mm    FLAG ONLY (no_departure): the far end of the traced path is still within
@@ -42,6 +53,11 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    1200 HU. Reaching the edge WITHOUT cortex is flagged section_merged and kept:
                    reference 19/b3 (2.7 mm) does that because at 1.5 mm voxels its section merges
                    with an adjacent vessel at lumen brightness.
+   blob_at_seed    the inscribed circle of the seed cross-section reaches BLOB_INSCRIBED_RADIUS_MM:
+                   the seed sits in a bright region at least 16 mm across, which no daughter lumen
+                   is 5 mm from the aorta. An intervertebral disc at a 105 HU threshold (subject
+                   22 patch 32, no cortex so the bone test cannot fire) and the heart and arch
+                   contacts of subject 25; no reference.
    area_growth     FLAG ONLY for now: cross-section more than AREA_GROWTH_MAX x larger at 4 to 5 mm
                    than at the first step clear of the wall layer. On the labelled cases the only
                    hits are real 4.5 mm branches whose first 3 mm read narrow at 1.5 mm voxels, and
@@ -50,7 +66,13 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    flags nothing, subject 8's two hits are already rejected as a duplicate and as
                    bone. No case in the dev set needs the rule, so it stays a flag.
 5. (invariant, no rule) branches of branches cannot occur: instances need wall contact.
-6. duplicate       two surviving ostia within DUPLICATE_MM with directions within
+6. same_origin_rejected  a survivor whose ostium lies on the same working voxel (within
+                   ISO_SPACING_MM) as a patch rejected for what it is (bone, blob_at_seed,
+                   proximal_volume_ml, iliac_division, end_face) is the same opening: one origin
+                   is one instance, and if that origin is a disc contact so is its twin patch
+                   (subject 22 patches 32 and 35, 0.8 mm apart, both 12 mm origins into the disc;
+                   35 surfaced when 32 was rejected because rule 6 only merged survivors).
+   duplicate       two surviving ostia within DUPLICATE_MM with directions within
                    DUPLICATE_ANGLE_DEG, or on the same working voxel whatever their directions (one
                    origin is one instance; a trunk that splits still has one ostium), or whose
                    traced paths come within DUPLICATE_MM of each other (two daughters cannot share
@@ -95,6 +117,7 @@ class FilterResult:
     rejections: list = field(default_factory=list)    # (label, rule, value)
     flags: dict = field(default_factory=dict)         # label -> [flag, ...]
     measurements: dict = field(default_factory=dict)  # label -> {name: value}, the tuning ledger
+    terminal_division: dict = field(default_factory=dict)  # rule 1: lumens beyond the inferior face and whether they are the iliacs
 
 
 # ------------------------------------------------------------------ helpers
@@ -116,18 +139,60 @@ def aortic_cross_section_mm2(cand: Candidates) -> float:
 
 
 def end_face_contact(cand: Candidates, wall_idx: np.ndarray, end_faces: list):
-    """(max height of the patch above the nearest end plane in mm, outward tangent of that end).
-    Height is (voxel - endpoint) . outward tangent; a patch touches the face when its highest
-    voxel is within END_FACE_MM below the plane or beyond it."""
-    best = (-np.inf, None)
+    """(max height of the patch above the nearest end plane in mm, outward tangent of that end,
+    index of that end: 0 superior, 1 inferior). Height is (voxel - endpoint) . outward tangent;
+    a patch touches the face when its highest voxel is within END_FACE_MM below the plane or
+    beyond it."""
+    best = (-np.inf, None, -1)
     W = wall_idx * cand.spacing
-    for e_mm, t_mm in end_faces:
+    for k, (e_mm, t_mm) in enumerate(end_faces):
         e = io_utils.mm_to_index(cand.image, e_mm) * cand.spacing
         t = io_utils.mm_vector_to_index(cand.image, e_mm, t_mm)
         h = float(((W - e) @ t).max())
         if h > best[0]:
-            best = (h, t_mm)
+            best = (h, t_mm, k)
     return best
+
+
+def lumens_beyond_face(cand: Candidates, end_mm: np.ndarray, t_out_mm: np.ndarray, aortic_radius_mm: float) -> list:
+    """Equivalent diameters (mm, largest first) of the bright lumens in a one-voxel slab
+    LUMEN_PROBE_MM beyond an end face, within LUMEN_PROBE_LATERAL_FACTOR aortic radii of the
+    extended axis. Raw thresholded voxels outside the mask, 26-connected in the slab."""
+    q = np.asarray(end_mm, float) + config.LUMEN_PROBE_MM * np.asarray(t_out_mm, float)
+    qi = io_utils.mm_to_index(cand.image, q)
+    ti = io_utils.mm_vector_to_index(cand.image, q, t_out_mm)
+    ti = ti / max(np.linalg.norm(ti), 1e-12)
+    V = np.argwhere(cand.bright_shell)
+    if len(V) == 0:
+        return []
+    d = (V - qi) * cand.spacing
+    along = d @ ti
+    lat = np.linalg.norm(d - along[:, None] * ti[None, :], axis=1)
+    sel = (np.abs(along) <= config.TRACE_SLAB_HALF_MM) & (lat <= config.LUMEN_PROBE_LATERAL_FACTOR * aortic_radius_mm)
+    if not sel.any():
+        return []
+    pts = V[sel]
+    lo = pts.min(axis=0)
+    box = np.zeros(tuple(pts.max(axis=0) - lo + 1), bool)
+    box[tuple((pts - lo).T)] = True
+    lab, k = ndimage.label(box, structure=np.ones((3, 3, 3), bool))
+    sizes = np.bincount(lab[box])[1:]
+    area = float(cand.spacing[1] * cand.spacing[2])
+    return sorted((2.0 * np.sqrt(s_ * area / np.pi) for s_ in sizes), reverse=True)
+
+
+def terminal_division(cand: Candidates, frame) -> dict:
+    """Whether the supplied segment ends at the aortic bifurcation: two alike lumens over
+    ILIAC_LUMEN_MIN_DIAMETER_MM beyond the inferior face. Returns the measurement."""
+    out = {"detected": False, "lumens_mm": []}
+    if frame is None or frame.radius_mm is None or len(frame.radius_mm) == 0:
+        return out
+    e, t = frame.end_faces()[1]
+    lumens = lumens_beyond_face(cand, e, t, float(np.median(frame.radius_mm)))
+    out["lumens_mm"] = [round(v, 1) for v in lumens[:4]]
+    if len(lumens) >= 2 and lumens[1] >= config.ILIAC_LUMEN_MIN_DIAMETER_MM and lumens[1] >= config.ILIAC_LUMEN_RATIO_MIN * lumens[0]:
+        out["detected"] = True
+    return out
 
 
 def departure_mm(cand: Candidates, path_mm: np.ndarray) -> float:
@@ -213,6 +278,10 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
     res = FilterResult()
     xsec = aortic_cross_section_mm2(cand)
     end_faces = frame.end_faces() if frame is not None else []
+    division = terminal_division(cand, frame) if end_faces else {"detected": False, "lumens_mm": []}
+    res.terminal_division = division
+    if division["detected"]:
+        log.info("segment ends at the aortic bifurcation: lumens %s mm beyond the inferior face", division["lumens_mm"])
     regions = branch_voxels(cand, inst)
     survivors = []
     for label in inst.labels_list:
@@ -250,13 +319,15 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
             hits.append(("proximal_volume_ml", pv))
 
         # 1: end faces
+        on_inferior_face = False
         if end_faces:
-            h, t_out = end_face_contact(cand, wall_idx, end_faces)
+            h, t_out, which_end = end_face_contact(cand, wall_idx, end_faces)
             ratio = inst.wall_area_mm2[label] / xsec if xsec > 0 else 0.0
             ang = _angle(tr.direction_xyz, t_out)
             m["end_face_height_mm"], m["end_face_angle_deg"], m["area_ratio"] = round(h, 2), round(ang, 1), round(ratio, 2)
             if h >= -config.END_FACE_MM:
                 flags.append("near_cut_face")
+                on_inferior_face = which_end == 1
                 if ratio > config.END_FACE_AREA_SHORTCUT:
                     hits.append(("end_face", float(ratio)))
                 elif ang <= config.END_FACE_ANGLE_DEG:
@@ -280,6 +351,11 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
         if asp > config.PATCH_ASPECT_RATIO_MAX:
             flags.append("elongated_patch")
 
+        # 4: the seed sits inside a bright region at least 2 x BLOB_INSCRIBED_RADIUS_MM across
+        m["seed_inscribed_mm"] = None if tr.radius_inscribed_mm is None else round(tr.radius_inscribed_mm, 2)
+        if tr.radius_inscribed_mm is not None and tr.radius_inscribed_mm >= config.BLOB_INSCRIBED_RADIUS_MM:
+            hits.append(("blob_at_seed", float(tr.radius_inscribed_mm)))
+
         # 4: the seed cross-section runs out of the window with a cortical shell: bone
         m["cortex_fraction"] = round(tr.section_cortex_fraction, 3)
         if tr.section_fills_window and tr.section_cortex_fraction > 0:
@@ -299,6 +375,9 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
         if diam is not None:
             if diam < config.MIN_ORIGIN_DIAMETER_MM:
                 hits.append(("origin_diameter_mm", diam))
+            # 1: one of the iliacs on a segment that ends at its terminal division
+            if division["detected"] and on_inferior_face and diam >= config.ILIAC_CANDIDATE_MIN_DIAMETER_MM:
+                hits.append(("iliac_division", diam))
             lo, hi = config.BORDERLINE_ORIGIN_DIAMETER_MM
             if lo <= diam <= hi:
                 flags.append("borderline_diameter")
@@ -309,6 +388,23 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
         res.flags[label], res.measurements[label] = flags, m
         if not hits:
             survivors.append((label, ost.mm, tr.direction_xyz, inst.wall_area_mm2[label], tr.path_mm))
+
+    # 6: a survivor on the same origin voxel as a structurally rejected patch is that structure
+    structural = ("bone", "blob_at_seed", "proximal_volume_ml", "iliac_division", "end_face")
+    bad_origins = [(l, ostia[l].index_zyx) for l, r, _ in res.rejections if r in structural and l in ostia]
+    still = []
+    for item in survivors:
+        label = item[0]
+        oi = ostia[label].index_zyx
+        # the same or a 26-adjacent working voxel (a distance test at exactly one voxel is a coin flip in floating point)
+        twin = next(((bl, float(np.linalg.norm((oi - bi) * cand.spacing))) for bl, bi in bad_origins
+                     if np.abs(oi - bi).max() <= 1), None)
+        if twin is None:
+            still.append(item)
+        else:
+            res.rejections.append((label, "same_origin_rejected", twin[1]))
+            res.measurements[label]["duplicate_of"] = twin[0]
+    survivors = still
 
     # 6: duplicates among survivors
     kept, dups = merge_duplicates(survivors)

@@ -32,9 +32,12 @@ what remains, and how to work.
 | Report | `report.py` | done; verification PNG, clock map PNG, self-contained HTML with flags, spacing and Plotly 3D |
 | Scorer and tools | `scorer.py`, `sweeps.py`, `gallery.py`, `review_markers.py` | done |
 
-Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 16 false
-positives, F1 0.65, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
-branch 14 of 17. Invariants on all 25 cases: no crash, under 10 s per case. Files:
+Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 13 false
+positives, F1 0.69, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
+branch 14 of 17. Of the 13: three are one looping vessel on subject 21 that the annotators also
+could not tie to the aorta (known failure class), three are 2.0 to 2.4 mm borderline origins,
+two are at the cut faces, five are unflagged 3 mm vessels at lumbar positions (SPEC section 1,
+false-positive review). Invariants on all 25 cases: no crash, under 10 s per case. Files:
 `results/dev_scores.txt`, `results/reference_ledger.txt`, `results/sweeps.txt`,
 `results/invariants.txt`, `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
 JSON for all 25 dev cases) and `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23).
@@ -75,6 +78,16 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
     frame.** The rotation-minimising transport the spec first asked for drifts 43 deg from the
     patient's anterior on subject 3 and 35 deg on subject 6 (torsion in the S-bends); it is kept
     as the `twist_deg` diagnostic. The two agree on a planar bend. SPEC D8.
+13. **The terminal iliac division is rejected** (rule 1 `iliac_division`): two alike lumens over
+    6 mm 5 mm beyond the inferior face mean the segment ends at the bifurcation, and a candidate
+    on that face with an origin over 5 mm is an iliac. PDF and the reviewer checklist both
+    exclude the division; measured on all 25 cases (fires on 17, 22, 23; not on 19 to 21).
+14. **A seed inside a bright region over 16 mm across is not a vessel** (rule 4 `blob_at_seed`):
+    the disc contact on subject 22 and the heart and arch on subject 25; no reference.
+15. **A survivor on the origin voxel of a structurally rejected patch goes with it** (rule 6
+    `same_origin_rejected`), otherwise rejecting a blob releases its twin patch.
+16. **Subject 21's looping vessel is a recorded failure class**, not a rule: hug ratio, opposed
+    directions and origin-to-seed taper were each measured and each also fires on a real vessel.
 12. **Centreline endpoints are end-face centroids**, not the geodesic rim points: the rim-to-axis
     stretch of the path is cut one radius in and the face (boundary voxels with normals within
     60 deg of the tangent) is averaged. Rule 1 picks the endpoints up automatically; the labelled
@@ -82,11 +95,14 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
 
 ## Open, waiting on the organisers (sent 13 Sep, SPEC section 6)
 
-- Small vessels just above the inferior cut: annotated or not. One `near_cut_face` candidate per
-  coarse case rides on this (the iliac division on 22; 7 to 8.5 mm vessels on 21 and 23).
+- Small vessels just above the inferior cut: annotated or not. Two `near_cut_face` candidates ride
+  on this (an 8.5 mm vessel at 21's cut, a 2.5 mm posterior track at 20's superior crop limit);
+  the iliac divisions on 22 and 23 are now rejected by policy (rule 1). The reference checklist
+  and notes exclude or leave unresolved every cap-adjacent candidate they mention (SPEC section 6).
 - Borderline 2 to 2.5 mm detections: false positive, ignored, or hit.
-- Whether the final references are swept for completeness. About ten of our 16 remaining false
-  positives are 1 to 3 mm tubes at lumbar and IMA positions that look real on the gallery sheets.
+- Whether the final references are swept for completeness. Five of our 13 remaining false
+  positives are unflagged 3 mm tubes at lumbar and IMA positions that look real on the gallery
+  sheets; one coincides with a structure case 21's notes list as unresolved.
 - Matching cutoff (we assume 5 mm), subjects 18/24/25 in or out, scoring machine OS and Python.
 
 ## What remains, in order

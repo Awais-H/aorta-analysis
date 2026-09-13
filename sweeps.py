@@ -32,6 +32,9 @@ SWEEPS = {
     "END_FACE_ANGLE_DEG": [10.0, 15.0, 20.0, 25.0, 30.0],
     "DUPLICATE_MM": [3.0, 4.0, 5.0, 6.0],
     "MIN_WALL_PATCH_VOXELS": [1, 2, 3, 4, 5],
+    "ILIAC_LUMEN_MIN_DIAMETER_MM": [4.0, 5.0, 6.0, 7.0, 8.0],
+    "ILIAC_CANDIDATE_MIN_DIAMETER_MM": [3.0, 4.0, 5.0, 6.0, 7.0],
+    "BLOB_INSCRIBED_RADIUS_MM": [5.0, 6.0, 7.0, 8.0],
 }
 
 
