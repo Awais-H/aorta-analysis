@@ -35,6 +35,7 @@ what remains, and how to work.
 | Scorer and tools | `scorer.py`, `sweeps.py`, `gallery.py`, `review_markers.py` | done |
 | Dense review views | `review_dense.py` | done; perpendicular sections along the path and wall-parallel reformats per candidate, the views that decided the 13 Sep adjudication |
 | 1.5 mm pseudo-labelled check | `coarse_check.py` | done; subjects 1 to 15 resampled to 1.5 mm and scored against their native predictions (`results/coarse_check.txt`) |
+| Perturbation-stability check | `perturb_check.py` | done; mask eroded and dilated by one voxel, threshold shifted by 10 HU, on subjects 1 to 24 (`results/perturbation_check.txt`) |
 
 Scores on the labelled cases (19 to 23) at the 5 mm cutoff: 17 of 19 references found, 13 false
 positives, F1 0.69, mean ostium error 1.35 mm, direction error 26 degrees, seed on the right
@@ -48,7 +49,7 @@ false-positive review). Invariants on all 25 cases: no crash, 1.4 to 6.3 s wall 
 the held-out optimum for eight of ten, and tuning the other two hurts held out), `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
 JSON for all 25 dev cases), `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23), `results/visual_checks/precision_review/` (the dense views behind the five verdicts below) and `results/coarse_check.txt` (the 1.5 mm check on subjects 1 to 15).
 
-Of the 13 false positives, after the adjudication by eye on 13 Sep (night): three are the looping vessel on 21, three borderline origins, two at the cut faces, four are real unannotated 3 mm lumbars on 21 and 22 (ours to keep; the references' gap), one is a passing contact of the inferior mesenteric artery on 22 26 mm below its own reported origin (ours, unfixed; no clean signature yet).
+Of the 12 false positives left after 13 Sep (night): three are the looping vessel on 21, three borderline origins, four are real unannotated 3 mm lumbars on 21 and 22 (ours to keep; the references' gap), two are vessels passing in contact with the wall (the inferior mesenteric artery on 22, 26 mm below its own reported origin; a vessel down the anterior wall past 21's cut corner; ours, one rule candidate with two examples). The thirteenth, 20 patch 4 at the superior image boundary, is now rejected by rule 2's `path_at_image_edge`.
 
 ## Decisions made against the spec's first draft, with the evidence
 
@@ -125,6 +126,31 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
     are partial-volume bridges of vessels passing 1 to 2 mm from the wall. Only eligibility and
     noise-floor rules flip; the structural rules hold. Nothing was tuned to it, and none of the
     three classes has a fix that holds every labelled case today.
+21. **"Flat crop ends are not origins" does not reach the two cut-face candidates, and one of
+    them is the passing-vessel class.** Counted on all 25 cases: of 147 kept branches only two
+    have their ostium voxel on an end face (a 7 mm vessel at subject 16's cut, the renal-at-the-cut
+    risk SPEC names, and one on the out-of-scope 25); 20 patch 4 and 21 patch 8 sit on the lateral
+    wall 0.8 to 1.8 mm from the face, so an ostium-on-face rejection would touch neither and risk
+    a real vessel. 21 patch 8 is a vessel running down the anterior wall past the cut corner
+    (lumen brightness at 2 to 4 mm, a band through the contact on the wall-parallel planes, a
+    chain of one-voxel anterior contacts 30 to 45 mm higher, a 4 mm lumen 5 mm below the face):
+    the same class as 22 patch 28, which now has two examples. Still flagged, no rule.
+22. **Rule 2 gained `path_at_image_edge`** (SPEC D6): a traced path running within one native
+    voxel of a face where the image ends in its first 5 mm cannot be verified 5 mm, the PDF's own
+    eligibility test and the reason case 20's notes exclude that track. Of 147 kept branches it
+    removes 20 patch 4 alone (subject 6's lumen-at-the-edge candidate is at 1.1 voxels and stays);
+    no reference is touched.
+23. **The D1 threshold depends on the mask including the partial-volume rim, and that is a
+    hidden-set risk left unfixed** (`results/perturbation_check.txt`, SPEC D1 and section 1).
+    Eroding the mask by one voxel drops the in-mask std to noise, mean minus 2 std jumps from
+    about 0.45 to 0.75 of the lumen median (19: 249 to 416 HU) and cases 19, 20 and 23 lose every
+    branch. Every coarse dev case sits on the 0.45 x median floor at baseline (ring bright
+    fraction 0.08 to 0.22, i.e. the rim is in), so the labelled scores cannot adjudicate a fix;
+    dropping the std term changes no coarse case but lowers every fine case's threshold from
+    about 0.7 to 0.45 of its median (74 gained, 19 lost on subjects 1 to 15, unlabelled) and is
+    not uniformly better even under erosion (22 goes from 5 to 3 references). Candidate fix, for
+    a decision: a resolution-dependent median fraction (0.45 at 1.5 mm, about 0.7 at 0.8 mm,
+    the partial-volume reading of a 2 mm lumen) in place of the std term.
 
 ## Open, waiting on the organisers (sent 13 Sep, SPEC section 6)
 
@@ -152,22 +178,25 @@ has the per-vessel verdicts and the coarse-check findings, D7 the two new tools)
 2. **The 1.5 mm pseudo-labelled check ran on subjects 1 to 15** (`coarse_check.py`,
    `results/coarse_check.txt`). Rerun it after any change to the front half or the tracer.
 
+Also done on 13 Sep (night, later; decisions 21 to 23): the perturbation-stability check
+(`perturb_check.py`, `results/perturbation_check.txt`) and the two cut-face candidates. One
+pipeline change came out of them, rule 2's `path_at_image_edge` (removes 20 patch 4; every
+results file regenerated, labelled scores 17 TP / 12 FP / 2 FN). One finding was left unfixed for a
+decision: the D1 threshold's dependence on the mask rim (decision 23).
+
 ## Next on `precision-review`
 
-Neither needs an organiser answer:
-
-1. **The perturbation-stability check**: mask eroded and dilated by one voxel, threshold shifted a
-   few HU; which predictions flip. Same shape as `coarse_check.py` (native predictions as the
-   pseudo-reference, `scorer.match` at 5 mm, fates of the nearest patch in both directions); the
-   resample step becomes a mask morphology or a threshold offset.
-2. **The two cut-face candidates** (21 patch 8, 20 patch 4) against the "flat crop ends are not
-   origins" rule, counting first how many kept branches on all 25 cases have their ostium voxel
-   on a face.
-
-Two candidate rules are recorded with their evidence and deliberately not armed, each waiting
-for a second example: the passing-vessel signature (22 patch 28, decision 19; needs a
-lumen-connected reverse march) and the bridged-contact class the coarse check exposed (seven of
-its fifteen gains; needs the followability test D5 already asks for).
+1. **Decide the D1 threshold's rim dependence** (decision 23). If the hidden masks can be tighter
+   than the dev ones, the std term needs replacing by a resolution-dependent median fraction;
+   the measurement to run first is that fraction on subjects 1 to 15 against the current
+   thresholds, then the erosion column of `perturb_check.py` on 19 to 23.
+2. **The passing-vessel rule now has two examples** (22 patch 28, 21 patch 8; decisions 19 and
+   21): a lumen-connected reverse march from the ostium through the raw shell with the
+   partial-volume ring excluded, rejecting when the lumen continues past the contact on both
+   sides. Must keep the hugging references 20/b1 and 23/b1 (one-sided) and pass the full
+   regression.
+3. The bridged-contact class the coarse check exposed (seven of its fifteen gains) still waits
+   for the followability test D5 asks for.
 
 ## What remains, in order
 
