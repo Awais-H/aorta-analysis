@@ -147,6 +147,15 @@ def mm_to_index(image: sitk.Image, xyz_mm) -> np.ndarray:
     return np.stack([mm_to_index(image, row) for row in p], axis=0) if len(p) else np.zeros((0, 3))
 
 
+def mm_vector_to_index(image: sitk.Image, xyz_mm, vec_mm) -> np.ndarray:
+    """Unit (z, y, x) index-space direction of a physical vector `vec_mm` placed at `xyz_mm`."""
+    p = np.asarray(xyz_mm, dtype=np.float64)
+    v = np.asarray(vec_mm, dtype=np.float64)
+    d = mm_to_index(image, p + v) - mm_to_index(image, p)
+    n = np.linalg.norm(d)
+    return d / n if n > 0 else d
+
+
 def index_vector_to_mm(image: sitk.Image, idx_zyx, vec_zyx) -> np.ndarray:
     """Unit (x, y, z) physical direction of an index-space vector `vec_zyx` placed at `idx_zyx`."""
     idx = np.asarray(idx_zyx, dtype=np.float64)

@@ -121,3 +121,12 @@ def test_format_scores_runs():
     cs = {"case_x": scorer.score_case(_ref(), _ref())}
     text = scorer.format_scores(cs, scorer.aggregate(cs), ["hdr"])
     assert "AGGREGATE" in text and "case_x" in text and "3/3" not in text  # no label volume: 0/0
+
+
+def test_matching_prefers_in_cutoff_pairs():
+    """One prediction near two references, a second prediction far from both: the near prediction
+    must pair with its closest reference rather than be sacrificed to lower the total cost."""
+    ref = fake_result("s", [fake_daughter(1, [0, 0, 0]), fake_daughter(2, [0, 0, 4.0])])
+    pred = fake_result("s", [fake_daughter(1, [0, 0, 3.5]), fake_daughter(2, [0, 0, 9.0])])
+    pairs = scorer.match(pred["daughters"], ref["daughters"], cutoff_mm=3.0)
+    assert pairs == [(0, 1, 0.5)]

@@ -1,597 +1,313 @@
-D7 invariant checks on 25 cases, commit abd1c07, 2026-09-13 00:07
+D7 invariant checks on 25 cases, commit 8f4d25c, 2026-09-13 00:33
 Runtime is run.py wall time including interpreter start-up. Peak memory is not measured on this platform.
 Filters are still the eligibility-only stub, so ostium-separation violations are expected.
 
-subject001: rc=0 wall=1.6 s pipeline=0.685 s daughters=13 wall_patches=14  20 violation(s)
-   - branch_001: seed voxel is not bright (134 HU)
-   - branch_004: seed voxel is not bright (159 HU)
-   - branch_005: seed voxel is not bright (57 HU)
-   - branch_007: seed voxel is not bright (58 HU)
-   - branch_008: seed voxel is not bright (95 HU)
-   - branch_009: seed voxel is not bright (99 HU)
-   - branch_011: seed voxel is not bright (85 HU)
-   - branch_012: seed voxel is not bright (55 HU)
-   - branch_013: seed voxel is not bright (68 HU)
-   - branch_001: watershed region reaches 30.6 mm from its ostium
-   - branch_002: watershed region reaches 112.7 mm from its ostium
+subject001: rc=0 wall=1.8 s pipeline=0.72 s daughters=8 wall_patches=14  10 violation(s)
+   - branch_005: direction does not point away from the aorta
+   - branch_007: radius 1.00 mm outside [1.0, 8.0]
+   - branch_008: radius 0.97 mm outside [1.0, 8.0]
+   - branch_001: watershed region reaches 32.6 mm from its ostium
+   - branch_002: watershed region reaches 112.3 mm from its ostium
    - branch_003: watershed region reaches 36.1 mm from its ostium
    - branch_004: watershed region reaches 28.5 mm from its ostium
    - branch_005: watershed region reaches 39.2 mm from its ostium
-   - branch_006: watershed region reaches 15.3 mm from its ostium
-   - branch_007: watershed region reaches 16.9 mm from its ostium
-   - branch_009: watershed region reaches 24.1 mm from its ostium
-   - branch_010: watershed region reaches 16.7 mm from its ostium
-   - branch_011: watershed region reaches 17.8 mm from its ostium
-   - branch_012: watershed region reaches 21.8 mm from its ostium
+   - branch_007: watershed region reaches 16.7 mm from its ostium
+   - branch_008: watershed region reaches 17.8 mm from its ostium
 
-subject002: rc=0 wall=1.3 s pipeline=0.301 s daughters=16 wall_patches=16  22 violation(s)
-   - branch_005: seed voxel is not bright (37 HU)
-   - branch_008: seed voxel is not bright (190 HU)
-   - branch_009: radius 0.90 mm outside [1.0, 8.0]
-   - branch_010: radius 0.64 mm outside [1.0, 8.0]
-   - branch_010: seed voxel is not bright (111 HU)
-   - branch_011: radius 0.64 mm outside [1.0, 8.0]
-   - branch_012: radius 0.64 mm outside [1.0, 8.0]
-   - branch_013: radius 0.50 mm outside [1.0, 8.0]
-   - branch_013: seed voxel is not bright (-27 HU)
-   - branch_014: radius 0.50 mm outside [1.0, 8.0]
-   - branch_015: radius 0.50 mm outside [1.0, 8.0]
-   - branch_016: radius 0.50 mm outside [1.0, 8.0]
-   - 7 ostium pair(s) closer than 4 mm (closest branch_012, branch_015: 1.39 mm)
+subject002: rc=0 wall=3.3 s pipeline=0.707 s daughters=13 wall_patches=16  14 violation(s)
+   - branch_007: radius 0.50 mm outside [1.0, 8.0]
+   - branch_007: seed voxel is not bright (126 HU)
+   - branch_008: radius 0.50 mm outside [1.0, 8.0]
+   - branch_008: seed voxel is not bright (78 HU)
+   - 4 ostium pair(s) closer than 4 mm (closest branch_009, branch_012: 1.39 mm)
    - branch_001: watershed region reaches 16.3 mm from its ostium
    - branch_002: watershed region reaches 16.9 mm from its ostium
-   - branch_003: watershed region reaches 27.9 mm from its ostium
+   - branch_003: watershed region reaches 27.3 mm from its ostium
    - branch_004: watershed region reaches 16.7 mm from its ostium
-   - branch_007: watershed region reaches 16.1 mm from its ostium
-   - branch_011: watershed region reaches 55.2 mm from its ostium
-   - branch_012: watershed region reaches 15.6 mm from its ostium
-   - branch_014: watershed region reaches 26.4 mm from its ostium
-   - branch_015: watershed region reaches 17.6 mm from its ostium
+   - branch_006: watershed region reaches 16.8 mm from its ostium
+   - branch_008: watershed region reaches 55.2 mm from its ostium
+   - branch_009: watershed region reaches 15.6 mm from its ostium
+   - branch_011: watershed region reaches 26.4 mm from its ostium
+   - branch_012: watershed region reaches 17.6 mm from its ostium
 
-subject003: rc=0 wall=1.9 s pipeline=0.976 s daughters=7 wall_patches=8  11 violation(s)
-   - branch_001: seed voxel is not bright (116 HU)
-   - branch_002: seed voxel is not bright (168 HU)
-   - branch_004: seed voxel is not bright (136 HU)
+subject003: rc=0 wall=4.3 s pipeline=1.657 s daughters=6 wall_patches=8  7 violation(s)
+   - branch_005: radius 0.50 mm outside [1.0, 8.0]
    - branch_005: seed voxel is not bright (3 HU)
-   - branch_006: seed voxel is not bright (-43 HU)
-   - branch_007: radius 0.90 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 26.6 mm from its ostium
    - branch_002: watershed region reaches 24.8 mm from its ostium
    - branch_003: watershed region reaches 18.2 mm from its ostium
    - branch_005: watershed region reaches 38.4 mm from its ostium
-   - branch_007: watershed region reaches 24.3 mm from its ostium
+   - branch_006: watershed region reaches 24.3 mm from its ostium
 
-subject004: rc=0 wall=1.4 s pipeline=0.403 s daughters=27 wall_patches=27  42 violation(s)
-   - branch_001: seed voxel is not bright (106 HU)
-   - branch_003: seed voxel is not bright (202 HU)
-   - branch_004: seed voxel is not bright (133 HU)
-   - branch_005: seed voxel is not bright (133 HU)
-   - branch_006: seed voxel is not bright (135 HU)
-   - branch_007: seed voxel is not bright (213 HU)
-   - branch_009: seed voxel is not bright (64 HU)
-   - branch_010: seed voxel is not bright (155 HU)
-   - branch_013: radius 0.90 mm outside [1.0, 8.0]
-   - branch_013: seed voxel is not bright (76 HU)
-   - branch_014: radius 0.90 mm outside [1.0, 8.0]
-   - branch_015: radius 0.78 mm outside [1.0, 8.0]
-   - branch_015: seed voxel is not bright (76 HU)
-   - branch_016: radius 0.64 mm outside [1.0, 8.0]
-   - branch_016: seed voxel is not bright (146 HU)
-   - branch_017: radius 0.64 mm outside [1.0, 8.0]
-   - branch_017: seed voxel is not bright (71 HU)
-   - branch_018: radius 0.64 mm outside [1.0, 8.0]
-   - branch_018: seed voxel is not bright (73 HU)
-   - branch_019: radius 0.64 mm outside [1.0, 8.0]
-   - branch_020: radius 0.64 mm outside [1.0, 8.0]
-   - branch_021: radius 0.50 mm outside [1.0, 8.0]
-   - branch_022: radius 0.50 mm outside [1.0, 8.0]
-   - branch_022: seed voxel is not bright (104 HU)
-   - branch_023: radius 0.50 mm outside [1.0, 8.0]
-   - branch_023: seed voxel is not bright (96 HU)
-   - branch_024: radius 0.50 mm outside [1.0, 8.0]
-   - branch_025: radius 0.50 mm outside [1.0, 8.0]
-   - branch_026: radius 0.50 mm outside [1.0, 8.0]
-   - branch_027: radius 0.50 mm outside [1.0, 8.0]
-   - 22 ostium pair(s) closer than 4 mm (closest branch_009, branch_013: 0.00 mm)
+subject004: rc=0 wall=2.2 s pipeline=0.753 s daughters=19 wall_patches=27  17 violation(s)
+   - branch_008: radius 0.50 mm outside [1.0, 8.0]
+   - branch_008: seed voxel is not bright (155 HU)
+   - branch_015: radius 0.50 mm outside [1.0, 8.0]
+   - branch_015: seed voxel is not bright (86 HU)
+   - branch_019: seed voxel is not bright (152 HU)
+   - 12 ostium pair(s) closer than 4 mm (closest branch_017, branch_018: 0.00 mm)
    - branch_001: watershed region reaches 33.7 mm from its ostium
-   - branch_002: watershed region reaches 55.2 mm from its ostium
+   - branch_002: watershed region reaches 54.7 mm from its ostium
    - branch_003: watershed region reaches 23.6 mm from its ostium
-   - branch_004: watershed region reaches 29.6 mm from its ostium
-   - branch_008: watershed region reaches 17.1 mm from its ostium
-   - branch_011: watershed region reaches 37.2 mm from its ostium
-   - branch_012: watershed region reaches 25.1 mm from its ostium
-   - branch_016: watershed region reaches 24.2 mm from its ostium
-   - branch_019: watershed region reaches 16.3 mm from its ostium
-   - branch_026: watershed region reaches 17.3 mm from its ostium
-   - branch_027: watershed region reaches 17.6 mm from its ostium
+   - branch_004: watershed region reaches 30.1 mm from its ostium
+   - branch_007: watershed region reaches 17.1 mm from its ostium
+   - branch_009: watershed region reaches 37.2 mm from its ostium
+   - branch_010: watershed region reaches 25.1 mm from its ostium
+   - branch_012: watershed region reaches 24.2 mm from its ostium
+   - branch_013: watershed region reaches 16.3 mm from its ostium
+   - branch_018: watershed region reaches 17.3 mm from its ostium
+   - branch_019: watershed region reaches 17.6 mm from its ostium
 
-subject005: rc=0 wall=1.3 s pipeline=0.395 s daughters=14 wall_patches=14  15 violation(s)
-   - branch_005: seed voxel is not bright (164 HU)
-   - branch_006: seed voxel is not bright (-67 HU)
-   - branch_007: seed voxel is not bright (79 HU)
-   - branch_008: seed voxel is not bright (-35 HU)
-   - branch_009: seed voxel is not bright (87 HU)
-   - branch_010: seed voxel is not bright (130 HU)
-   - branch_011: seed voxel is not bright (-89 HU)
-   - branch_012: seed voxel is not bright (79 HU)
-   - branch_014: seed voxel is not bright (67 HU)
+subject005: rc=0 wall=2.1 s pipeline=0.701 s daughters=6 wall_patches=14  5 violation(s)
+   - branch_006: radius 0.61 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 19.3 mm from its ostium
    - branch_002: watershed region reaches 17.9 mm from its ostium
    - branch_003: watershed region reaches 15.3 mm from its ostium
    - branch_004: watershed region reaches 18.6 mm from its ostium
-   - branch_009: watershed region reaches 18.0 mm from its ostium
-   - branch_011: watershed region reaches 15.0 mm from its ostium
 
-subject006: rc=0 wall=1.5 s pipeline=0.46 s daughters=7 wall_patches=7  8 violation(s)
-   - branch_002: seed voxel is not bright (116 HU)
-   - branch_005: seed voxel is not bright (51 HU)
-   - branch_006: seed voxel is not bright (48 HU)
-   - branch_007: seed voxel is not bright (40 HU)
+subject006: rc=0 wall=2.8 s pipeline=1.251 s daughters=6 wall_patches=7  5 violation(s)
+   - branch_006: radius 0.56 mm outside [1.0, 8.0]
    - branch_001: watershed region reaches 21.9 mm from its ostium
-   - branch_002: watershed region reaches 27.0 mm from its ostium
+   - branch_002: watershed region reaches 26.2 mm from its ostium
    - branch_003: watershed region reaches 18.5 mm from its ostium
    - branch_004: watershed region reaches 28.9 mm from its ostium
 
-subject007: rc=0 wall=1.3 s pipeline=0.345 s daughters=12 wall_patches=12  16 violation(s)
-   - branch_001: seed voxel is not bright (161 HU)
-   - branch_004: seed voxel is not bright (21 HU)
-   - branch_005: seed voxel is not bright (24 HU)
-   - branch_007: seed voxel is not bright (113 HU)
-   - branch_008: seed voxel is not bright (-56 HU)
-   - branch_009: seed voxel is not bright (-39 HU)
-   - branch_010: seed voxel is not bright (15 HU)
-   - branch_012: radius 0.50 mm outside [1.0, 8.0]
-   - 3 ostium pair(s) closer than 4 mm (closest branch_008, branch_010: 3.58 mm)
-   - branch_001: watershed region reaches 23.0 mm from its ostium
-   - branch_002: watershed region reaches 21.5 mm from its ostium
-   - branch_003: watershed region reaches 26.9 mm from its ostium
+subject007: rc=0 wall=2.0 s pipeline=0.377 s daughters=8 wall_patches=12  8 violation(s)
+   - 1 ostium pair(s) closer than 4 mm (closest branch_006, branch_008: 3.67 mm)
+   - branch_001: watershed region reaches 24.4 mm from its ostium
+   - branch_002: watershed region reaches 20.6 mm from its ostium
+   - branch_003: watershed region reaches 27.9 mm from its ostium
    - branch_005: watershed region reaches 37.6 mm from its ostium
    - branch_006: watershed region reaches 28.9 mm from its ostium
-   - branch_011: watershed region reaches 17.0 mm from its ostium
-   - branch_012: watershed region reaches 17.3 mm from its ostium
+   - branch_007: watershed region reaches 17.0 mm from its ostium
+   - branch_008: watershed region reaches 17.3 mm from its ostium
 
-subject008: rc=0 wall=2.5 s pipeline=1.43 s daughters=32 wall_patches=32  55 violation(s)
-   - branch_002: seed voxel is not bright (155 HU)
-   - branch_003: seed voxel is not bright (192 HU)
-   - branch_005: seed voxel is not bright (108 HU)
-   - branch_007: seed voxel is not bright (157 HU)
-   - branch_008: seed voxel is not bright (100 HU)
-   - branch_010: seed voxel is not bright (-28 HU)
-   - branch_011: seed voxel is not bright (57 HU)
-   - branch_012: seed voxel is not bright (79 HU)
-   - branch_013: seed voxel is not bright (84 HU)
-   - branch_014: seed voxel is not bright (51 HU)
-   - branch_015: radius 0.78 mm outside [1.0, 8.0]
-   - branch_015: seed voxel is not bright (178 HU)
-   - branch_016: radius 0.78 mm outside [1.0, 8.0]
-   - branch_017: radius 0.64 mm outside [1.0, 8.0]
-   - branch_017: seed voxel is not bright (108 HU)
-   - branch_018: radius 0.64 mm outside [1.0, 8.0]
-   - branch_019: radius 0.64 mm outside [1.0, 8.0]
-   - branch_020: radius 0.64 mm outside [1.0, 8.0]
-   - branch_021: radius 0.50 mm outside [1.0, 8.0]
-   - branch_021: seed voxel is not bright (124 HU)
-   - branch_022: radius 0.50 mm outside [1.0, 8.0]
-   - branch_022: seed voxel is not bright (129 HU)
-   - branch_023: radius 0.50 mm outside [1.0, 8.0]
-   - branch_023: seed voxel is not bright (90 HU)
-   - branch_024: radius 0.50 mm outside [1.0, 8.0]
-   - branch_025: radius 0.50 mm outside [1.0, 8.0]
-   - branch_025: seed voxel is not bright (143 HU)
-   - branch_026: radius 0.50 mm outside [1.0, 8.0]
-   - branch_026: seed voxel is not bright (141 HU)
-   - branch_027: radius 0.50 mm outside [1.0, 8.0]
-   - branch_027: seed voxel is not bright (68 HU)
-   - branch_028: radius 0.50 mm outside [1.0, 8.0]
-   - branch_028: seed voxel is not bright (180 HU)
-   - branch_029: radius 0.50 mm outside [1.0, 8.0]
-   - branch_030: radius 0.50 mm outside [1.0, 8.0]
-   - branch_031: radius 0.50 mm outside [1.0, 8.0]
-   - branch_032: radius 0.50 mm outside [1.0, 8.0]
-   - 34 ostium pair(s) closer than 4 mm (closest branch_029, branch_030: 0.00 mm)
+subject008: rc=0 wall=2.2 s pipeline=1.25 s daughters=21 wall_patches=32  17 violation(s)
+   - branch_008: radius 0.86 mm outside [1.0, 8.0]
+   - branch_009: radius 0.86 mm outside [1.0, 8.0]
+   - branch_017: radius 0.50 mm outside [1.0, 8.0]
+   - branch_017: seed voxel is not bright (143 HU)
+   - 18 ostium pair(s) closer than 4 mm (closest branch_019, branch_020: 0.00 mm)
    - warning: mask has 2 components, 80 voxels discarded
-   - branch_001: watershed region reaches 59.4 mm from its ostium
+   - branch_001: watershed region reaches 60.0 mm from its ostium
    - branch_003: watershed region reaches 24.0 mm from its ostium
-   - branch_004: watershed region reaches 24.2 mm from its ostium
+   - branch_004: watershed region reaches 24.6 mm from its ostium
    - branch_005: watershed region reaches 23.6 mm from its ostium
    - branch_008: watershed region reaches 24.0 mm from its ostium
    - branch_009: watershed region reaches 19.4 mm from its ostium
-   - branch_010: watershed region reaches 15.2 mm from its ostium
-   - branch_012: watershed region reaches 31.9 mm from its ostium
-   - branch_013: watershed region reaches 42.7 mm from its ostium
-   - branch_014: watershed region reaches 17.2 mm from its ostium
-   - branch_018: watershed region reaches 16.0 mm from its ostium
-   - branch_027: watershed region reaches 20.5 mm from its ostium
-   - branch_028: watershed region reaches 34.4 mm from its ostium
-   - branch_029: watershed region reaches 19.3 mm from its ostium
-   - branch_030: watershed region reaches 31.6 mm from its ostium
-   - branch_032: watershed region reaches 25.9 mm from its ostium
+   - branch_013: watershed region reaches 16.0 mm from its ostium
+   - branch_018: watershed region reaches 34.4 mm from its ostium
+   - branch_019: watershed region reaches 19.3 mm from its ostium
+   - branch_020: watershed region reaches 31.6 mm from its ostium
+   - branch_021: watershed region reaches 25.9 mm from its ostium
 
-subject009: rc=0 wall=3.7 s pipeline=0.77 s daughters=4 wall_patches=4  8 violation(s)
-   - branch_001: seed voxel is not bright (26 HU)
-   - branch_002: seed voxel is not bright (158 HU)
-   - branch_003: seed voxel is not bright (154 HU)
-   - branch_004: seed voxel is not bright (128 HU)
-   - branch_001: watershed region reaches 42.1 mm from its ostium
+subject009: rc=0 wall=1.5 s pipeline=0.55 s daughters=4 wall_patches=4  7 violation(s)
+   - branch_003: radius 0.50 mm outside [1.0, 8.0]
+   - branch_003: seed voxel is not bright (128 HU)
+   - branch_004: radius 0.50 mm outside [1.0, 8.0]
+   - branch_001: watershed region reaches 41.4 mm from its ostium
    - branch_002: watershed region reaches 15.9 mm from its ostium
    - branch_003: watershed region reaches 29.6 mm from its ostium
    - branch_004: watershed region reaches 22.2 mm from its ostium
 
-subject010: rc=0 wall=3.9 s pipeline=1.209 s daughters=7 wall_patches=7  10 violation(s)
-   - branch_002: seed voxel is not bright (144 HU)
-   - branch_004: seed voxel is not bright (279 HU)
-   - branch_005: seed voxel is not bright (203 HU)
-   - branch_006: seed voxel is not bright (-14 HU)
-   - branch_007: seed voxel is not bright (2 HU)
+subject010: rc=0 wall=1.8 s pipeline=0.9 s daughters=4 wall_patches=7  5 violation(s)
    - warning: mask has 13 components, 27 voxels discarded
-   - branch_001: watershed region reaches 24.6 mm from its ostium
-   - branch_002: watershed region reaches 22.7 mm from its ostium
-   - branch_003: watershed region reaches 16.5 mm from its ostium
+   - branch_001: watershed region reaches 22.0 mm from its ostium
+   - branch_002: watershed region reaches 21.0 mm from its ostium
+   - branch_003: watershed region reaches 17.1 mm from its ostium
    - branch_004: watershed region reaches 17.3 mm from its ostium
 
-subject011: rc=0 wall=3.5 s pipeline=0.694 s daughters=23 wall_patches=23  35 violation(s)
-   - branch_004: seed voxel is not bright (146 HU)
+subject011: rc=0 wall=1.4 s pipeline=0.458 s daughters=20 wall_patches=23  20 violation(s)
+   - branch_005: radius 0.50 mm outside [1.0, 8.0]
    - branch_005: seed voxel is not bright (74 HU)
-   - branch_007: seed voxel is not bright (-125 HU)
-   - branch_008: seed voxel is not bright (273 HU)
-   - branch_009: radius 0.82 mm outside [1.0, 8.0]
-   - branch_010: radius 0.67 mm outside [1.0, 8.0]
+   - branch_007: radius 0.70 mm outside [1.0, 8.0]
+   - branch_007: seed voxel is not bright (211 HU)
+   - branch_010: radius 0.50 mm outside [1.0, 8.0]
+   - branch_010: seed voxel is not bright (61 HU)
    - branch_011: radius 0.50 mm outside [1.0, 8.0]
-   - branch_011: seed voxel is not bright (-49 HU)
+   - branch_011: seed voxel is not bright (70 HU)
    - branch_012: radius 0.50 mm outside [1.0, 8.0]
-   - branch_012: seed voxel is not bright (61 HU)
-   - branch_013: radius 0.50 mm outside [1.0, 8.0]
-   - branch_013: seed voxel is not bright (70 HU)
-   - branch_014: radius 0.50 mm outside [1.0, 8.0]
-   - branch_014: seed voxel is not bright (71 HU)
-   - branch_015: radius 0.50 mm outside [1.0, 8.0]
-   - branch_015: seed voxel is not bright (79 HU)
-   - branch_016: radius 0.50 mm outside [1.0, 8.0]
-   - branch_017: radius 0.50 mm outside [1.0, 8.0]
-   - branch_018: radius 0.50 mm outside [1.0, 8.0]
-   - branch_019: radius 0.50 mm outside [1.0, 8.0]
-   - branch_020: radius 0.50 mm outside [1.0, 8.0]
-   - branch_021: radius 0.50 mm outside [1.0, 8.0]
-   - branch_022: radius 0.50 mm outside [1.0, 8.0]
-   - branch_023: radius 0.50 mm outside [1.0, 8.0]
-   - 31 ostium pair(s) closer than 4 mm (closest branch_005, branch_010: 0.00 mm)
-   - branch_001: watershed region reaches 18.7 mm from its ostium
-   - branch_003: watershed region reaches 17.9 mm from its ostium
+   - branch_012: seed voxel is not bright (79 HU)
+   - 28 ostium pair(s) closer than 4 mm (closest branch_005, branch_009: 0.00 mm)
+   - branch_001: watershed region reaches 19.1 mm from its ostium
+   - branch_003: watershed region reaches 17.6 mm from its ostium
    - branch_004: watershed region reaches 19.4 mm from its ostium
    - branch_005: watershed region reaches 33.4 mm from its ostium
    - branch_006: watershed region reaches 15.1 mm from its ostium
-   - branch_010: watershed region reaches 23.1 mm from its ostium
-   - branch_011: watershed region reaches 24.4 mm from its ostium
-   - branch_012: watershed region reaches 23.3 mm from its ostium
-   - branch_016: watershed region reaches 31.3 mm from its ostium
-   - branch_018: watershed region reaches 17.1 mm from its ostium
+   - branch_009: watershed region reaches 23.1 mm from its ostium
+   - branch_010: watershed region reaches 23.3 mm from its ostium
+   - branch_013: watershed region reaches 31.3 mm from its ostium
+   - branch_015: watershed region reaches 17.1 mm from its ostium
 
-subject012: rc=0 wall=3.8 s pipeline=1.072 s daughters=8 wall_patches=8  9 violation(s)
-   - branch_005: seed voxel is not bright (24 HU)
-   - branch_006: seed voxel is not bright (100 HU)
-   - branch_007: seed voxel is not bright (25 HU)
-   - branch_008: seed voxel is not bright (33 HU)
+subject012: rc=0 wall=1.6 s pipeline=0.675 s daughters=7 wall_patches=8  8 violation(s)
+   - branch_005: radius 0.50 mm outside [1.0, 8.0]
+   - branch_007: radius 0.50 mm outside [1.0, 8.0]
+   - branch_007: seed voxel is not bright (-13 HU)
    - branch_001: watershed region reaches 15.3 mm from its ostium
    - branch_003: watershed region reaches 18.1 mm from its ostium
    - branch_004: watershed region reaches 15.2 mm from its ostium
    - branch_005: watershed region reaches 16.0 mm from its ostium
    - branch_006: watershed region reaches 19.6 mm from its ostium
 
-subject013: rc=0 wall=3.7 s pipeline=0.9 s daughters=5 wall_patches=5  7 violation(s)
-   - branch_002: seed voxel is not bright (209 HU)
-   - branch_004: seed voxel is not bright (11 HU)
+subject013: rc=0 wall=1.5 s pipeline=0.567 s daughters=5 wall_patches=5  5 violation(s)
    - branch_001: watershed region reaches 17.3 mm from its ostium
    - branch_002: watershed region reaches 15.5 mm from its ostium
    - branch_003: watershed region reaches 16.4 mm from its ostium
    - branch_004: watershed region reaches 18.9 mm from its ostium
-   - branch_005: watershed region reaches 16.7 mm from its ostium
+   - branch_005: watershed region reaches 17.0 mm from its ostium
 
-subject014: rc=0 wall=2.7 s pipeline=1.051 s daughters=9 wall_patches=9  13 violation(s)
-   - branch_001: seed voxel is not bright (145 HU)
-   - branch_005: seed voxel is not bright (28 HU)
-   - branch_006: radius 0.50 mm outside [1.0, 8.0]
-   - branch_007: radius 0.50 mm outside [1.0, 8.0]
-   - branch_008: radius 0.50 mm outside [1.0, 8.0]
-   - branch_009: radius 0.50 mm outside [1.0, 8.0]
-   - 3 ostium pair(s) closer than 4 mm (closest branch_007, branch_008: 1.39 mm)
+subject014: rc=0 wall=1.5 s pipeline=0.605 s daughters=7 wall_patches=9  6 violation(s)
+   - 1 ostium pair(s) closer than 4 mm (closest branch_006, branch_007: 1.39 mm)
    - branch_001: watershed region reaches 112.8 mm from its ostium
    - branch_003: watershed region reaches 18.4 mm from its ostium
    - branch_004: watershed region reaches 16.3 mm from its ostium
-   - branch_005: watershed region reaches 26.5 mm from its ostium
-   - branch_006: watershed region reaches 38.3 mm from its ostium
-   - branch_007: watershed region reaches 22.9 mm from its ostium
+   - branch_005: watershed region reaches 38.3 mm from its ostium
+   - branch_006: watershed region reaches 22.9 mm from its ostium
 
-subject015: rc=0 wall=2.5 s pipeline=1.297 s daughters=15 wall_patches=15  26 violation(s)
-   - branch_002: seed voxel is not bright (165 HU)
-   - branch_005: seed voxel is not bright (37 HU)
-   - branch_006: radius 0.78 mm outside [1.0, 8.0]
-   - branch_006: seed voxel is not bright (59 HU)
-   - branch_007: radius 0.64 mm outside [1.0, 8.0]
-   - branch_007: seed voxel is not bright (64 HU)
-   - branch_008: radius 0.50 mm outside [1.0, 8.0]
-   - branch_008: seed voxel is not bright (307 HU)
-   - branch_009: radius 0.50 mm outside [1.0, 8.0]
-   - branch_010: radius 0.50 mm outside [1.0, 8.0]
-   - branch_011: radius 0.50 mm outside [1.0, 8.0]
-   - branch_012: radius 0.50 mm outside [1.0, 8.0]
-   - branch_013: radius 0.50 mm outside [1.0, 8.0]
-   - branch_014: radius 0.50 mm outside [1.0, 8.0]
-   - branch_015: radius 0.50 mm outside [1.0, 8.0]
-   - 5 ostium pair(s) closer than 4 mm (closest branch_011, branch_012: 1.39 mm)
+subject015: rc=0 wall=2.2 s pipeline=1.267 s daughters=13 wall_patches=15  11 violation(s)
+   - branch_006: seed voxel is not bright (307 HU)
+   - 4 ostium pair(s) closer than 4 mm (closest branch_009, branch_010: 1.39 mm)
    - warning: mask has 2 components, 1 voxels discarded
-   - branch_001: watershed region reaches 28.7 mm from its ostium
+   - branch_001: watershed region reaches 30.2 mm from its ostium
    - branch_004: watershed region reaches 17.8 mm from its ostium
-   - branch_007: watershed region reaches 33.4 mm from its ostium
-   - branch_008: watershed region reaches 20.9 mm from its ostium
-   - branch_009: watershed region reaches 21.7 mm from its ostium
-   - branch_010: watershed region reaches 18.5 mm from its ostium
-   - branch_011: watershed region reaches 26.6 mm from its ostium
-   - branch_014: watershed region reaches 19.3 mm from its ostium
-   - branch_015: watershed region reaches 17.2 mm from its ostium
+   - branch_006: watershed region reaches 20.9 mm from its ostium
+   - branch_007: watershed region reaches 21.7 mm from its ostium
+   - branch_008: watershed region reaches 18.5 mm from its ostium
+   - branch_009: watershed region reaches 26.6 mm from its ostium
+   - branch_012: watershed region reaches 19.3 mm from its ostium
+   - branch_013: watershed region reaches 17.2 mm from its ostium
 
-subject016: rc=0 wall=1.4 s pipeline=0.504 s daughters=42 wall_patches=42  72 violation(s)
-   - branch_004: seed voxel is not bright (-95 HU)
+subject016: rc=0 wall=1.7 s pipeline=0.783 s daughters=30 wall_patches=42  34 violation(s)
    - branch_005: seed voxel is not bright (-172 HU)
-   - branch_006: seed voxel is not bright (20 HU)
-   - branch_007: seed voxel is not bright (-44 HU)
-   - branch_008: seed voxel is not bright (-18 HU)
-   - branch_009: seed voxel is not bright (-26 HU)
-   - branch_010: seed voxel is not bright (12 HU)
-   - branch_012: seed voxel is not bright (-54 HU)
-   - branch_013: seed voxel is not bright (17 HU)
-   - branch_014: seed voxel is not bright (-21 HU)
-   - branch_015: seed voxel is not bright (-41 HU)
-   - branch_017: seed voxel is not bright (-10 HU)
-   - branch_018: radius 0.90 mm outside [1.0, 8.0]
-   - branch_019: radius 0.90 mm outside [1.0, 8.0]
-   - branch_020: radius 0.90 mm outside [1.0, 8.0]
-   - branch_021: radius 0.78 mm outside [1.0, 8.0]
-   - branch_022: radius 0.64 mm outside [1.0, 8.0]
-   - branch_023: radius 0.64 mm outside [1.0, 8.0]
-   - branch_024: radius 0.64 mm outside [1.0, 8.0]
-   - branch_025: radius 0.64 mm outside [1.0, 8.0]
-   - branch_026: radius 0.64 mm outside [1.0, 8.0]
-   - branch_027: radius 0.50 mm outside [1.0, 8.0]
-   - branch_027: seed voxel is not bright (59 HU)
-   - branch_028: radius 0.50 mm outside [1.0, 8.0]
-   - branch_029: radius 0.50 mm outside [1.0, 8.0]
-   - branch_030: radius 0.50 mm outside [1.0, 8.0]
-   - branch_031: radius 0.50 mm outside [1.0, 8.0]
-   - branch_031: seed voxel is not bright (53 HU)
-   - branch_032: radius 0.50 mm outside [1.0, 8.0]
-   - branch_032: seed voxel is not bright (65 HU)
-   - branch_033: radius 0.50 mm outside [1.0, 8.0]
-   - branch_033: seed voxel is not bright (10 HU)
-   - branch_034: radius 0.50 mm outside [1.0, 8.0]
-   - branch_034: seed voxel is not bright (31 HU)
-   - branch_035: radius 0.50 mm outside [1.0, 8.0]
-   - branch_036: radius 0.50 mm outside [1.0, 8.0]
-   - branch_037: radius 0.50 mm outside [1.0, 8.0]
-   - branch_037: seed voxel is not bright (-21 HU)
-   - branch_038: radius 0.50 mm outside [1.0, 8.0]
-   - branch_038: seed voxel is not bright (-26 HU)
-   - branch_039: radius 0.50 mm outside [1.0, 8.0]
-   - branch_040: radius 0.50 mm outside [1.0, 8.0]
-   - branch_041: radius 0.50 mm outside [1.0, 8.0]
-   - branch_042: radius 0.50 mm outside [1.0, 8.0]
-   - 32 ostium pair(s) closer than 4 mm (closest branch_020, branch_024: 0.00 mm)
-   - branch_001: watershed region reaches 17.3 mm from its ostium
-   - branch_002: watershed region reaches 16.0 mm from its ostium
+   - branch_008: radius 0.50 mm outside [1.0, 8.0]
+   - branch_008: seed voxel is not bright (-71 HU)
+   - branch_010: radius 0.97 mm outside [1.0, 8.0]
+   - branch_010: seed voxel is not bright (83 HU)
+   - branch_020: seed voxel is not bright (90 HU)
+   - branch_024: seed voxel is not bright (31 HU)
+   - 23 ostium pair(s) closer than 4 mm (closest branch_014, branch_018: 0.00 mm)
+   - branch_001: watershed region reaches 17.4 mm from its ostium
+   - branch_002: watershed region reaches 16.4 mm from its ostium
    - branch_003: watershed region reaches 17.8 mm from its ostium
    - branch_004: watershed region reaches 22.0 mm from its ostium
    - branch_005: watershed region reaches 31.0 mm from its ostium
-   - branch_009: watershed region reaches 15.3 mm from its ostium
-   - branch_011: watershed region reaches 19.2 mm from its ostium
-   - branch_016: watershed region reaches 23.3 mm from its ostium
-   - branch_018: watershed region reaches 31.6 mm from its ostium
-   - branch_019: watershed region reaches 20.6 mm from its ostium
-   - branch_020: watershed region reaches 24.0 mm from its ostium
-   - branch_021: watershed region reaches 32.7 mm from its ostium
-   - branch_022: watershed region reaches 20.7 mm from its ostium
-   - branch_023: watershed region reaches 17.0 mm from its ostium
-   - branch_024: watershed region reaches 15.5 mm from its ostium
-   - branch_025: watershed region reaches 18.6 mm from its ostium
-   - branch_026: watershed region reaches 33.5 mm from its ostium
-   - branch_028: watershed region reaches 22.7 mm from its ostium
-   - branch_029: watershed region reaches 23.9 mm from its ostium
-   - branch_030: watershed region reaches 31.4 mm from its ostium
-   - branch_033: watershed region reaches 17.7 mm from its ostium
-   - branch_035: watershed region reaches 16.8 mm from its ostium
-   - branch_036: watershed region reaches 33.4 mm from its ostium
-   - branch_039: watershed region reaches 18.0 mm from its ostium
-   - branch_040: watershed region reaches 16.6 mm from its ostium
-   - branch_041: watershed region reaches 33.7 mm from its ostium
-   - branch_042: watershed region reaches 24.2 mm from its ostium
+   - branch_007: watershed region reaches 15.3 mm from its ostium
+   - branch_009: watershed region reaches 19.2 mm from its ostium
+   - branch_011: watershed region reaches 23.3 mm from its ostium
+   - branch_012: watershed region reaches 32.1 mm from its ostium
+   - branch_013: watershed region reaches 20.6 mm from its ostium
+   - branch_014: watershed region reaches 24.0 mm from its ostium
+   - branch_015: watershed region reaches 32.7 mm from its ostium
+   - branch_016: watershed region reaches 20.7 mm from its ostium
+   - branch_017: watershed region reaches 17.0 mm from its ostium
+   - branch_018: watershed region reaches 15.5 mm from its ostium
+   - branch_019: watershed region reaches 18.1 mm from its ostium
+   - branch_020: watershed region reaches 32.7 mm from its ostium
+   - branch_021: watershed region reaches 22.7 mm from its ostium
+   - branch_022: watershed region reaches 23.9 mm from its ostium
+   - branch_023: watershed region reaches 31.4 mm from its ostium
+   - branch_025: watershed region reaches 16.8 mm from its ostium
+   - branch_026: watershed region reaches 33.4 mm from its ostium
+   - branch_027: watershed region reaches 18.0 mm from its ostium
+   - branch_028: watershed region reaches 16.6 mm from its ostium
+   - branch_029: watershed region reaches 33.7 mm from its ostium
+   - branch_030: watershed region reaches 24.2 mm from its ostium
 
-subject017: rc=0 wall=1.2 s pipeline=0.287 s daughters=10 wall_patches=10  18 violation(s)
-   - branch_001: seed voxel is not bright (51 HU)
-   - branch_002: seed voxel is not bright (-84 HU)
-   - branch_003: seed voxel is not bright (-87 HU)
-   - branch_004: seed voxel is not bright (120 HU)
-   - branch_005: seed voxel is not bright (-55 HU)
-   - branch_006: radius 0.78 mm outside [1.0, 8.0]
-   - branch_007: radius 0.78 mm outside [1.0, 8.0]
-   - branch_007: seed voxel is not bright (-48 HU)
-   - branch_008: radius 0.78 mm outside [1.0, 8.0]
-   - branch_008: seed voxel is not bright (-25 HU)
-   - branch_009: radius 0.50 mm outside [1.0, 8.0]
-   - branch_009: seed voxel is not bright (-11 HU)
-   - branch_010: radius 0.50 mm outside [1.0, 8.0]
-   - branch_010: seed voxel is not bright (100 HU)
-   - 6 ostium pair(s) closer than 4 mm (closest branch_007, branch_008: 0.00 mm)
-   - branch_001: watershed region reaches 19.0 mm from its ostium
-   - branch_005: watershed region reaches 15.6 mm from its ostium
-   - branch_006: watershed region reaches 20.9 mm from its ostium
+subject017: rc=0 wall=1.2 s pipeline=0.274 s daughters=4 wall_patches=10  2 violation(s)
+   - branch_001: watershed region reaches 21.9 mm from its ostium
+   - branch_004: watershed region reaches 20.9 mm from its ostium
 
-subject018: rc=0 wall=2.8 s pipeline=1.905 s daughters=141 wall_patches=141  234 violation(s)
-   - branch_001: seed voxel is not bright (92 HU)
-   - branch_006: seed voxel is not bright (78 HU)
-   - branch_007: seed voxel is not bright (-52 HU)
-   - branch_008: seed voxel is not bright (96 HU)
-   - branch_011: seed voxel is not bright (80 HU)
+subject018: rc=0 wall=4.0 s pipeline=3.108 s daughters=113 wall_patches=141  156 violation(s)
+   - branch_005: radius 0.63 mm outside [1.0, 8.0]
+   - branch_005: seed voxel is not bright (62 HU)
+   - branch_007: radius 0.50 mm outside [1.0, 8.0]
+   - branch_007: seed voxel is not bright (73 HU)
    - branch_012: seed voxel is not bright (51 HU)
+   - branch_013: seed voxel is not bright (25 HU)
    - branch_014: seed voxel is not bright (75 HU)
-   - branch_015: seed voxel is not bright (31 HU)
+   - branch_015: radius 0.50 mm outside [1.0, 8.0]
+   - branch_015: seed voxel is not bright (28 HU)
    - branch_016: seed voxel is not bright (85 HU)
+   - branch_017: seed voxel is not bright (32 HU)
+   - branch_020: radius 0.50 mm outside [1.0, 8.0]
    - branch_020: seed voxel is not bright (13 HU)
-   - branch_021: seed voxel is not bright (12 HU)
-   - branch_022: seed voxel is not bright (1 HU)
-   - branch_023: seed voxel is not bright (-37 HU)
    - branch_024: seed voxel is not bright (84 HU)
+   - branch_025: seed voxel is not bright (54 HU)
    - branch_026: seed voxel is not bright (77 HU)
-   - branch_029: seed voxel is not bright (23 HU)
+   - branch_029: radius 0.70 mm outside [1.0, 8.0]
+   - branch_029: seed voxel is not bright (68 HU)
+   - branch_030: radius 0.50 mm outside [1.0, 8.0]
    - branch_030: seed voxel is not bright (28 HU)
-   - branch_031: seed voxel is not bright (34 HU)
+   - branch_034: radius 0.50 mm outside [1.0, 8.0]
    - branch_034: seed voxel is not bright (48 HU)
-   - branch_036: seed voxel is not bright (78 HU)
-   - branch_037: seed voxel is not bright (93 HU)
-   - branch_038: seed voxel is not bright (96 HU)
-   - branch_039: seed voxel is not bright (-58 HU)
-   - branch_042: seed voxel is not bright (-25 HU)
-   - branch_043: seed voxel is not bright (34 HU)
-   - branch_047: seed voxel is not bright (-16 HU)
-   - branch_048: seed voxel is not bright (-49 HU)
-   - branch_051: seed voxel is not bright (48 HU)
-   - branch_052: seed voxel is not bright (93 HU)
-   - branch_054: seed voxel is not bright (61 HU)
-   - branch_056: seed voxel is not bright (69 HU)
-   - branch_059: seed voxel is not bright (23 HU)
-   - branch_061: seed voxel is not bright (-54 HU)
-   - branch_066: radius 0.90 mm outside [1.0, 8.0]
-   - branch_067: radius 0.90 mm outside [1.0, 8.0]
-   - branch_068: radius 0.90 mm outside [1.0, 8.0]
-   - branch_069: radius 0.90 mm outside [1.0, 8.0]
-   - branch_070: radius 0.78 mm outside [1.0, 8.0]
-   - branch_070: seed voxel is not bright (-5 HU)
-   - branch_071: radius 0.78 mm outside [1.0, 8.0]
-   - branch_072: radius 0.64 mm outside [1.0, 8.0]
-   - branch_072: seed voxel is not bright (98 HU)
-   - branch_073: radius 0.64 mm outside [1.0, 8.0]
-   - branch_073: seed voxel is not bright (26 HU)
-   - branch_074: radius 0.64 mm outside [1.0, 8.0]
-   - branch_074: seed voxel is not bright (-24 HU)
-   - branch_075: radius 0.64 mm outside [1.0, 8.0]
-   - branch_075: seed voxel is not bright (8 HU)
-   - branch_076: radius 0.64 mm outside [1.0, 8.0]
-   - branch_076: seed voxel is not bright (73 HU)
-   - branch_077: radius 0.64 mm outside [1.0, 8.0]
-   - branch_077: seed voxel is not bright (-78 HU)
-   - branch_078: radius 0.64 mm outside [1.0, 8.0]
-   - branch_078: seed voxel is not bright (34 HU)
-   - branch_079: radius 0.64 mm outside [1.0, 8.0]
-   - branch_080: radius 0.64 mm outside [1.0, 8.0]
-   - branch_080: seed voxel is not bright (74 HU)
-   - branch_081: radius 0.64 mm outside [1.0, 8.0]
-   - branch_082: radius 0.64 mm outside [1.0, 8.0]
-   - branch_083: radius 0.64 mm outside [1.0, 8.0]
-   - branch_084: radius 0.64 mm outside [1.0, 8.0]
-   - branch_085: radius 0.64 mm outside [1.0, 8.0]
-   - branch_085: seed voxel is not bright (79 HU)
-   - branch_086: radius 0.64 mm outside [1.0, 8.0]
-   - branch_087: radius 0.64 mm outside [1.0, 8.0]
-   - branch_088: radius 0.50 mm outside [1.0, 8.0]
-   - branch_088: seed voxel is not bright (81 HU)
+   - branch_036: seed voxel is not bright (93 HU)
+   - branch_037: seed voxel is not bright (96 HU)
+   - branch_038: seed voxel is not bright (57 HU)
+   - branch_042: seed voxel is not bright (81 HU)
+   - branch_043: radius 0.50 mm outside [1.0, 8.0]
+   - branch_043: seed voxel is not bright (-49 HU)
+   - branch_044: seed voxel is not bright (100 HU)
+   - branch_045: seed voxel is not bright (93 HU)
+   - branch_046: radius 0.89 mm outside [1.0, 8.0]
+   - branch_047: radius 0.61 mm outside [1.0, 8.0]
+   - branch_047: seed voxel is not bright (62 HU)
+   - branch_048: radius 0.50 mm outside [1.0, 8.0]
+   - branch_048: seed voxel is not bright (85 HU)
+   - branch_049: seed voxel is not bright (70 HU)
+   - branch_051: radius 0.50 mm outside [1.0, 8.0]
+   - branch_051: seed voxel is not bright (23 HU)
+   - branch_053: radius 0.50 mm outside [1.0, 8.0]
+   - branch_053: seed voxel is not bright (-54 HU)
+   - branch_064: seed voxel is not bright (89 HU)
+   - branch_069: seed voxel is not bright (87 HU)
+   - branch_074: seed voxel is not bright (81 HU)
+   - branch_075: radius 0.50 mm outside [1.0, 8.0]
+   - branch_075: seed voxel is not bright (-37 HU)
+   - branch_076: seed voxel is not bright (83 HU)
+   - branch_077: radius 0.50 mm outside [1.0, 8.0]
+   - branch_077: seed voxel is not bright (-0 HU)
+   - branch_078: seed voxel is not bright (94 HU)
+   - branch_081: seed voxel is not bright (62 HU)
+   - branch_082: radius 0.50 mm outside [1.0, 8.0]
+   - branch_082: seed voxel is not bright (21 HU)
+   - branch_086: radius 0.50 mm outside [1.0, 8.0]
+   - branch_086: seed voxel is not bright (50 HU)
    - branch_089: radius 0.50 mm outside [1.0, 8.0]
-   - branch_089: seed voxel is not bright (-37 HU)
+   - branch_089: seed voxel is not bright (-3 HU)
    - branch_090: radius 0.50 mm outside [1.0, 8.0]
-   - branch_090: seed voxel is not bright (83 HU)
-   - branch_091: radius 0.50 mm outside [1.0, 8.0]
-   - branch_091: seed voxel is not bright (-47 HU)
-   - branch_092: radius 0.50 mm outside [1.0, 8.0]
-   - branch_093: radius 0.50 mm outside [1.0, 8.0]
-   - branch_093: seed voxel is not bright (94 HU)
-   - branch_094: radius 0.50 mm outside [1.0, 8.0]
-   - branch_095: radius 0.50 mm outside [1.0, 8.0]
-   - branch_096: radius 0.50 mm outside [1.0, 8.0]
-   - branch_096: seed voxel is not bright (-38 HU)
+   - branch_090: seed voxel is not bright (48 HU)
+   - branch_094: seed voxel is not bright (75 HU)
    - branch_097: radius 0.50 mm outside [1.0, 8.0]
-   - branch_097: seed voxel is not bright (21 HU)
-   - branch_098: radius 0.50 mm outside [1.0, 8.0]
-   - branch_099: radius 0.50 mm outside [1.0, 8.0]
-   - branch_100: radius 0.50 mm outside [1.0, 8.0]
-   - branch_101: radius 0.50 mm outside [1.0, 8.0]
-   - branch_101: seed voxel is not bright (50 HU)
+   - branch_097: seed voxel is not bright (-13 HU)
    - branch_102: radius 0.50 mm outside [1.0, 8.0]
-   - branch_102: seed voxel is not bright (86 HU)
+   - branch_102: seed voxel is not bright (10 HU)
    - branch_103: radius 0.50 mm outside [1.0, 8.0]
-   - branch_104: radius 0.50 mm outside [1.0, 8.0]
-   - branch_105: radius 0.50 mm outside [1.0, 8.0]
+   - branch_103: seed voxel is not bright (42 HU)
+   - branch_104: seed voxel is not bright (95 HU)
    - branch_106: radius 0.50 mm outside [1.0, 8.0]
-   - branch_106: seed voxel is not bright (48 HU)
-   - branch_107: radius 0.50 mm outside [1.0, 8.0]
-   - branch_107: seed voxel is not bright (9 HU)
-   - branch_108: radius 0.50 mm outside [1.0, 8.0]
-   - branch_108: seed voxel is not bright (-63 HU)
-   - branch_109: radius 0.50 mm outside [1.0, 8.0]
-   - branch_109: seed voxel is not bright (-22 HU)
-   - branch_110: radius 0.50 mm outside [1.0, 8.0]
-   - branch_111: radius 0.50 mm outside [1.0, 8.0]
-   - branch_111: seed voxel is not bright (73 HU)
-   - branch_112: radius 0.50 mm outside [1.0, 8.0]
-   - branch_113: radius 0.50 mm outside [1.0, 8.0]
-   - branch_114: radius 0.50 mm outside [1.0, 8.0]
-   - branch_115: radius 0.50 mm outside [1.0, 8.0]
-   - branch_115: seed voxel is not bright (61 HU)
-   - branch_116: radius 0.50 mm outside [1.0, 8.0]
-   - branch_117: radius 0.50 mm outside [1.0, 8.0]
-   - branch_118: radius 0.50 mm outside [1.0, 8.0]
-   - branch_118: seed voxel is not bright (-13 HU)
-   - branch_119: radius 0.50 mm outside [1.0, 8.0]
-   - branch_120: radius 0.50 mm outside [1.0, 8.0]
-   - branch_121: radius 0.50 mm outside [1.0, 8.0]
-   - branch_122: radius 0.50 mm outside [1.0, 8.0]
-   - branch_122: seed voxel is not bright (21 HU)
-   - branch_123: radius 0.50 mm outside [1.0, 8.0]
-   - branch_123: seed voxel is not bright (-29 HU)
-   - branch_124: radius 0.50 mm outside [1.0, 8.0]
-   - branch_124: seed voxel is not bright (-85 HU)
-   - branch_125: radius 0.50 mm outside [1.0, 8.0]
-   - branch_126: radius 0.50 mm outside [1.0, 8.0]
-   - branch_126: seed voxel is not bright (92 HU)
-   - branch_127: radius 0.50 mm outside [1.0, 8.0]
-   - branch_127: seed voxel is not bright (10 HU)
-   - branch_128: radius 0.50 mm outside [1.0, 8.0]
-   - branch_128: seed voxel is not bright (42 HU)
-   - branch_129: radius 0.50 mm outside [1.0, 8.0]
-   - branch_129: seed voxel is not bright (95 HU)
-   - branch_130: radius 0.50 mm outside [1.0, 8.0]
-   - branch_131: radius 0.50 mm outside [1.0, 8.0]
-   - branch_131: seed voxel is not bright (-15 HU)
-   - branch_132: radius 0.50 mm outside [1.0, 8.0]
-   - branch_132: seed voxel is not bright (-28 HU)
-   - branch_133: radius 0.50 mm outside [1.0, 8.0]
-   - branch_134: radius 0.50 mm outside [1.0, 8.0]
-   - branch_135: radius 0.50 mm outside [1.0, 8.0]
-   - branch_136: radius 0.50 mm outside [1.0, 8.0]
-   - branch_137: radius 0.50 mm outside [1.0, 8.0]
-   - branch_137: seed voxel is not bright (78 HU)
-   - branch_138: radius 0.50 mm outside [1.0, 8.0]
-   - branch_139: radius 0.50 mm outside [1.0, 8.0]
-   - branch_139: seed voxel is not bright (81 HU)
-   - branch_140: radius 0.50 mm outside [1.0, 8.0]
-   - branch_140: seed voxel is not bright (55 HU)
-   - branch_141: radius 0.50 mm outside [1.0, 8.0]
-   - branch_141: seed voxel is not bright (91 HU)
-   - 94 ostium pair(s) closer than 4 mm (closest branch_064, branch_084: 0.00 mm)
+   - branch_106: seed voxel is not bright (-15 HU)
+   - branch_111: seed voxel is not bright (78 HU)
+   - branch_113: seed voxel is not bright (91 HU)
+   - 53 ostium pair(s) closer than 4 mm (closest branch_058, branch_059: 0.00 mm)
    - warning: mask has 2 components, 4241 voxels discarded
-   - branch_001: watershed region reaches 30.4 mm from its ostium
-   - branch_002: watershed region reaches 22.0 mm from its ostium
-   - branch_003: watershed region reaches 29.8 mm from its ostium
+   - branch_001: watershed region reaches 26.7 mm from its ostium
+   - branch_002: watershed region reaches 22.1 mm from its ostium
+   - branch_003: watershed region reaches 29.7 mm from its ostium
    - branch_004: watershed region reaches 22.1 mm from its ostium
-   - branch_006: watershed region reaches 20.5 mm from its ostium
-   - branch_007: watershed region reaches 45.0 mm from its ostium
-   - branch_008: watershed region reaches 25.8 mm from its ostium
-   - branch_009: watershed region reaches 21.1 mm from its ostium
-   - branch_010: watershed region reaches 15.3 mm from its ostium
+   - branch_006: watershed region reaches 20.9 mm from its ostium
+   - branch_007: watershed region reaches 43.9 mm from its ostium
+   - branch_008: watershed region reaches 26.2 mm from its ostium
+   - branch_009: watershed region reaches 22.6 mm from its ostium
+   - branch_010: watershed region reaches 15.7 mm from its ostium
    - branch_011: watershed region reaches 23.6 mm from its ostium
    - branch_013: watershed region reaches 23.4 mm from its ostium
    - branch_014: watershed region reaches 16.7 mm from its ostium
-   - branch_015: watershed region reaches 29.6 mm from its ostium
-   - branch_017: watershed region reaches 27.3 mm from its ostium
+   - branch_015: watershed region reaches 28.9 mm from its ostium
+   - branch_017: watershed region reaches 27.9 mm from its ostium
    - branch_018: watershed region reaches 16.5 mm from its ostium
    - branch_019: watershed region reaches 25.0 mm from its ostium
    - branch_020: watershed region reaches 41.4 mm from its ostium
-   - branch_021: watershed region reaches 17.1 mm from its ostium
+   - branch_021: watershed region reaches 18.5 mm from its ostium
    - branch_022: watershed region reaches 17.3 mm from its ostium
    - branch_024: watershed region reaches 15.9 mm from its ostium
    - branch_025: watershed region reaches 15.8 mm from its ostium
@@ -604,140 +320,99 @@ subject018: rc=0 wall=2.8 s pipeline=1.905 s daughters=141 wall_patches=141  234
    - branch_033: watershed region reaches 15.8 mm from its ostium
    - branch_034: watershed region reaches 48.9 mm from its ostium
    - branch_035: watershed region reaches 18.1 mm from its ostium
-   - branch_038: watershed region reaches 18.0 mm from its ostium
-   - branch_040: watershed region reaches 17.4 mm from its ostium
-   - branch_041: watershed region reaches 15.4 mm from its ostium
-   - branch_044: watershed region reaches 19.0 mm from its ostium
-   - branch_045: watershed region reaches 42.8 mm from its ostium
-   - branch_048: watershed region reaches 57.3 mm from its ostium
-   - branch_052: watershed region reaches 23.9 mm from its ostium
-   - branch_057: watershed region reaches 17.9 mm from its ostium
-   - branch_058: watershed region reaches 17.3 mm from its ostium
-   - branch_059: watershed region reaches 38.7 mm from its ostium
-   - branch_060: watershed region reaches 25.7 mm from its ostium
-   - branch_061: watershed region reaches 26.7 mm from its ostium
-   - branch_063: watershed region reaches 18.0 mm from its ostium
-   - branch_064: watershed region reaches 16.5 mm from its ostium
-   - branch_065: watershed region reaches 17.7 mm from its ostium
-   - branch_066: watershed region reaches 15.1 mm from its ostium
-   - branch_067: watershed region reaches 26.5 mm from its ostium
-   - branch_068: watershed region reaches 20.3 mm from its ostium
-   - branch_069: watershed region reaches 20.0 mm from its ostium
-   - branch_070: watershed region reaches 16.0 mm from its ostium
-   - branch_071: watershed region reaches 15.3 mm from its ostium
-   - branch_072: watershed region reaches 16.8 mm from its ostium
-   - branch_079: watershed region reaches 15.3 mm from its ostium
-   - branch_080: watershed region reaches 15.5 mm from its ostium
-   - branch_081: watershed region reaches 17.2 mm from its ostium
-   - branch_082: watershed region reaches 15.3 mm from its ostium
+   - branch_037: watershed region reaches 17.9 mm from its ostium
+   - branch_038: watershed region reaches 17.4 mm from its ostium
+   - branch_039: watershed region reaches 15.4 mm from its ostium
+   - branch_040: watershed region reaches 19.0 mm from its ostium
+   - branch_041: watershed region reaches 42.8 mm from its ostium
+   - branch_043: watershed region reaches 57.3 mm from its ostium
+   - branch_045: watershed region reaches 23.9 mm from its ostium
+   - branch_049: watershed region reaches 17.9 mm from its ostium
+   - branch_050: watershed region reaches 17.3 mm from its ostium
+   - branch_051: watershed region reaches 38.7 mm from its ostium
+   - branch_052: watershed region reaches 25.7 mm from its ostium
+   - branch_053: watershed region reaches 26.7 mm from its ostium
+   - branch_054: watershed region reaches 18.0 mm from its ostium
+   - branch_055: watershed region reaches 16.5 mm from its ostium
+   - branch_056: watershed region reaches 17.7 mm from its ostium
+   - branch_057: watershed region reaches 15.1 mm from its ostium
+   - branch_058: watershed region reaches 26.0 mm from its ostium
+   - branch_059: watershed region reaches 20.8 mm from its ostium
+   - branch_060: watershed region reaches 20.0 mm from its ostium
+   - branch_061: watershed region reaches 16.0 mm from its ostium
+   - branch_062: watershed region reaches 15.3 mm from its ostium
+   - branch_063: watershed region reaches 16.8 mm from its ostium
+   - branch_066: watershed region reaches 15.3 mm from its ostium
+   - branch_067: watershed region reaches 15.5 mm from its ostium
+   - branch_068: watershed region reaches 17.2 mm from its ostium
+   - branch_069: watershed region reaches 15.3 mm from its ostium
+   - branch_071: watershed region reaches 18.0 mm from its ostium
+   - branch_072: watershed region reaches 21.1 mm from its ostium
+   - branch_073: watershed region reaches 33.2 mm from its ostium
+   - branch_074: watershed region reaches 22.7 mm from its ostium
+   - branch_075: watershed region reaches 25.9 mm from its ostium
+   - branch_076: watershed region reaches 20.6 mm from its ostium
+   - branch_079: watershed region reaches 24.2 mm from its ostium
+   - branch_080: watershed region reaches 20.4 mm from its ostium
+   - branch_082: watershed region reaches 23.4 mm from its ostium
    - branch_085: watershed region reaches 17.5 mm from its ostium
-   - branch_086: watershed region reaches 21.1 mm from its ostium
-   - branch_087: watershed region reaches 33.2 mm from its ostium
-   - branch_088: watershed region reaches 22.7 mm from its ostium
-   - branch_089: watershed region reaches 25.9 mm from its ostium
-   - branch_090: watershed region reaches 20.6 mm from its ostium
-   - branch_094: watershed region reaches 24.2 mm from its ostium
-   - branch_095: watershed region reaches 20.4 mm from its ostium
-   - branch_097: watershed region reaches 23.4 mm from its ostium
-   - branch_100: watershed region reaches 17.5 mm from its ostium
-   - branch_103: watershed region reaches 15.5 mm from its ostium
-   - branch_104: watershed region reaches 15.9 mm from its ostium
-   - branch_105: watershed region reaches 15.2 mm from its ostium
-   - branch_106: watershed region reaches 26.5 mm from its ostium
-   - branch_111: watershed region reaches 16.0 mm from its ostium
-   - branch_112: watershed region reaches 19.0 mm from its ostium
-   - branch_116: watershed region reaches 16.0 mm from its ostium
-   - branch_117: watershed region reaches 18.7 mm from its ostium
-   - branch_121: watershed region reaches 17.1 mm from its ostium
-   - branch_128: watershed region reaches 22.7 mm from its ostium
-   - branch_129: watershed region reaches 46.4 mm from its ostium
-   - branch_130: watershed region reaches 18.3 mm from its ostium
-   - branch_133: watershed region reaches 16.8 mm from its ostium
-   - branch_134: watershed region reaches 25.0 mm from its ostium
-   - branch_135: watershed region reaches 17.0 mm from its ostium
-   - branch_136: watershed region reaches 43.5 mm from its ostium
-   - branch_137: watershed region reaches 15.1 mm from its ostium
-   - branch_141: watershed region reaches 22.7 mm from its ostium
+   - branch_087: watershed region reaches 15.5 mm from its ostium
+   - branch_088: watershed region reaches 15.9 mm from its ostium
+   - branch_089: watershed region reaches 15.2 mm from its ostium
+   - branch_090: watershed region reaches 26.5 mm from its ostium
+   - branch_092: watershed region reaches 16.0 mm from its ostium
+   - branch_093: watershed region reaches 19.0 mm from its ostium
+   - branch_095: watershed region reaches 16.0 mm from its ostium
+   - branch_096: watershed region reaches 18.7 mm from its ostium
+   - branch_100: watershed region reaches 17.1 mm from its ostium
+   - branch_103: watershed region reaches 22.7 mm from its ostium
+   - branch_104: watershed region reaches 46.4 mm from its ostium
+   - branch_105: watershed region reaches 18.3 mm from its ostium
+   - branch_107: watershed region reaches 16.8 mm from its ostium
+   - branch_108: watershed region reaches 25.0 mm from its ostium
+   - branch_109: watershed region reaches 17.0 mm from its ostium
+   - branch_110: watershed region reaches 43.5 mm from its ostium
+   - branch_111: watershed region reaches 15.1 mm from its ostium
+   - branch_113: watershed region reaches 22.7 mm from its ostium
 
-subject019: rc=0 wall=1.1 s pipeline=0.212 s daughters=7 wall_patches=7  13 violation(s)
-   - branch_003: seed voxel is not bright (123 HU)
-   - branch_004: seed voxel is not bright (93 HU)
-   - branch_005: seed voxel is not bright (63 HU)
-   - branch_006: radius 0.50 mm outside [1.0, 8.0]
-   - branch_006: seed voxel is not bright (-15 HU)
-   - branch_007: radius 0.50 mm outside [1.0, 8.0]
-   - branch_007: seed voxel is not bright (196 HU)
-   - 1 ostium pair(s) closer than 4 mm (closest branch_002, branch_003: 3.58 mm)
-   - branch_001: watershed region reaches 22.6 mm from its ostium
+subject019: rc=0 wall=1.2 s pipeline=0.267 s daughters=6 wall_patches=7  8 violation(s)
+   - branch_004: radius 0.50 mm outside [1.0, 8.0]
+   - branch_004: direction does not point away from the aorta
+   - branch_006: seed voxel is not bright (196 HU)
+   - branch_001: watershed region reaches 24.9 mm from its ostium
    - branch_002: watershed region reaches 77.3 mm from its ostium
-   - branch_004: watershed region reaches 15.1 mm from its ostium
-   - branch_006: watershed region reaches 16.1 mm from its ostium
-   - branch_007: watershed region reaches 24.4 mm from its ostium
+   - branch_003: watershed region reaches 15.1 mm from its ostium
+   - branch_005: watershed region reaches 16.1 mm from its ostium
+   - branch_006: watershed region reaches 24.4 mm from its ostium
 
-subject020: rc=0 wall=1.2 s pipeline=0.316 s daughters=6 wall_patches=6  10 violation(s)
-   - branch_002: seed voxel is not bright (-96 HU)
+subject020: rc=0 wall=1.3 s pipeline=0.387 s daughters=6 wall_patches=6  9 violation(s)
+   - branch_003: radius 0.50 mm outside [1.0, 8.0]
    - branch_003: seed voxel is not bright (126 HU)
-   - branch_005: seed voxel is not bright (-24 HU)
-   - branch_006: seed voxel is not bright (108 HU)
-   - branch_001: watershed region reaches 24.0 mm from its ostium
-   - branch_002: watershed region reaches 38.1 mm from its ostium
+   - branch_006: radius 0.93 mm outside [1.0, 8.0]
+   - branch_001: watershed region reaches 23.0 mm from its ostium
+   - branch_002: watershed region reaches 41.4 mm from its ostium
    - branch_003: watershed region reaches 26.4 mm from its ostium
    - branch_004: watershed region reaches 23.9 mm from its ostium
    - branch_005: watershed region reaches 15.7 mm from its ostium
    - branch_006: watershed region reaches 20.0 mm from its ostium
 
-subject021: rc=0 wall=1.2 s pipeline=0.303 s daughters=45 wall_patches=45  62 violation(s)
-   - branch_004: seed voxel is not bright (85 HU)
-   - branch_005: seed voxel is not bright (221 HU)
+subject021: rc=0 wall=1.4 s pipeline=0.465 s daughters=29 wall_patches=45  27 violation(s)
+   - branch_006: radius 0.50 mm outside [1.0, 8.0]
    - branch_006: seed voxel is not bright (53 HU)
-   - branch_007: seed voxel is not bright (129 HU)
-   - branch_008: seed voxel is not bright (217 HU)
-   - branch_009: seed voxel is not bright (-88 HU)
-   - branch_012: seed voxel is not bright (43 HU)
-   - branch_014: seed voxel is not bright (159 HU)
+   - branch_007: radius 0.53 mm outside [1.0, 8.0]
+   - branch_008: seed voxel is not bright (234 HU)
+   - branch_009: radius 0.50 mm outside [1.0, 8.0]
+   - branch_009: seed voxel is not bright (-49 HU)
+   - branch_012: radius 0.98 mm outside [1.0, 8.0]
+   - branch_014: radius 0.99 mm outside [1.0, 8.0]
    - branch_015: seed voxel is not bright (179 HU)
-   - branch_016: seed voxel is not bright (91 HU)
-   - branch_017: seed voxel is not bright (71 HU)
-   - branch_018: radius 0.90 mm outside [1.0, 8.0]
-   - branch_018: seed voxel is not bright (86 HU)
-   - branch_019: radius 0.78 mm outside [1.0, 8.0]
-   - branch_020: radius 0.64 mm outside [1.0, 8.0]
-   - branch_020: seed voxel is not bright (195 HU)
-   - branch_021: radius 0.64 mm outside [1.0, 8.0]
-   - branch_022: radius 0.64 mm outside [1.0, 8.0]
-   - branch_023: radius 0.50 mm outside [1.0, 8.0]
-   - branch_023: seed voxel is not bright (226 HU)
-   - branch_024: radius 0.50 mm outside [1.0, 8.0]
-   - branch_025: radius 0.50 mm outside [1.0, 8.0]
-   - branch_025: seed voxel is not bright (150 HU)
-   - branch_026: radius 0.50 mm outside [1.0, 8.0]
-   - branch_027: radius 0.50 mm outside [1.0, 8.0]
-   - branch_028: radius 0.50 mm outside [1.0, 8.0]
-   - branch_029: radius 0.50 mm outside [1.0, 8.0]
-   - branch_030: radius 0.50 mm outside [1.0, 8.0]
-   - branch_031: radius 0.50 mm outside [1.0, 8.0]
-   - branch_031: seed voxel is not bright (186 HU)
-   - branch_032: radius 0.50 mm outside [1.0, 8.0]
-   - branch_033: radius 0.50 mm outside [1.0, 8.0]
-   - branch_034: radius 0.50 mm outside [1.0, 8.0]
-   - branch_035: radius 0.50 mm outside [1.0, 8.0]
-   - branch_036: radius 0.50 mm outside [1.0, 8.0]
-   - branch_036: seed voxel is not bright (179 HU)
-   - branch_037: radius 0.50 mm outside [1.0, 8.0]
-   - branch_038: radius 0.50 mm outside [1.0, 8.0]
-   - branch_039: radius 0.50 mm outside [1.0, 8.0]
-   - branch_040: radius 0.50 mm outside [1.0, 8.0]
-   - branch_041: radius 0.50 mm outside [1.0, 8.0]
-   - branch_042: radius 0.50 mm outside [1.0, 8.0]
-   - branch_043: radius 0.50 mm outside [1.0, 8.0]
-   - branch_044: radius 0.50 mm outside [1.0, 8.0]
-   - branch_045: radius 0.50 mm outside [1.0, 8.0]
-   - branch_045: seed voxel is not bright (92 HU)
-   - 60 ostium pair(s) closer than 4 mm (closest branch_016, branch_045: 0.00 mm)
-   - branch_001: watershed region reaches 26.1 mm from its ostium
-   - branch_002: watershed region reaches 16.2 mm from its ostium
-   - branch_003: watershed region reaches 34.6 mm from its ostium
-   - branch_004: watershed region reaches 31.8 mm from its ostium
+   - branch_017: seed voxel is not bright (202 HU)
+   - branch_023: seed voxel is not bright (234 HU)
+   - 17 ostium pair(s) closer than 4 mm (closest branch_017, branch_025: 0.00 mm)
+   - branch_001: watershed region reaches 25.2 mm from its ostium
+   - branch_002: watershed region reaches 16.3 mm from its ostium
+   - branch_003: watershed region reaches 33.2 mm from its ostium
+   - branch_004: watershed region reaches 29.7 mm from its ostium
    - branch_006: watershed region reaches 33.2 mm from its ostium
    - branch_008: watershed region reaches 38.4 mm from its ostium
    - branch_009: watershed region reaches 32.2 mm from its ostium
@@ -746,498 +421,294 @@ subject021: rc=0 wall=1.2 s pipeline=0.303 s daughters=45 wall_patches=45  62 vi
    - branch_013: watershed region reaches 16.1 mm from its ostium
    - branch_014: watershed region reaches 19.1 mm from its ostium
    - branch_015: watershed region reaches 22.6 mm from its ostium
-   - branch_033: watershed region reaches 40.2 mm from its ostium
-   - branch_035: watershed region reaches 27.9 mm from its ostium
-   - branch_044: watershed region reaches 24.3 mm from its ostium
+   - branch_022: watershed region reaches 40.2 mm from its ostium
+   - branch_024: watershed region reaches 27.9 mm from its ostium
+   - branch_029: watershed region reaches 24.3 mm from its ostium
 
-subject022: rc=0 wall=1.5 s pipeline=0.543 s daughters=65 wall_patches=65  101 violation(s)
-   - branch_002: seed voxel is not bright (44 HU)
-   - branch_011: seed voxel is not bright (81 HU)
-   - branch_014: seed voxel is not bright (102 HU)
-   - branch_015: seed voxel is not bright (57 HU)
-   - branch_016: seed voxel is not bright (80 HU)
-   - branch_023: seed voxel is not bright (34 HU)
-   - branch_024: seed voxel is not bright (94 HU)
-   - branch_025: seed voxel is not bright (79 HU)
-   - branch_026: seed voxel is not bright (39 HU)
-   - branch_027: seed voxel is not bright (97 HU)
-   - branch_028: seed voxel is not bright (32 HU)
-   - branch_029: seed voxel is not bright (87 HU)
-   - branch_033: seed voxel is not bright (60 HU)
-   - branch_035: radius 0.90 mm outside [1.0, 8.0]
-   - branch_036: radius 0.90 mm outside [1.0, 8.0]
-   - branch_037: radius 0.90 mm outside [1.0, 8.0]
-   - branch_038: radius 0.78 mm outside [1.0, 8.0]
-   - branch_039: radius 0.78 mm outside [1.0, 8.0]
-   - branch_040: radius 0.64 mm outside [1.0, 8.0]
-   - branch_041: radius 0.64 mm outside [1.0, 8.0]
-   - branch_041: seed voxel is not bright (3 HU)
-   - branch_042: radius 0.64 mm outside [1.0, 8.0]
-   - branch_043: radius 0.64 mm outside [1.0, 8.0]
-   - branch_044: radius 0.64 mm outside [1.0, 8.0]
-   - branch_044: seed voxel is not bright (99 HU)
-   - branch_045: radius 0.64 mm outside [1.0, 8.0]
-   - branch_046: radius 0.64 mm outside [1.0, 8.0]
-   - branch_047: radius 0.50 mm outside [1.0, 8.0]
-   - branch_048: radius 0.50 mm outside [1.0, 8.0]
-   - branch_049: radius 0.50 mm outside [1.0, 8.0]
-   - branch_050: radius 0.50 mm outside [1.0, 8.0]
-   - branch_051: radius 0.50 mm outside [1.0, 8.0]
-   - branch_052: radius 0.50 mm outside [1.0, 8.0]
+subject022: rc=0 wall=1.9 s pipeline=0.954 s daughters=60 wall_patches=65  64 violation(s)
+   - branch_015: radius 1.00 mm outside [1.0, 8.0]
+   - branch_022: radius 0.65 mm outside [1.0, 8.0]
+   - branch_026: seed voxel is not bright (97 HU)
+   - branch_028: radius 0.50 mm outside [1.0, 8.0]
+   - branch_028: seed voxel is not bright (-3 HU)
+   - branch_037: seed voxel is not bright (102 HU)
+   - branch_042: seed voxel is not bright (96 HU)
    - branch_053: radius 0.50 mm outside [1.0, 8.0]
-   - branch_054: radius 0.50 mm outside [1.0, 8.0]
-   - branch_055: radius 0.50 mm outside [1.0, 8.0]
-   - branch_056: radius 0.50 mm outside [1.0, 8.0]
-   - branch_057: radius 0.50 mm outside [1.0, 8.0]
-   - branch_058: radius 0.50 mm outside [1.0, 8.0]
-   - branch_059: radius 0.50 mm outside [1.0, 8.0]
-   - branch_060: radius 0.50 mm outside [1.0, 8.0]
-   - branch_061: radius 0.50 mm outside [1.0, 8.0]
-   - branch_062: radius 0.50 mm outside [1.0, 8.0]
-   - branch_063: radius 0.50 mm outside [1.0, 8.0]
-   - branch_064: radius 0.50 mm outside [1.0, 8.0]
-   - branch_065: radius 0.50 mm outside [1.0, 8.0]
-   - 34 ostium pair(s) closer than 4 mm (closest branch_032, branch_035: 0.00 mm)
-   - branch_001: watershed region reaches 41.3 mm from its ostium
-   - branch_002: watershed region reaches 20.6 mm from its ostium
-   - branch_003: watershed region reaches 29.1 mm from its ostium
-   - branch_004: watershed region reaches 20.3 mm from its ostium
+   - branch_053: seed voxel is not bright (10 HU)
+   - branch_054: seed voxel is not bright (85 HU)
+   - 33 ostium pair(s) closer than 4 mm (closest branch_031, branch_043: 0.00 mm)
+   - branch_001: watershed region reaches 43.1 mm from its ostium
+   - branch_002: watershed region reaches 25.1 mm from its ostium
+   - branch_003: watershed region reaches 28.6 mm from its ostium
+   - branch_004: watershed region reaches 20.1 mm from its ostium
    - branch_005: watershed region reaches 16.4 mm from its ostium
-   - branch_006: watershed region reaches 23.5 mm from its ostium
+   - branch_006: watershed region reaches 24.0 mm from its ostium
    - branch_007: watershed region reaches 29.0 mm from its ostium
-   - branch_008: watershed region reaches 16.7 mm from its ostium
-   - branch_009: watershed region reaches 25.3 mm from its ostium
-   - branch_010: watershed region reaches 21.5 mm from its ostium
+   - branch_008: watershed region reaches 16.4 mm from its ostium
+   - branch_009: watershed region reaches 25.7 mm from its ostium
+   - branch_010: watershed region reaches 20.8 mm from its ostium
    - branch_011: watershed region reaches 17.4 mm from its ostium
    - branch_012: watershed region reaches 20.0 mm from its ostium
    - branch_013: watershed region reaches 17.1 mm from its ostium
-   - branch_014: watershed region reaches 24.1 mm from its ostium
+   - branch_014: watershed region reaches 25.3 mm from its ostium
    - branch_016: watershed region reaches 21.2 mm from its ostium
-   - branch_017: watershed region reaches 19.9 mm from its ostium
+   - branch_017: watershed region reaches 20.4 mm from its ostium
    - branch_018: watershed region reaches 17.1 mm from its ostium
    - branch_019: watershed region reaches 24.2 mm from its ostium
    - branch_020: watershed region reaches 22.6 mm from its ostium
    - branch_021: watershed region reaches 16.9 mm from its ostium
-   - branch_023: watershed region reaches 17.5 mm from its ostium
-   - branch_024: watershed region reaches 15.6 mm from its ostium
-   - branch_025: watershed region reaches 31.0 mm from its ostium
-   - branch_026: watershed region reaches 22.5 mm from its ostium
-   - branch_027: watershed region reaches 21.6 mm from its ostium
-   - branch_029: watershed region reaches 16.0 mm from its ostium
-   - branch_030: watershed region reaches 19.5 mm from its ostium
-   - branch_031: watershed region reaches 24.8 mm from its ostium
-   - branch_032: watershed region reaches 19.9 mm from its ostium
-   - branch_033: watershed region reaches 21.6 mm from its ostium
-   - branch_034: watershed region reaches 25.5 mm from its ostium
-   - branch_035: watershed region reaches 17.8 mm from its ostium
-   - branch_036: watershed region reaches 19.9 mm from its ostium
-   - branch_037: watershed region reaches 16.9 mm from its ostium
-   - branch_038: watershed region reaches 15.4 mm from its ostium
-   - branch_039: watershed region reaches 15.5 mm from its ostium
-   - branch_040: watershed region reaches 19.0 mm from its ostium
-   - branch_043: watershed region reaches 23.3 mm from its ostium
-   - branch_044: watershed region reaches 17.2 mm from its ostium
-   - branch_045: watershed region reaches 40.4 mm from its ostium
-   - branch_046: watershed region reaches 15.4 mm from its ostium
-   - branch_047: watershed region reaches 24.1 mm from its ostium
-   - branch_048: watershed region reaches 26.6 mm from its ostium
-   - branch_049: watershed region reaches 20.4 mm from its ostium
-   - branch_050: watershed region reaches 17.1 mm from its ostium
-   - branch_052: watershed region reaches 18.8 mm from its ostium
-   - branch_054: watershed region reaches 15.3 mm from its ostium
-   - branch_055: watershed region reaches 15.1 mm from its ostium
-   - branch_056: watershed region reaches 20.5 mm from its ostium
-   - branch_061: watershed region reaches 16.7 mm from its ostium
-   - branch_062: watershed region reaches 21.9 mm from its ostium
-   - branch_063: watershed region reaches 22.9 mm from its ostium
-   - branch_064: watershed region reaches 23.4 mm from its ostium
-   - branch_065: watershed region reaches 17.3 mm from its ostium
+   - branch_022: watershed region reaches 18.3 mm from its ostium
+   - branch_023: watershed region reaches 15.6 mm from its ostium
+   - branch_024: watershed region reaches 31.0 mm from its ostium
+   - branch_025: watershed region reaches 22.5 mm from its ostium
+   - branch_026: watershed region reaches 21.6 mm from its ostium
+   - branch_028: watershed region reaches 16.0 mm from its ostium
+   - branch_029: watershed region reaches 19.5 mm from its ostium
+   - branch_030: watershed region reaches 24.8 mm from its ostium
+   - branch_031: watershed region reaches 19.9 mm from its ostium
+   - branch_032: watershed region reaches 25.5 mm from its ostium
+   - branch_033: watershed region reaches 17.0 mm from its ostium
+   - branch_034: watershed region reaches 19.9 mm from its ostium
+   - branch_035: watershed region reaches 16.5 mm from its ostium
+   - branch_036: watershed region reaches 15.4 mm from its ostium
+   - branch_037: watershed region reaches 15.5 mm from its ostium
+   - branch_038: watershed region reaches 19.0 mm from its ostium
+   - branch_041: watershed region reaches 23.3 mm from its ostium
+   - branch_042: watershed region reaches 17.2 mm from its ostium
+   - branch_043: watershed region reaches 40.4 mm from its ostium
+   - branch_044: watershed region reaches 15.4 mm from its ostium
+   - branch_045: watershed region reaches 24.1 mm from its ostium
+   - branch_046: watershed region reaches 26.6 mm from its ostium
+   - branch_047: watershed region reaches 20.4 mm from its ostium
+   - branch_048: watershed region reaches 17.1 mm from its ostium
+   - branch_049: watershed region reaches 18.8 mm from its ostium
+   - branch_050: watershed region reaches 15.3 mm from its ostium
+   - branch_051: watershed region reaches 15.1 mm from its ostium
+   - branch_052: watershed region reaches 20.5 mm from its ostium
+   - branch_056: watershed region reaches 16.7 mm from its ostium
+   - branch_057: watershed region reaches 21.9 mm from its ostium
+   - branch_058: watershed region reaches 22.9 mm from its ostium
+   - branch_059: watershed region reaches 23.4 mm from its ostium
+   - branch_060: watershed region reaches 17.3 mm from its ostium
 
-subject023: rc=0 wall=1.3 s pipeline=0.334 s daughters=6 wall_patches=6  10 violation(s)
-   - branch_001: seed voxel is not bright (62 HU)
-   - branch_002: seed voxel is not bright (138 HU)
-   - branch_003: seed voxel is not bright (91 HU)
+subject023: rc=0 wall=1.3 s pipeline=0.371 s daughters=6 wall_patches=6  7 violation(s)
    - warning: mask has 4 components, 17 voxels discarded
-   - branch_001: watershed region reaches 24.5 mm from its ostium
-   - branch_002: watershed region reaches 15.3 mm from its ostium
-   - branch_003: watershed region reaches 22.8 mm from its ostium
+   - branch_001: watershed region reaches 29.3 mm from its ostium
+   - branch_002: watershed region reaches 16.9 mm from its ostium
+   - branch_003: watershed region reaches 22.2 mm from its ostium
    - branch_004: watershed region reaches 22.0 mm from its ostium
    - branch_005: watershed region reaches 17.9 mm from its ostium
    - branch_006: watershed region reaches 27.0 mm from its ostium
 
-subject024: rc=0 wall=1.4 s pipeline=0.483 s daughters=64 wall_patches=64  102 violation(s)
-   - branch_002: seed voxel is not bright (12 HU)
-   - branch_003: seed voxel is not bright (-0 HU)
-   - branch_004: seed voxel is not bright (-33 HU)
-   - branch_005: seed voxel is not bright (32 HU)
-   - branch_006: seed voxel is not bright (89 HU)
+subject024: rc=0 wall=1.8 s pipeline=0.81 s daughters=46 wall_patches=64  62 violation(s)
+   - branch_003: radius 0.50 mm outside [1.0, 8.0]
+   - branch_003: seed voxel is not bright (-43 HU)
+   - branch_004: seed voxel is not bright (42 HU)
    - branch_007: seed voxel is not bright (85 HU)
-   - branch_008: seed voxel is not bright (-41 HU)
-   - branch_010: seed voxel is not bright (57 HU)
-   - branch_012: seed voxel is not bright (-87 HU)
-   - branch_013: seed voxel is not bright (45 HU)
-   - branch_014: seed voxel is not bright (-57 HU)
-   - branch_016: seed voxel is not bright (60 HU)
-   - branch_017: seed voxel is not bright (63 HU)
-   - branch_019: seed voxel is not bright (92 HU)
-   - branch_021: seed voxel is not bright (62 HU)
-   - branch_022: seed voxel is not bright (45 HU)
-   - branch_024: seed voxel is not bright (-15 HU)
-   - branch_025: seed voxel is not bright (-13 HU)
-   - branch_026: seed voxel is not bright (-14 HU)
-   - branch_027: seed voxel is not bright (-104 HU)
-   - branch_028: seed voxel is not bright (35 HU)
-   - branch_030: seed voxel is not bright (31 HU)
-   - branch_031: seed voxel is not bright (73 HU)
-   - branch_032: seed voxel is not bright (18 HU)
-   - branch_033: seed voxel is not bright (24 HU)
-   - branch_034: seed voxel is not bright (-25 HU)
-   - branch_035: seed voxel is not bright (-6 HU)
-   - branch_036: radius 0.78 mm outside [1.0, 8.0]
-   - branch_036: seed voxel is not bright (-87 HU)
-   - branch_037: radius 0.78 mm outside [1.0, 8.0]
-   - branch_038: radius 0.64 mm outside [1.0, 8.0]
-   - branch_039: radius 0.64 mm outside [1.0, 8.0]
-   - branch_039: seed voxel is not bright (41 HU)
-   - branch_040: radius 0.64 mm outside [1.0, 8.0]
-   - branch_040: seed voxel is not bright (54 HU)
-   - branch_041: radius 0.64 mm outside [1.0, 8.0]
-   - branch_042: radius 0.64 mm outside [1.0, 8.0]
-   - branch_043: radius 0.64 mm outside [1.0, 8.0]
-   - branch_044: radius 0.64 mm outside [1.0, 8.0]
-   - branch_045: radius 0.64 mm outside [1.0, 8.0]
-   - branch_046: radius 0.64 mm outside [1.0, 8.0]
-   - branch_047: radius 0.64 mm outside [1.0, 8.0]
-   - branch_048: radius 0.50 mm outside [1.0, 8.0]
-   - branch_048: seed voxel is not bright (-30 HU)
-   - branch_049: radius 0.50 mm outside [1.0, 8.0]
-   - branch_049: seed voxel is not bright (-21 HU)
-   - branch_050: radius 0.50 mm outside [1.0, 8.0]
-   - branch_050: seed voxel is not bright (19 HU)
-   - branch_051: radius 0.50 mm outside [1.0, 8.0]
-   - branch_051: seed voxel is not bright (38 HU)
-   - branch_052: radius 0.50 mm outside [1.0, 8.0]
-   - branch_052: seed voxel is not bright (50 HU)
-   - branch_053: radius 0.50 mm outside [1.0, 8.0]
-   - branch_053: seed voxel is not bright (37 HU)
-   - branch_054: radius 0.50 mm outside [1.0, 8.0]
-   - branch_054: seed voxel is not bright (86 HU)
-   - branch_055: radius 0.50 mm outside [1.0, 8.0]
-   - branch_055: seed voxel is not bright (34 HU)
-   - branch_056: radius 0.50 mm outside [1.0, 8.0]
-   - branch_057: radius 0.50 mm outside [1.0, 8.0]
-   - branch_058: radius 0.50 mm outside [1.0, 8.0]
-   - branch_059: radius 0.50 mm outside [1.0, 8.0]
-   - branch_059: seed voxel is not bright (75 HU)
-   - branch_060: radius 0.50 mm outside [1.0, 8.0]
-   - branch_060: seed voxel is not bright (76 HU)
-   - branch_061: radius 0.50 mm outside [1.0, 8.0]
-   - branch_061: seed voxel is not bright (39 HU)
-   - branch_062: radius 0.50 mm outside [1.0, 8.0]
-   - branch_062: seed voxel is not bright (82 HU)
-   - branch_063: radius 0.50 mm outside [1.0, 8.0]
-   - branch_063: seed voxel is not bright (-74 HU)
-   - branch_064: radius 0.50 mm outside [1.0, 8.0]
-   - branch_064: seed voxel is not bright (19 HU)
-   - 48 ostium pair(s) closer than 4 mm (closest branch_039, branch_054: 0.00 mm)
+   - branch_008: radius 0.50 mm outside [1.0, 8.0]
+   - branch_008: seed voxel is not bright (71 HU)
+   - branch_009: radius 0.50 mm outside [1.0, 8.0]
+   - branch_009: seed voxel is not bright (44 HU)
+   - branch_010: radius 0.50 mm outside [1.0, 8.0]
+   - branch_010: seed voxel is not bright (55 HU)
+   - branch_011: seed voxel is not bright (9 HU)
+   - branch_013: seed voxel is not bright (60 HU)
+   - branch_014: seed voxel is not bright (26 HU)
+   - branch_018: seed voxel is not bright (62 HU)
+   - branch_019: radius 0.96 mm outside [1.0, 8.0]
+   - branch_021: radius 0.50 mm outside [1.0, 8.0]
+   - branch_021: seed voxel is not bright (-104 HU)
+   - branch_023: radius 0.50 mm outside [1.0, 8.0]
+   - branch_023: seed voxel is not bright (72 HU)
+   - branch_024: radius 0.50 mm outside [1.0, 8.0]
+   - branch_024: seed voxel is not bright (18 HU)
+   - branch_025: radius 0.87 mm outside [1.0, 8.0]
+   - branch_025: seed voxel is not bright (24 HU)
+   - branch_037: seed voxel is not bright (67 HU)
+   - branch_038: radius 0.50 mm outside [1.0, 8.0]
+   - branch_039: radius 0.50 mm outside [1.0, 8.0]
+   - branch_039: seed voxel is not bright (37 HU)
+   - branch_040: seed voxel is not bright (86 HU)
+   - branch_041: radius 0.50 mm outside [1.0, 8.0]
+   - branch_041: seed voxel is not bright (34 HU)
+   - branch_045: seed voxel is not bright (75 HU)
+   - branch_046: radius 0.87 mm outside [1.0, 8.0]
+   - branch_046: seed voxel is not bright (82 HU)
+   - 27 ostium pair(s) closer than 4 mm (closest branch_009, branch_040: 0.00 mm)
    - branch_001: watershed region reaches 23.1 mm from its ostium
-   - branch_004: watershed region reaches 40.5 mm from its ostium
-   - branch_006: watershed region reaches 31.9 mm from its ostium
+   - branch_004: watershed region reaches 41.1 mm from its ostium
+   - branch_006: watershed region reaches 33.6 mm from its ostium
    - branch_007: watershed region reaches 33.3 mm from its ostium
-   - branch_009: watershed region reaches 18.8 mm from its ostium
-   - branch_011: watershed region reaches 18.6 mm from its ostium
-   - branch_016: watershed region reaches 23.9 mm from its ostium
-   - branch_017: watershed region reaches 16.0 mm from its ostium
-   - branch_018: watershed region reaches 20.5 mm from its ostium
-   - branch_019: watershed region reaches 16.2 mm from its ostium
-   - branch_020: watershed region reaches 25.3 mm from its ostium
-   - branch_021: watershed region reaches 17.7 mm from its ostium
-   - branch_023: watershed region reaches 22.1 mm from its ostium
-   - branch_029: watershed region reaches 55.5 mm from its ostium
-   - branch_033: watershed region reaches 31.1 mm from its ostium
-   - branch_037: watershed region reaches 17.2 mm from its ostium
-   - branch_038: watershed region reaches 20.7 mm from its ostium
-   - branch_041: watershed region reaches 15.0 mm from its ostium
-   - branch_042: watershed region reaches 16.8 mm from its ostium
-   - branch_043: watershed region reaches 15.7 mm from its ostium
+   - branch_008: watershed region reaches 18.8 mm from its ostium
+   - branch_010: watershed region reaches 16.7 mm from its ostium
+   - branch_013: watershed region reaches 23.9 mm from its ostium
+   - branch_014: watershed region reaches 16.0 mm from its ostium
+   - branch_015: watershed region reaches 20.5 mm from its ostium
+   - branch_016: watershed region reaches 16.2 mm from its ostium
+   - branch_017: watershed region reaches 25.3 mm from its ostium
+   - branch_018: watershed region reaches 17.7 mm from its ostium
+   - branch_020: watershed region reaches 22.1 mm from its ostium
+   - branch_022: watershed region reaches 55.5 mm from its ostium
+   - branch_025: watershed region reaches 31.1 mm from its ostium
+   - branch_027: watershed region reaches 17.2 mm from its ostium
+   - branch_028: watershed region reaches 20.7 mm from its ostium
+   - branch_029: watershed region reaches 15.0 mm from its ostium
+   - branch_030: watershed region reaches 16.8 mm from its ostium
+   - branch_031: watershed region reaches 15.7 mm from its ostium
+   - branch_032: watershed region reaches 15.6 mm from its ostium
+   - branch_033: watershed region reaches 20.7 mm from its ostium
+   - branch_034: watershed region reaches 16.6 mm from its ostium
+   - branch_035: watershed region reaches 25.4 mm from its ostium
+   - branch_039: watershed region reaches 22.9 mm from its ostium
+   - branch_040: watershed region reaches 22.5 mm from its ostium
+   - branch_042: watershed region reaches 16.0 mm from its ostium
    - branch_044: watershed region reaches 15.6 mm from its ostium
-   - branch_045: watershed region reaches 21.0 mm from its ostium
-   - branch_046: watershed region reaches 16.6 mm from its ostium
-   - branch_047: watershed region reaches 25.4 mm from its ostium
-   - branch_053: watershed region reaches 22.9 mm from its ostium
-   - branch_054: watershed region reaches 22.5 mm from its ostium
-   - branch_056: watershed region reaches 16.0 mm from its ostium
-   - branch_058: watershed region reaches 15.6 mm from its ostium
 
-subject025: rc=0 wall=2.5 s pipeline=1.582 s daughters=152 wall_patches=152  244 violation(s)
-   - branch_017: seed voxel is not bright (110 HU)
-   - branch_019: seed voxel is not bright (94 HU)
-   - branch_021: seed voxel is not bright (0 HU)
-   - branch_025: seed voxel is not bright (194 HU)
-   - branch_026: seed voxel is not bright (240 HU)
-   - branch_027: seed voxel is not bright (110 HU)
-   - branch_030: seed voxel is not bright (111 HU)
-   - branch_031: seed voxel is not bright (114 HU)
-   - branch_035: seed voxel is not bright (82 HU)
-   - branch_036: seed voxel is not bright (77 HU)
-   - branch_037: seed voxel is not bright (178 HU)
-   - branch_038: seed voxel is not bright (227 HU)
-   - branch_042: seed voxel is not bright (173 HU)
-   - branch_045: radius 0.90 mm outside [1.0, 8.0]
-   - branch_046: radius 0.78 mm outside [1.0, 8.0]
-   - branch_047: radius 0.78 mm outside [1.0, 8.0]
-   - branch_047: seed voxel is not bright (240 HU)
-   - branch_048: radius 0.78 mm outside [1.0, 8.0]
-   - branch_049: radius 0.78 mm outside [1.0, 8.0]
-   - branch_050: radius 0.78 mm outside [1.0, 8.0]
-   - branch_051: radius 0.78 mm outside [1.0, 8.0]
-   - branch_052: radius 0.78 mm outside [1.0, 8.0]
-   - branch_053: radius 0.78 mm outside [1.0, 8.0]
-   - branch_054: radius 0.64 mm outside [1.0, 8.0]
-   - branch_054: seed voxel is not bright (217 HU)
-   - branch_055: radius 0.64 mm outside [1.0, 8.0]
-   - branch_056: radius 0.64 mm outside [1.0, 8.0]
-   - branch_057: radius 0.64 mm outside [1.0, 8.0]
-   - branch_058: radius 0.64 mm outside [1.0, 8.0]
-   - branch_059: radius 0.64 mm outside [1.0, 8.0]
-   - branch_060: radius 0.64 mm outside [1.0, 8.0]
-   - branch_061: radius 0.64 mm outside [1.0, 8.0]
-   - branch_062: radius 0.64 mm outside [1.0, 8.0]
-   - branch_063: radius 0.64 mm outside [1.0, 8.0]
-   - branch_064: radius 0.64 mm outside [1.0, 8.0]
-   - branch_065: radius 0.64 mm outside [1.0, 8.0]
-   - branch_066: radius 0.64 mm outside [1.0, 8.0]
-   - branch_067: radius 0.64 mm outside [1.0, 8.0]
-   - branch_068: radius 0.64 mm outside [1.0, 8.0]
-   - branch_069: radius 0.64 mm outside [1.0, 8.0]
-   - branch_070: radius 0.64 mm outside [1.0, 8.0]
-   - branch_071: radius 0.64 mm outside [1.0, 8.0]
-   - branch_072: radius 0.64 mm outside [1.0, 8.0]
-   - branch_073: radius 0.64 mm outside [1.0, 8.0]
-   - branch_074: radius 0.64 mm outside [1.0, 8.0]
-   - branch_075: radius 0.50 mm outside [1.0, 8.0]
-   - branch_075: seed voxel is not bright (37 HU)
-   - branch_076: radius 0.50 mm outside [1.0, 8.0]
-   - branch_076: seed voxel is not bright (-28 HU)
-   - branch_077: radius 0.50 mm outside [1.0, 8.0]
-   - branch_078: radius 0.50 mm outside [1.0, 8.0]
-   - branch_079: radius 0.50 mm outside [1.0, 8.0]
-   - branch_079: seed voxel is not bright (77 HU)
-   - branch_080: radius 0.50 mm outside [1.0, 8.0]
-   - branch_081: radius 0.50 mm outside [1.0, 8.0]
-   - branch_082: radius 0.50 mm outside [1.0, 8.0]
-   - branch_083: radius 0.50 mm outside [1.0, 8.0]
-   - branch_084: radius 0.50 mm outside [1.0, 8.0]
-   - branch_084: seed voxel is not bright (239 HU)
-   - branch_085: radius 0.50 mm outside [1.0, 8.0]
-   - branch_086: radius 0.50 mm outside [1.0, 8.0]
-   - branch_087: radius 0.50 mm outside [1.0, 8.0]
-   - branch_088: radius 0.50 mm outside [1.0, 8.0]
-   - branch_089: radius 0.50 mm outside [1.0, 8.0]
-   - branch_090: radius 0.50 mm outside [1.0, 8.0]
-   - branch_091: radius 0.50 mm outside [1.0, 8.0]
-   - branch_092: radius 0.50 mm outside [1.0, 8.0]
-   - branch_093: radius 0.50 mm outside [1.0, 8.0]
-   - branch_094: radius 0.50 mm outside [1.0, 8.0]
-   - branch_095: radius 0.50 mm outside [1.0, 8.0]
-   - branch_096: radius 0.50 mm outside [1.0, 8.0]
-   - branch_097: radius 0.50 mm outside [1.0, 8.0]
-   - branch_098: radius 0.50 mm outside [1.0, 8.0]
-   - branch_099: radius 0.50 mm outside [1.0, 8.0]
-   - branch_100: radius 0.50 mm outside [1.0, 8.0]
-   - branch_101: radius 0.50 mm outside [1.0, 8.0]
-   - branch_102: radius 0.50 mm outside [1.0, 8.0]
-   - branch_103: radius 0.50 mm outside [1.0, 8.0]
-   - branch_104: radius 0.50 mm outside [1.0, 8.0]
-   - branch_105: radius 0.50 mm outside [1.0, 8.0]
-   - branch_106: radius 0.50 mm outside [1.0, 8.0]
-   - branch_107: radius 0.50 mm outside [1.0, 8.0]
-   - branch_108: radius 0.50 mm outside [1.0, 8.0]
-   - branch_109: radius 0.50 mm outside [1.0, 8.0]
-   - branch_110: radius 0.50 mm outside [1.0, 8.0]
-   - branch_111: radius 0.50 mm outside [1.0, 8.0]
-   - branch_112: radius 0.50 mm outside [1.0, 8.0]
-   - branch_113: radius 0.50 mm outside [1.0, 8.0]
-   - branch_114: radius 0.50 mm outside [1.0, 8.0]
-   - branch_115: radius 0.50 mm outside [1.0, 8.0]
-   - branch_116: radius 0.50 mm outside [1.0, 8.0]
-   - branch_117: radius 0.50 mm outside [1.0, 8.0]
-   - branch_118: radius 0.50 mm outside [1.0, 8.0]
-   - branch_119: radius 0.50 mm outside [1.0, 8.0]
-   - branch_120: radius 0.50 mm outside [1.0, 8.0]
-   - branch_121: radius 0.50 mm outside [1.0, 8.0]
-   - branch_122: radius 0.50 mm outside [1.0, 8.0]
-   - branch_123: radius 0.50 mm outside [1.0, 8.0]
-   - branch_124: radius 0.50 mm outside [1.0, 8.0]
-   - branch_125: radius 0.50 mm outside [1.0, 8.0]
-   - branch_126: radius 0.50 mm outside [1.0, 8.0]
+subject025: rc=0 wall=4.1 s pipeline=3.194 s daughters=130 wall_patches=152  120 violation(s)
+   - branch_025: seed voxel is not bright (240 HU)
+   - branch_026: radius 0.77 mm outside [1.0, 8.0]
+   - branch_026: seed voxel is not bright (242 HU)
+   - branch_032: radius 0.97 mm outside [1.0, 8.0]
+   - branch_040: seed voxel is not bright (240 HU)
+   - branch_068: radius 0.50 mm outside [1.0, 8.0]
+   - branch_068: seed voxel is not bright (198 HU)
    - branch_127: radius 0.50 mm outside [1.0, 8.0]
-   - branch_128: radius 0.50 mm outside [1.0, 8.0]
-   - branch_129: radius 0.50 mm outside [1.0, 8.0]
-   - branch_130: radius 0.50 mm outside [1.0, 8.0]
-   - branch_131: radius 0.50 mm outside [1.0, 8.0]
-   - branch_132: radius 0.50 mm outside [1.0, 8.0]
-   - branch_133: radius 0.50 mm outside [1.0, 8.0]
-   - branch_134: radius 0.50 mm outside [1.0, 8.0]
-   - branch_135: radius 0.50 mm outside [1.0, 8.0]
-   - branch_136: radius 0.50 mm outside [1.0, 8.0]
-   - branch_137: radius 0.50 mm outside [1.0, 8.0]
-   - branch_138: radius 0.50 mm outside [1.0, 8.0]
-   - branch_139: radius 0.50 mm outside [1.0, 8.0]
-   - branch_140: radius 0.50 mm outside [1.0, 8.0]
-   - branch_141: radius 0.50 mm outside [1.0, 8.0]
-   - branch_142: radius 0.50 mm outside [1.0, 8.0]
-   - branch_143: radius 0.50 mm outside [1.0, 8.0]
-   - branch_144: radius 0.50 mm outside [1.0, 8.0]
-   - branch_145: radius 0.50 mm outside [1.0, 8.0]
-   - branch_146: radius 0.50 mm outside [1.0, 8.0]
-   - branch_147: radius 0.50 mm outside [1.0, 8.0]
-   - branch_148: radius 0.50 mm outside [1.0, 8.0]
-   - branch_148: seed voxel is not bright (4 HU)
-   - branch_149: radius 0.50 mm outside [1.0, 8.0]
-   - branch_149: seed voxel is not bright (140 HU)
-   - branch_150: radius 0.50 mm outside [1.0, 8.0]
-   - branch_150: seed voxel is not bright (42 HU)
-   - branch_151: radius 0.50 mm outside [1.0, 8.0]
-   - branch_152: radius 0.50 mm outside [1.0, 8.0]
-   - 148 ostium pair(s) closer than 4 mm (closest branch_018, branch_120: 0.00 mm)
-   - branch_001: watershed region reaches 26.9 mm from its ostium
-   - branch_002: watershed region reaches 21.0 mm from its ostium
-   - branch_003: watershed region reaches 24.6 mm from its ostium
-   - branch_004: watershed region reaches 27.5 mm from its ostium
-   - branch_005: watershed region reaches 27.8 mm from its ostium
+   - branch_127: seed voxel is not bright (4 HU)
+   - 122 ostium pair(s) closer than 4 mm (closest branch_017, branch_102: 0.00 mm)
+   - branch_001: watershed region reaches 32.9 mm from its ostium
+   - branch_002: watershed region reaches 21.5 mm from its ostium
+   - branch_003: watershed region reaches 25.1 mm from its ostium
+   - branch_004: watershed region reaches 27.8 mm from its ostium
+   - branch_005: watershed region reaches 26.2 mm from its ostium
    - branch_006: watershed region reaches 23.7 mm from its ostium
-   - branch_007: watershed region reaches 27.0 mm from its ostium
+   - branch_007: watershed region reaches 28.8 mm from its ostium
    - branch_008: watershed region reaches 41.8 mm from its ostium
    - branch_009: watershed region reaches 136.5 mm from its ostium
    - branch_010: watershed region reaches 26.0 mm from its ostium
    - branch_011: watershed region reaches 20.0 mm from its ostium
-   - branch_012: watershed region reaches 22.6 mm from its ostium
+   - branch_012: watershed region reaches 22.7 mm from its ostium
    - branch_013: watershed region reaches 23.3 mm from its ostium
-   - branch_014: watershed region reaches 15.9 mm from its ostium
-   - branch_015: watershed region reaches 20.6 mm from its ostium
+   - branch_015: watershed region reaches 20.8 mm from its ostium
    - branch_016: watershed region reaches 23.6 mm from its ostium
-   - branch_017: watershed region reaches 18.3 mm from its ostium
-   - branch_019: watershed region reaches 15.6 mm from its ostium
-   - branch_020: watershed region reaches 20.8 mm from its ostium
-   - branch_022: watershed region reaches 17.9 mm from its ostium
-   - branch_023: watershed region reaches 31.6 mm from its ostium
-   - branch_024: watershed region reaches 58.5 mm from its ostium
-   - branch_025: watershed region reaches 15.8 mm from its ostium
-   - branch_026: watershed region reaches 16.2 mm from its ostium
-   - branch_027: watershed region reaches 24.5 mm from its ostium
-   - branch_028: watershed region reaches 20.4 mm from its ostium
-   - branch_029: watershed region reaches 35.4 mm from its ostium
-   - branch_032: watershed region reaches 17.3 mm from its ostium
-   - branch_033: watershed region reaches 17.2 mm from its ostium
-   - branch_034: watershed region reaches 19.5 mm from its ostium
-   - branch_035: watershed region reaches 15.9 mm from its ostium
-   - branch_039: watershed region reaches 15.0 mm from its ostium
-   - branch_040: watershed region reaches 17.0 mm from its ostium
-   - branch_041: watershed region reaches 17.6 mm from its ostium
-   - branch_043: watershed region reaches 17.8 mm from its ostium
-   - branch_044: watershed region reaches 16.2 mm from its ostium
-   - branch_045: watershed region reaches 19.3 mm from its ostium
-   - branch_046: watershed region reaches 30.4 mm from its ostium
-   - branch_047: watershed region reaches 20.1 mm from its ostium
-   - branch_049: watershed region reaches 15.2 mm from its ostium
-   - branch_050: watershed region reaches 17.5 mm from its ostium
-   - branch_051: watershed region reaches 15.4 mm from its ostium
-   - branch_052: watershed region reaches 31.4 mm from its ostium
-   - branch_053: watershed region reaches 19.1 mm from its ostium
-   - branch_055: watershed region reaches 35.8 mm from its ostium
-   - branch_056: watershed region reaches 142.2 mm from its ostium
-   - branch_057: watershed region reaches 33.2 mm from its ostium
-   - branch_058: watershed region reaches 15.6 mm from its ostium
-   - branch_059: watershed region reaches 15.6 mm from its ostium
-   - branch_060: watershed region reaches 16.9 mm from its ostium
-   - branch_063: watershed region reaches 53.0 mm from its ostium
-   - branch_064: watershed region reaches 16.2 mm from its ostium
-   - branch_065: watershed region reaches 35.3 mm from its ostium
-   - branch_067: watershed region reaches 17.3 mm from its ostium
-   - branch_068: watershed region reaches 19.8 mm from its ostium
-   - branch_070: watershed region reaches 18.1 mm from its ostium
-   - branch_071: watershed region reaches 17.8 mm from its ostium
-   - branch_072: watershed region reaches 37.5 mm from its ostium
-   - branch_073: watershed region reaches 16.1 mm from its ostium
-   - branch_074: watershed region reaches 40.4 mm from its ostium
-   - branch_075: watershed region reaches 29.6 mm from its ostium
-   - branch_077: watershed region reaches 18.6 mm from its ostium
-   - branch_078: watershed region reaches 16.6 mm from its ostium
-   - branch_081: watershed region reaches 21.3 mm from its ostium
-   - branch_083: watershed region reaches 18.9 mm from its ostium
-   - branch_087: watershed region reaches 15.3 mm from its ostium
-   - branch_088: watershed region reaches 16.4 mm from its ostium
-   - branch_089: watershed region reaches 18.4 mm from its ostium
-   - branch_090: watershed region reaches 17.5 mm from its ostium
-   - branch_091: watershed region reaches 16.2 mm from its ostium
-   - branch_092: watershed region reaches 21.7 mm from its ostium
-   - branch_093: watershed region reaches 22.8 mm from its ostium
-   - branch_094: watershed region reaches 18.5 mm from its ostium
-   - branch_095: watershed region reaches 18.4 mm from its ostium
-   - branch_096: watershed region reaches 17.7 mm from its ostium
-   - branch_097: watershed region reaches 17.3 mm from its ostium
-   - branch_098: watershed region reaches 17.8 mm from its ostium
-   - branch_099: watershed region reaches 16.4 mm from its ostium
-   - branch_101: watershed region reaches 19.2 mm from its ostium
-   - branch_104: watershed region reaches 16.0 mm from its ostium
-   - branch_106: watershed region reaches 15.5 mm from its ostium
-   - branch_107: watershed region reaches 23.9 mm from its ostium
-   - branch_108: watershed region reaches 19.4 mm from its ostium
-   - branch_110: watershed region reaches 20.9 mm from its ostium
-   - branch_111: watershed region reaches 19.9 mm from its ostium
-   - branch_112: watershed region reaches 21.4 mm from its ostium
-   - branch_113: watershed region reaches 20.2 mm from its ostium
-   - branch_114: watershed region reaches 20.9 mm from its ostium
-   - branch_117: watershed region reaches 17.7 mm from its ostium
-   - branch_118: watershed region reaches 18.0 mm from its ostium
-   - branch_121: watershed region reaches 16.3 mm from its ostium
-   - branch_123: watershed region reaches 16.3 mm from its ostium
-   - branch_124: watershed region reaches 16.3 mm from its ostium
-   - branch_125: watershed region reaches 16.1 mm from its ostium
-   - branch_126: watershed region reaches 16.6 mm from its ostium
-   - branch_129: watershed region reaches 15.3 mm from its ostium
-   - branch_130: watershed region reaches 16.7 mm from its ostium
-   - branch_131: watershed region reaches 16.0 mm from its ostium
-   - branch_132: watershed region reaches 15.6 mm from its ostium
-   - branch_133: watershed region reaches 15.5 mm from its ostium
-   - branch_135: watershed region reaches 16.8 mm from its ostium
-   - branch_136: watershed region reaches 16.4 mm from its ostium
-   - branch_139: watershed region reaches 90.4 mm from its ostium
-   - branch_140: watershed region reaches 16.8 mm from its ostium
-   - branch_141: watershed region reaches 17.3 mm from its ostium
-   - branch_142: watershed region reaches 15.3 mm from its ostium
-   - branch_143: watershed region reaches 19.7 mm from its ostium
-   - branch_144: watershed region reaches 19.5 mm from its ostium
-   - branch_145: watershed region reaches 34.6 mm from its ostium
-   - branch_146: watershed region reaches 18.7 mm from its ostium
-   - branch_147: watershed region reaches 19.3 mm from its ostium
-   - branch_151: watershed region reaches 18.6 mm from its ostium
-   - branch_152: watershed region reaches 17.9 mm from its ostium
+   - branch_018: watershed region reaches 15.6 mm from its ostium
+   - branch_019: watershed region reaches 20.8 mm from its ostium
+   - branch_021: watershed region reaches 17.9 mm from its ostium
+   - branch_022: watershed region reaches 31.6 mm from its ostium
+   - branch_023: watershed region reaches 58.5 mm from its ostium
+   - branch_024: watershed region reaches 15.8 mm from its ostium
+   - branch_025: watershed region reaches 16.2 mm from its ostium
+   - branch_026: watershed region reaches 24.5 mm from its ostium
+   - branch_027: watershed region reaches 20.4 mm from its ostium
+   - branch_028: watershed region reaches 35.4 mm from its ostium
+   - branch_029: watershed region reaches 17.3 mm from its ostium
+   - branch_030: watershed region reaches 17.2 mm from its ostium
+   - branch_031: watershed region reaches 19.5 mm from its ostium
+   - branch_032: watershed region reaches 15.9 mm from its ostium
+   - branch_033: watershed region reaches 15.0 mm from its ostium
+   - branch_034: watershed region reaches 17.0 mm from its ostium
+   - branch_035: watershed region reaches 17.3 mm from its ostium
+   - branch_036: watershed region reaches 17.8 mm from its ostium
+   - branch_037: watershed region reaches 16.2 mm from its ostium
+   - branch_038: watershed region reaches 19.3 mm from its ostium
+   - branch_039: watershed region reaches 30.4 mm from its ostium
+   - branch_040: watershed region reaches 20.1 mm from its ostium
+   - branch_042: watershed region reaches 15.2 mm from its ostium
+   - branch_043: watershed region reaches 17.5 mm from its ostium
+   - branch_044: watershed region reaches 15.4 mm from its ostium
+   - branch_045: watershed region reaches 31.4 mm from its ostium
+   - branch_046: watershed region reaches 19.1 mm from its ostium
+   - branch_047: watershed region reaches 35.8 mm from its ostium
+   - branch_048: watershed region reaches 142.2 mm from its ostium
+   - branch_049: watershed region reaches 33.2 mm from its ostium
+   - branch_050: watershed region reaches 15.6 mm from its ostium
+   - branch_051: watershed region reaches 15.6 mm from its ostium
+   - branch_052: watershed region reaches 16.9 mm from its ostium
+   - branch_054: watershed region reaches 53.0 mm from its ostium
+   - branch_055: watershed region reaches 16.2 mm from its ostium
+   - branch_056: watershed region reaches 35.3 mm from its ostium
+   - branch_058: watershed region reaches 17.3 mm from its ostium
+   - branch_059: watershed region reaches 19.8 mm from its ostium
+   - branch_061: watershed region reaches 18.1 mm from its ostium
+   - branch_062: watershed region reaches 17.8 mm from its ostium
+   - branch_063: watershed region reaches 37.5 mm from its ostium
+   - branch_064: watershed region reaches 16.1 mm from its ostium
+   - branch_065: watershed region reaches 40.4 mm from its ostium
+   - branch_066: watershed region reaches 18.6 mm from its ostium
+   - branch_067: watershed region reaches 16.6 mm from its ostium
+   - branch_069: watershed region reaches 21.3 mm from its ostium
+   - branch_070: watershed region reaches 18.9 mm from its ostium
+   - branch_072: watershed region reaches 15.3 mm from its ostium
+   - branch_073: watershed region reaches 16.4 mm from its ostium
+   - branch_074: watershed region reaches 18.4 mm from its ostium
+   - branch_075: watershed region reaches 17.5 mm from its ostium
+   - branch_076: watershed region reaches 16.2 mm from its ostium
+   - branch_077: watershed region reaches 21.7 mm from its ostium
+   - branch_078: watershed region reaches 22.8 mm from its ostium
+   - branch_079: watershed region reaches 18.5 mm from its ostium
+   - branch_080: watershed region reaches 18.4 mm from its ostium
+   - branch_081: watershed region reaches 17.7 mm from its ostium
+   - branch_082: watershed region reaches 17.3 mm from its ostium
+   - branch_083: watershed region reaches 17.8 mm from its ostium
+   - branch_084: watershed region reaches 16.4 mm from its ostium
+   - branch_085: watershed region reaches 19.2 mm from its ostium
+   - branch_088: watershed region reaches 16.0 mm from its ostium
+   - branch_089: watershed region reaches 15.5 mm from its ostium
+   - branch_090: watershed region reaches 23.9 mm from its ostium
+   - branch_091: watershed region reaches 19.4 mm from its ostium
+   - branch_092: watershed region reaches 20.9 mm from its ostium
+   - branch_093: watershed region reaches 19.9 mm from its ostium
+   - branch_094: watershed region reaches 21.4 mm from its ostium
+   - branch_095: watershed region reaches 20.2 mm from its ostium
+   - branch_096: watershed region reaches 20.9 mm from its ostium
+   - branch_099: watershed region reaches 17.7 mm from its ostium
+   - branch_100: watershed region reaches 18.0 mm from its ostium
+   - branch_103: watershed region reaches 16.3 mm from its ostium
+   - branch_105: watershed region reaches 16.3 mm from its ostium
+   - branch_106: watershed region reaches 16.3 mm from its ostium
+   - branch_107: watershed region reaches 16.1 mm from its ostium
+   - branch_108: watershed region reaches 16.6 mm from its ostium
+   - branch_110: watershed region reaches 15.3 mm from its ostium
+   - branch_111: watershed region reaches 16.7 mm from its ostium
+   - branch_112: watershed region reaches 16.0 mm from its ostium
+   - branch_113: watershed region reaches 15.6 mm from its ostium
+   - branch_114: watershed region reaches 15.5 mm from its ostium
+   - branch_115: watershed region reaches 16.8 mm from its ostium
+   - branch_116: watershed region reaches 16.4 mm from its ostium
+   - branch_118: watershed region reaches 90.4 mm from its ostium
+   - branch_119: watershed region reaches 16.8 mm from its ostium
+   - branch_120: watershed region reaches 17.3 mm from its ostium
+   - branch_121: watershed region reaches 15.3 mm from its ostium
+   - branch_122: watershed region reaches 19.7 mm from its ostium
+   - branch_123: watershed region reaches 19.5 mm from its ostium
+   - branch_124: watershed region reaches 34.6 mm from its ostium
+   - branch_125: watershed region reaches 18.7 mm from its ostium
+   - branch_126: watershed region reaches 19.3 mm from its ostium
+   - branch_129: watershed region reaches 18.6 mm from its ostium
+   - branch_130: watershed region reaches 17.9 mm from its ostium
 
 SUMMARY
-  subject001: 20 violations
-  subject002: 22 violations
-  subject003: 11 violations
-  subject004: 42 violations
-  subject005: 15 violations
-  subject006: 8 violations
-  subject007: 16 violations
-  subject008: 55 violations
-  subject009: 8 violations
-  subject010: 10 violations
-  subject011: 35 violations
-  subject012: 9 violations
-  subject013: 7 violations
-  subject014: 13 violations
-  subject015: 26 violations
-  subject016: 72 violations
-  subject017: 18 violations
-  subject018: 234 violations
-  subject019: 13 violations
-  subject020: 10 violations
-  subject021: 62 violations
-  subject022: 101 violations
-  subject023: 10 violations
-  subject024: 102 violations
-  subject025: 244 violations
+  subject001: 10 violations
+  subject002: 14 violations
+  subject003: 7 violations
+  subject004: 17 violations
+  subject005: 5 violations
+  subject006: 5 violations
+  subject007: 8 violations
+  subject008: 17 violations
+  subject009: 7 violations
+  subject010: 5 violations
+  subject011: 20 violations
+  subject012: 8 violations
+  subject013: 5 violations
+  subject014: 6 violations
+  subject015: 11 violations
+  subject016: 34 violations
+  subject017: 2 violations
+  subject018: 156 violations
+  subject019: 8 violations
+  subject020: 9 violations
+  subject021: 27 violations
+  subject022: 64 violations
+  subject023: 7 violations
+  subject024: 62 violations
+  subject025: 120 violations

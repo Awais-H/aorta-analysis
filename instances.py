@@ -33,9 +33,31 @@ class Instances:
     region_volume_ml: dict = field(default_factory=dict)  # label -> watershed region volume (D6 rule 4)
     n: int = 0
 
+    branch_indices: dict = field(default_factory=dict)  # filled lazily by branch_voxels()
+
     @property
     def labels_list(self) -> list:
         return list(range(1, self.n + 1))
+
+
+def branch_voxels(cand: Candidates, inst: Instances) -> dict:
+    """label -> (k, 3) int zyx indices of the voxels D4 and D5 operate on, cached on `inst`.
+
+    The watershed region through the raw shell, minus the partial-volume ring: inside the wall
+    layer only opened voxels count (the ring is one to two voxels thick and hugs the mask, and the
+    opened set is by definition what survived the ring removal there); beyond the wall layer the
+    raw thresholded voxels count, so thin vessels are not eroded (SPEC.md D2, reference release).
+    """
+    if inst.branch_indices or inst.n == 0:
+        return inst.branch_indices
+    keep = (inst.labels > 0) & (cand.opened | (cand.distance_mm > config.WALL_LAYER_MM))
+    idx = np.argwhere(keep)
+    labs = inst.labels[tuple(idx.T)]
+    srt = np.argsort(labs, kind="stable")
+    idx, labs = idx[srt], labs[srt]
+    bounds = np.searchsorted(labs, np.arange(1, inst.n + 2))
+    inst.branch_indices = {int(k): idx[bounds[k - 1]:bounds[k]] for k in range(1, inst.n + 1)}
+    return inst.branch_indices
 
 
 def build(cand: Candidates) -> Instances:

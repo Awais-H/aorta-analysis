@@ -69,7 +69,12 @@ def match(pred: list, ref: list, cutoff_mm: float) -> list:
     P = np.array([d["ostium_xyz_mm"] for d in pred], float)
     R = np.array([d["ostium_xyz_mm"] for d in ref], float)
     D = cdist(P, R)
-    rows, cols = linear_sum_assignment(D)
+    # cutoff-aware: pairs beyond the cutoff cost more than any number of in-cutoff pairs, so the
+    # assignment first maximises the number of matches within the cutoff and only then minimises
+    # distance. A plain assignment can pair a prediction with a far reference to lower the total
+    # and then lose that pair to the cutoff.
+    cost = np.where(D <= cutoff_mm, D, cutoff_mm * (D.size + 1))
+    rows, cols = linear_sum_assignment(cost)
     return [(int(i), int(j), float(D[i, j])) for i, j in zip(rows, cols) if D[i, j] <= cutoff_mm]
 
 

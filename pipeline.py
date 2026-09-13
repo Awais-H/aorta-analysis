@@ -84,6 +84,18 @@ def run(image_path: str, mask_path: str, case_id: str, report_dir: str | None = 
         ostia = ostium.locate(cand, inst)
     with _timed(meta, "tracing"):
         traces = tracing.trace_all(cand, inst, ostia)
+    meta["ostium_methods"] = {m: sum(o.method == m for o in ostia.values()) for m in ("axis_intersection", "inscribed_circle")}
+    meta["trace_methods"] = {m: sum(t.method == m for t in traces.values()) for m in ("march", "axis", "none")}
+    meta["trace_stop_reasons"] = {r: sum(t.stop_reason == r for t in traces.values())
+                                 for r in sorted({t.stop_reason for t in traces.values()})}
+    meta["bifurcations"] = sum(t.bifurcation for t in traces.values())
+    meta["radius_flags"] = {f: sum(t.radius_flag == f for t in traces.values())
+                           for f in sorted({t.radius_flag for t in traces.values() if t.radius_flag})}
+    meta["per_branch"] = {str(l): {"ostium_method": ostia[l].method, "trace_method": t.method, "stop": t.stop_reason,
+                                   "path_mm": t.path_length_mm, "march_mm": t.march_length_mm, "bifurcation": t.bifurcation,
+                                   "radius_mm": round(t.radius_mm, 2), "radius_flag": t.radius_flag,
+                                   "pca_chord_deg": None if t.pca_chord_angle_deg is None else round(t.pca_chord_angle_deg, 1)}
+                          for l, t in traces.items()}
     with _timed(meta, "filters"):
         fres = filters.apply(cand, inst, ostia, traces, fr)
     meta["rejections"] = [(int(l), r, round(float(v), 3)) for l, r, v in fres.rejections]

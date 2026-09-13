@@ -26,13 +26,20 @@ OPENING_MIN_RADIUS_VOX = 1  # the opening ball is never smaller than one voxel, 
 
 # ------------------------------------------------------------------------ ostium (D4)
 AXIS_FIT_MM = 10.0          # PCA for the branch axis uses watershed voxels within the first 10 mm, the spec's tracing horizon
+AXIS_FIT_MIN_VOXELS = 5     # PCA on fewer voxels than this has no meaningful principal axis (a 2 mm lumen is about 5 voxels per 0.8 mm slice); fall back to the wall normal
+AXIS_WALK_STEP_MM = 0.25    # the axis is walked back toward the aorta in quarter-voxel steps so the surface crossing is located to sub-voxel precision before the snap
 OSTIUM_AGREEMENT_MM = 4.0   # axis-intersection ostium is used only if within 4 mm of the inscribed-circle ostium, so a bad axis fit never beats the baseline
+OSTIUM_USE_AXIS_REFINEMENT = False  # D4 option C is computed and logged but not reported. Measured on all five labelled cases (docs/references): where C passed the 4 mm gate it was worse than D on 6 of 8 branches, by 1 to 2 mm, and every case's mean ostium distance improved with D alone (D7: a change must improve or hold every labelled case). At 1.5 mm native resolution a few millimetres of blurry lumen give an axis too noisy to walk back to the wall. Flip to True to re-evaluate on finer data
 
 # ------------------------------------------------------------------------ tracing (D5)
 SEED_DISTANCE_MM = 5.0      # PDF definition: the daughter seed is 5 mm outward from the ostium along the daughter path
 TRACE_MAX_MM = 10.0         # PDF: trace up to 10 mm beyond the ostium or until the first bifurcation
 TRACE_STEP_MM = 1.0         # march step: fine enough to follow a looping renal, coarse enough that one step spans more than one working voxel
 MIN_TRACE_MM = 5.0          # PDF eligibility: a branch must be followable for at least 5 mm beyond the wall
+TRACE_SLAB_HALF_MM = 0.5    # the cross-section perpendicular to the current direction is a slab one working voxel thick (plus and minus half a voxel)
+CROSS_SECTION_HALF_WIDTH_MM = 8.0  # lateral window of a cross-section: the largest daughter radius accepted (INVARIANT_RADIUS_MAX_MM), so a real lumen is never truncated
+MIN_CROSS_SECTION_VOXELS = 3  # a cross-section blob under 3 voxels is noise: a 2 mm lumen gives about 5 voxels per 0.8 mm slab. Used for 'cross-section vanishes' and for the second blob of a bifurcation
+TRACE_MAX_TURN_DEG = 90.0   # a direction change over 90 deg in one 1 mm step is a flip (the march ran back into the aorta or jumped to a neighbour), not anatomy: stop and fall back to the axis
 RADIUS_PLANE_SPACING_MM = 0.25  # D5: radius = sqrt(area / pi) of the thresholded cross-section on a plane perpendicular to the chord at the seed, resampled at 0.25 mm; the reference package's own method, so radius errors are comparable. Interpolation adds no resolution
 RADIUS_CLAMP_MM = (0.5, 8.0)  # D5: reported radius is clamped to this range; below 0.5 mm nothing is resolvable, above 8 mm nothing but the iliacs leaves the abdominal aorta. Radius is low effort (16 of 19 reference radii are null) and is not tuned
 RADIUS_AORTA_FRACTION_MAX = 0.5  # D5 sanity: a daughter radius over half the local aortic radius means the cross-section grabbed adjacent tissue; report the inscribed circle instead and flag it

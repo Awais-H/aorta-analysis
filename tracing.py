@@ -1,13 +1,19 @@
 """D5 proximal tracing: seed, direction, radius.
 
-STUB. Current behaviour: a straight line from the ostium along the outward wall normal, stepped
-TRACE_STEP_MM at a time up to TRACE_MAX_MM and bounds-checked at the volume edge (a branch within
-5 mm of the boundary cannot be traced 5 mm and is ineligible by the PDF's own rule). Seed at
-SEED_DISTANCE_MM along the path; direction = the ostium-to-seed chord, normalised (the reference
-convention, D5); radius = equivalent radius of the wall patch, clamped to RADIUS_CLAMP_MM. The
-slice-and-centroid march through the raw thresholded shell with the bifurcation stop, and the
-area-equivalent radius on a 0.25 mm plane at the seed, per SPEC.md D5 replace `trace_one` without
-changing the contract. `chord_direction` is final and stays.
+Slice-and-centroid march (option C): start at the ostium with the axis direction, step
+TRACE_STEP_MM, take the cross-section of the branch's own voxels (its watershed region through
+the raw shell, see instances.branch_voxels) perpendicular to the current direction, update the
+direction toward the cross-section centroid, repeat. Stop at TRACE_MAX_MM of path length, when the
+cross-section splits into two blobs (first bifurcation: the trunk's direction is reported, not an
+average of its children), when it vanishes, when the direction flips, or at the volume edge.
+Fallback (option A): if the march yields under MIN_TRACE_MM, use the straight axis line as far as
+the branch voxels reach; if that is also under MIN_TRACE_MM the branch is ineligible (seed None).
+
+Outputs: seed = point at SEED_DISTANCE_MM of path length; direction = normalised ostium-to-seed
+chord (the reference convention); radius = area-equivalent radius of the thresholded cross-section
+on a plane perpendicular to the chord at the seed, resampled at RADIUS_PLANE_SPACING_MM, with the
+inscribed-circle fallback when it exceeds RADIUS_AORTA_FRACTION_MAX of the local aortic radius,
+clamped to RADIUS_CLAMP_MM. PCA of the path is kept as a diagnostic (angle to the chord).
 
 Output contract (SPEC.md D9): per label, path points (mm), seed (mm), direction (unit), radius
 (mm), path length, bifurcation flag.
@@ -18,11 +24,12 @@ import logging
 from dataclasses import dataclass
 
 import numpy as np
+from scipy import ndimage
 
 import config
 import io_utils
 from candidates import Candidates
-from instances import Instances
+from instances import Instances, branch_voxels
 from ostium import Ostium
 
 log = logging.getLogger("branchseed.tracing")
@@ -31,13 +38,32 @@ log = logging.getLogger("branchseed.tracing")
 @dataclass
 class Trace:
     label: int
-    path_mm: np.ndarray        # (k, 3) xyz mm, path_mm[0] is the ostium
-    seed_mm: np.ndarray | None  # None when the path is shorter than SEED_DISTANCE_MM
-    direction_xyz: np.ndarray  # unit vector from the ostium into the branch
+    path_mm: np.ndarray            # (k, 3) xyz mm, path_mm[0] is the ostium
+    seed_mm: np.ndarray | None     # None when the path is shorter than SEED_DISTANCE_MM
+    direction_xyz: np.ndarray      # unit vector from the ostium into the branch (chord)
     radius_mm: float
     path_length_mm: float
     bifurcation: bool
-    method: str = "stub_straight_normal"
+    method: str                    # "march", "axis" or "none"
+    stop_reason: str = ""          # why the march ended: max, bifurcation, vanished, flip, edge
+    radius_flag: str | None = None  # "inscribed_fallback" when the area radius failed the sanity check, "no_cross_section" when none was found
+    radius_area_mm: float | None = None
+    radius_inscribed_mm: float | None = None
+    pca_chord_angle_deg: float | None = None  # diagnostic: angle between the PCA axis of the first 5 mm of path and the chord
+    march_length_mm: float = 0.0   # what the march achieved before any fallback
+
+
+# ------------------------------------------------------------------ geometry helpers
+
+
+def _unit(v: np.ndarray) -> np.ndarray:
+    n = np.linalg.norm(v)
+    return v / n if n > 0 else v
+
+
+def chord_direction(ostium_mm, seed_mm) -> np.ndarray:
+    """D5: the reported direction is normalise(seed - ostium), the answer key's convention."""
+    return _unit(np.asarray(seed_mm, float) - np.asarray(ostium_mm, float))
 
 
 def point_along(path_mm: np.ndarray, s_mm: float) -> np.ndarray | None:
@@ -51,34 +77,196 @@ def point_along(path_mm: np.ndarray, s_mm: float) -> np.ndarray | None:
     return np.array([np.interp(s_mm, arc, path_mm[:, a]) for a in range(3)])
 
 
-def chord_direction(ostium_mm, seed_mm) -> np.ndarray:
-    """D5: the reported direction is normalise(seed - ostium), the answer key's convention."""
-    d = np.asarray(seed_mm, float) - np.asarray(ostium_mm, float)
-    n = np.linalg.norm(d)
-    return d / n if n > 0 else d
+def pca_direction(points: np.ndarray, origin: np.ndarray) -> np.ndarray | None:
+    """Principal axis of `points` with the sign fixed to point away from `origin` (diagnostic)."""
+    if len(points) < 3:
+        return None
+    c = points.mean(axis=0)
+    w, V = np.linalg.eigh(np.cov((points - c).T))
+    axis = _unit(V[:, int(np.argmax(w))])
+    if np.sum((points - origin) @ axis) < 0:
+        axis = -axis
+    return axis
 
 
-def trace_one(cand: Candidates, ost: Ostium, wall_area_mm2: float) -> Trace:
-    step_idx = ost.normal_zyx * (config.TRACE_STEP_MM / cand.spacing)
+def _perp_basis(d: np.ndarray):
+    a = np.array([1.0, 0.0, 0.0]) if abs(d[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
+    u = _unit(np.cross(d, a))
+    w = _unit(np.cross(d, u))
+    return u, w
+
+
+# ------------------------------------------------------------------ the march
+
+
+def cross_section(V: np.ndarray, q: np.ndarray, d: np.ndarray) -> np.ndarray:
+    """Indices into V (mm-scaled voxel coordinates) of voxels in the slab perpendicular to d at q."""
+    rel = V - q
+    t = rel @ d
+    lat = np.linalg.norm(rel - t[:, None] * d, axis=1)
+    return np.where((np.abs(t) <= config.TRACE_SLAB_HALF_MM) & (lat <= config.CROSS_SECTION_HALF_WIDTH_MM))[0]
+
+
+def blobs(idx: np.ndarray) -> list:
+    """26-connected components of a set of voxel indices; list of index arrays into `idx`."""
+    lo = idx.min(axis=0)
+    local = idx - lo
+    arr = np.zeros(tuple(local.max(axis=0) + 1), bool)
+    arr[tuple(local.T)] = True
+    lab, n = ndimage.label(arr, structure=np.ones((3, 3, 3), bool))
+    labs = lab[tuple(local.T)]
+    return [np.where(labs == k)[0] for k in range(1, n + 1)]
+
+
+def march(cand: Candidates, region_idx: np.ndarray, ost: Ostium):
+    """Returns (points in mm-scaled index space, bifurcation flag, stop reason)."""
+    sp = cand.spacing
+    V = region_idx * sp
+    p = ost.index_zyx * sp
+    d = _unit(ost.axis_zyx.astype(float))
+    pts = [p]
+    upper = (np.array(cand.mask.shape) - 1) * sp
     n_steps = int(round(config.TRACE_MAX_MM / config.TRACE_STEP_MM))
-    upper = np.array(cand.mask.shape) - 1
-    pts = []
-    for k in range(n_steps + 1):
-        p = ost.index_zyx + k * step_idx
+    for _ in range(n_steps):
+        q = p + config.TRACE_STEP_MM * d
+        sel = cross_section(V, q, d)
+        if len(sel) < config.MIN_CROSS_SECTION_VOXELS:
+            return pts, False, "vanished"
+        parts = blobs(region_idx[sel])
+        lat = np.linalg.norm((V[sel] - q) - ((V[sel] - q) @ d)[:, None] * d, axis=1)
+        nearest = int(np.argmin(lat))
+        main = next(b for b in parts if nearest in set(b.tolist()))
+        if len(main) < config.MIN_CROSS_SECTION_VOXELS:
+            return pts, False, "vanished"
+        others = [b for b in parts if b is not main and len(b) >= config.MIN_CROSS_SECTION_VOXELS]
+        if others:
+            return pts, True, "bifurcation"
+        c = V[sel][main].mean(axis=0)
+        d_new = _unit(c - p)
+        if np.degrees(np.arccos(np.clip(np.dot(d_new, d), -1, 1))) > config.TRACE_MAX_TURN_DEG:
+            return pts, False, "flip"
+        p_new = p + config.TRACE_STEP_MM * d_new
+        if np.any(p_new < 0) or np.any(p_new > upper):
+            return pts, False, "edge"
+        p, d = p_new, d_new
+        pts.append(p)
+    return pts, False, "max"
+
+
+def axis_path(cand: Candidates, region_idx: np.ndarray, ost: Ostium) -> list:
+    """Fallback A: straight line along the axis as far as the branch voxels reach (mm-scaled index)."""
+    sp = cand.spacing
+    V = region_idx * sp
+    p0 = ost.index_zyx * sp
+    d = _unit(ost.axis_zyx.astype(float))
+    rel = V - p0
+    t = rel @ d
+    lat = np.linalg.norm(rel - t[:, None] * d, axis=1)
+    reach = float(t[lat <= config.CROSS_SECTION_HALF_WIDTH_MM].max()) if len(t) and (lat <= config.CROSS_SECTION_HALF_WIDTH_MM).any() else 0.0
+    upper = (np.array(cand.mask.shape) - 1) * sp
+    pts = [p0]
+    n_steps = int(min(config.TRACE_MAX_MM, reach) // config.TRACE_STEP_MM)
+    for k in range(1, n_steps + 1):
+        p = p0 + k * config.TRACE_STEP_MM * d
         if np.any(p < 0) or np.any(p > upper):
             break
         pts.append(p)
-    path_mm = io_utils.index_to_mm(cand.image, np.array(pts)) if pts else np.zeros((0, 3))
-    length = float((len(pts) - 1) * config.TRACE_STEP_MM) if pts else 0.0
+    return pts
+
+
+# ------------------------------------------------------------------ radius
+
+
+def radius_at(cand: Candidates, seed_idx: np.ndarray, dir_idx: np.ndarray, local_aortic_radius_mm: float | None):
+    """Area-equivalent and inscribed-circle radius of the thresholded cross-section on a plane
+    perpendicular to dir_idx at seed_idx, sampled at RADIUS_PLANE_SPACING_MM.
+    Returns (radius_mm, area_radius, inscribed_radius, flag)."""
+    sp = float(cand.spacing[0])
+    h = config.RADIUS_PLANE_SPACING_MM
+    u, w = _perp_basis(_unit(dir_idx.astype(float)))
+    n = int(round(2 * config.CROSS_SECTION_HALF_WIDTH_MM / h)) + 1
+    off = (np.arange(n) - n // 2) * h
+    S, T = np.meshgrid(off, off, indexing="ij")
+    P = seed_idx * sp + S[..., None] * u + T[..., None] * w      # mm-scaled index space
+    coords = np.moveaxis(P / sp, -1, 0)
+    ct = ndimage.map_coordinates(cand.ct, coords, order=1, cval=config.CT_BACKGROUND_HU)
+    inside = ndimage.map_coordinates(cand.mask.astype(np.uint8), coords, order=0, cval=0)
+    bright = (ct > cand.threshold_hu) & (inside == 0)
+    lab, k = ndimage.label(bright, structure=np.ones((3, 3), bool))
+    if k == 0:
+        return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section"
+    centre = (n // 2, n // 2)
+    if lab[centre] > 0:
+        comp = lab == lab[centre]
+    else:
+        dist_to_bright = ndimage.distance_transform_edt(lab == 0) * h
+        if dist_to_bright[centre] > config.ISO_SPACING_MM:
+            return float(config.RADIUS_CLAMP_MM[0]), None, None, "no_cross_section"
+        yy, xx = np.where(lab > 0)
+        j = int(np.argmin((yy - centre[0]) ** 2 + (xx - centre[1]) ** 2))
+        comp = lab == lab[yy[j], xx[j]]
+    r_area = float(np.sqrt(comp.sum() * h * h / np.pi))
+    r_ins = float(ndimage.distance_transform_edt(comp).max() * h)
+    r, flag = r_area, None
+    if local_aortic_radius_mm is not None and r_area > config.RADIUS_AORTA_FRACTION_MAX * local_aortic_radius_mm:
+        r, flag = r_ins, "inscribed_fallback"
+    return float(np.clip(r, *config.RADIUS_CLAMP_MM)), r_area, r_ins, flag
+
+
+def local_aortic_radius(inside_edt: np.ndarray, spacing: np.ndarray, at_idx: np.ndarray) -> float | None:
+    """Largest inscribed-sphere radius of the mask within SHELL_MM of `at_idx` (box approximation)."""
+    r = np.ceil(config.SHELL_MM / spacing).astype(int)
+    lo = np.maximum(at_idx - r, 0)
+    hi = np.minimum(at_idx + r + 1, np.array(inside_edt.shape))
+    sub = inside_edt[tuple(slice(int(a), int(b)) for a, b in zip(lo, hi))]
+    return float(sub.max()) if sub.size else None
+
+
+# ------------------------------------------------------------------ per branch
+
+
+def trace_one(cand: Candidates, ost: Ostium, region_idx: np.ndarray, inside_edt: np.ndarray | None = None) -> Trace:
+    sp = cand.spacing
+    if len(region_idx) == 0:
+        return Trace(label=ost.label, path_mm=io_utils.index_to_mm(cand.image, ost.index_zyx)[None, :], seed_mm=None,
+                     direction_xyz=ost.normal_mm.copy(), radius_mm=float(config.RADIUS_CLAMP_MM[0]),
+                     path_length_mm=0.0, bifurcation=False, method="none", stop_reason="no_voxels")
+    pts, bif, reason = march(cand, region_idx, ost)
+    march_len = float((len(pts) - 1) * config.TRACE_STEP_MM)
+    method = "march"
+    if march_len < config.MIN_TRACE_MM:
+        pts, bif, method = axis_path(cand, region_idx, ost), False, "axis"
+    length = float((len(pts) - 1) * config.TRACE_STEP_MM)
+    pts_idx = np.array(pts) / sp
+    path_mm = io_utils.index_to_mm(cand.image, pts_idx)
     seed = point_along(path_mm, config.SEED_DISTANCE_MM)
-    direction = chord_direction(ost.mm, seed) if seed is not None else ost.normal_mm.copy()
-    radius = float(np.clip(np.sqrt(max(wall_area_mm2, 0.0) / np.pi), *config.RADIUS_CLAMP_MM))
-    return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=direction,
-                 radius_mm=radius, path_length_mm=length, bifurcation=False)
+    if seed is None:
+        return Trace(label=ost.label, path_mm=path_mm, seed_mm=None, direction_xyz=ost.axis_mm.copy(),
+                     radius_mm=float(config.RADIUS_CLAMP_MM[0]), path_length_mm=length, bifurcation=bif,
+                     method=method if length > 0 else "none", stop_reason=reason, march_length_mm=march_len)
+    direction = chord_direction(ost.mm, seed)
+    seed_idx = io_utils.mm_to_index(cand.image, seed)
+    dir_idx = io_utils.mm_vector_to_index(cand.image, seed, direction)
+    aortic_r = local_aortic_radius(inside_edt, sp, ost.index_zyx) if inside_edt is not None else None
+    radius, r_area, r_ins, flag = radius_at(cand, seed_idx, dir_idx, aortic_r)
+    first = path_mm[np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(path_mm, axis=0), axis=1))]) <= config.SEED_DISTANCE_MM + 1e-9]
+    pca = pca_direction(first, path_mm[0])
+    pca_angle = float(np.degrees(np.arccos(np.clip(np.dot(pca, direction), -1, 1)))) if pca is not None else None
+    return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=direction, radius_mm=radius,
+                 path_length_mm=length, bifurcation=bif, method=method, stop_reason=reason, radius_flag=flag,
+                 radius_area_mm=r_area, radius_inscribed_mm=r_ins, pca_chord_angle_deg=pca_angle, march_length_mm=march_len)
 
 
 def trace_all(cand: Candidates, inst: Instances, ostia: dict) -> dict:
     """label -> Trace for every ostium."""
-    out = {label: trace_one(cand, ost, inst.wall_area_mm2.get(label, 0.0)) for label, ost in ostia.items()}
-    log.info("traced %d branches", len(out))
+    if not ostia:
+        return {}
+    regions = branch_voxels(cand, inst)
+    inside_edt = ndimage.distance_transform_edt(cand.mask, sampling=cand.spacing).astype(np.float32)
+    out = {label: trace_one(cand, ost, regions.get(label, np.zeros((0, 3), int)), inside_edt) for label, ost in ostia.items()}
+    n_march = sum(t.method == "march" for t in out.values())
+    n_bif = sum(t.bifurcation for t in out.values())
+    n_short = sum(t.seed_mm is None for t in out.values())
+    log.info("traced %d branches: %d by march, %d by axis fallback, %d bifurcations, %d under %g mm",
+             len(out), n_march, sum(t.method == "axis" for t in out.values()), n_bif, n_short, config.MIN_TRACE_MM)
     return out
