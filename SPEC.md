@@ -124,7 +124,7 @@ Options: straight line from the axis fit (A), skeletonize the watershed region (
 **Choice: C, with A as fallback.**
 
 - C directly implements the spec sentence "trace up to 10 mm or until the first bifurcation, whichever occurs first." Start at the ostium with the axis direction, step 1 mm, take the cross-section of branch voxels perpendicular to the current direction, update direction toward the cross-section centroid, repeat. Stop at 10 mm of path length or when the cross-section splits into two blobs.
-- All three outputs from one loop: seed = point at 5 mm path length; direction = tangent over the first 5 mm; radius = largest inscribed circle in the cross-section (2D distance transform of the cross-section, take the maximum), averaged over the cross-sections at 4, 5 and 6 mm along the path. Inscribed circle rather than sqrt(area / pi) because it is less fooled by an irregular or partial-volume-smeared cross-section; averaged over three steps because a single 0.8 mm slice of a 3 mm vessel is only 10 to 15 voxels of area and the estimate is noisy. At 1.5 mm native resolution the radius remains a rough number regardless; state it as a known limitation.
+- All three outputs from one loop: seed = point at 5 mm path length; direction = principal axis (PCA) of the path points over the first 5 mm, computed in physical mm, with the sign fixed so it points away from the ostium (multiply the eigenvector by the sign of the summed projection of the path points onto it; an eigenvector's polarity is arbitrary and without this fix roughly half of all directions point back into the aorta); radius = largest inscribed circle in the cross-section (2D distance transform of the cross-section, take the maximum), averaged over the cross-sections at 4, 5 and 6 mm along the path. Inscribed circle rather than sqrt(area / pi) because it is less fooled by an irregular or partial-volume-smeared cross-section; averaged over three steps because a single 0.8 mm slice of a 3 mm vessel is only 10 to 15 voxels of area and the estimate is noisy. At 1.5 mm native resolution the radius remains a rough number regardless; state it as a known limitation.
 - The bifurcation stop matters: a common trunk splitting at 7 mm must report the trunk's direction, not an average of its children. B and D would average or pick a child.
 - B rejected: skeletons are noisy exactly at the junction, where precision matters most. D rejected: needs extra machinery for radius and bifurcation with no accuracy gain.
 - A fallback: if the march fails (under 5 mm of voxels, cross-section vanishes, direction flips), use the axis fit. If even that gives under 5 mm, the branch fails eligibility and is dropped.
@@ -234,6 +234,8 @@ Robustness requirements for run.py (the reproducibility bucket is lost by a sing
 - A case that yields zero branches after filtering still writes valid JSON with `"daughters": []`, and the visual check for that case renders the aorta alone without error.
 - If a file cannot be loaded even with the gzip and header fallbacks, or any stage raises, run.py catches the exception, logs the traceback to stderr, writes valid JSON with an empty daughters list for that case, and exits 0. A wrong answer on one case costs that case; a crash can cost the run.
 - Both paths are covered by tests: one synthetic case with no bright voxels outside the mask, one with a deliberately corrupt input file.
+- JSON is written atomically: write to `<output>.tmp`, then `os.replace` onto the final name. A killed process never leaves a half-written file that looks valid.
+- Offline install is tested, not assumed. `pip download -r requirements.txt -d vendor/` on a connected machine, commit `vendor/`, and the README's setup command is `pip install --no-index --find-links vendor -r requirements.txt`. Before submission, run that setup and one dev case inside a container or VM with networking disabled. The judges' machine has no internet, and a package that quietly fetches something on first import is a zero on the run.
 
 ### D10. Runtime budget
 
@@ -274,17 +276,52 @@ Process rules:
 
 ---
 
-## 4. Timeline
+## 4. Parallel implementation and what to evaluate against it
+
+Two teammate documents arrived after this spec was written: a handoff describing an existing, tested implementation of essentially the same architecture (crop, wall-first search, path verification, wall-contact instances, measurement at 5 mm; 62 tests, phantom suite, evaluator, run on subject001), and a literature-based ideas ledger worked out on subject 25. Both live under `docs/`.
+
+Decision: build this spec as written and run the two implementations side by side, with one shared scorer and a decision date at the end of day two, rather than merging code nobody has fully read. This is also the protocol the handoff itself proposes (compare stage by stage, integrate through explicit seams, decide by ablation).
+
+Adopted now, without comparison, because they are bug avoidance with reasoning checkable in a minute rather than design choices:
+
+- PCA direction with the sign fix (D5).
+- Gzip sniffing regardless of extension (D2, already present).
+- Atomic JSON writes (D9).
+- Offline install test with a vendored wheel directory (D9).
+
+To evaluate through the side-by-side comparison, each with the metric that decides it:
+
+| Idea | Replaces or adds to | Deciding metric |
+|---|---|---|
+| Leak detector: reject a trace when radius at d exceeds 1.5 × radius at d − 3 mm | D6 rule 4 area-doubling test | False positives on subjects 8 and 12 (bowel), 4 (bone); recall unchanged on labelled cases |
+| Contiguity-only merging of wall patches, no distance rule | D6 rule 6 (4 mm, 20° merge) | Recall on close renal pairs; duplicate count |
+| FWHM radius on an interpolated cross-section at the seed | D5 inscribed-circle radius | Radius error on labelled cases, especially subjects 16 to 23 (1.5 mm native) |
+| Bifurcation by component split that persists for two further steps | D5 stop rule | Fraction of traces truncated before 5 mm on the regression set |
+| Wall-contact brightness: median HU in the 1 to 2 mm outside the patch must exceed the threshold | Addition to D6 rule 3 | False positives on subjects with venous enhancement (3, 18, 22) |
+| Degenerate calibration flag when std/mean inside the mask exceeds 0.25 | Addition to D1 | Fires on 16, 18, 24 and nowhere else |
+| Geodesic level-set tracing at 0.5 mm in a per-candidate subvolume | D5 1 mm marching tracer | Seed-on-branch rate and direction error; runtime |
+| Per-candidate subvolume upsampling instead of global resample of the crop | D2 resample step | Runtime and memory on subjects 8, 12, 18; recall on 16 to 23 |
+| Hessian objectness as a candidate feature (in the existing implementation) | D1 threshold-only candidates | Runtime (the handoff reports 30 s on subject001; our candidate stage runs in 1 to 5 s without it) versus any recall gain |
+| Output flags (near_cut_face, close_pair, low_confidence, degenerate_calibration) and rejected_by on every candidate | D8 display, D7 failure gallery | No metric; adopt if the display team has time |
+| Circular padding and ray-validity checks on the unrolled map | D8 frame module | Visual: a branch at 12 o'clock renders as one blob; arch rows on subject 25 are not scrambled |
+
+Explicitly not evaluated: Jerman, OOF and RORPO vessel filters, TEASAR skeletonization, external datasets, perturbation-based confidence, and any constant taken from the literature (the ideas ledger itself shows Riffaud's length rule would delete every eligible branch). Reason: no time, and the handoff's own protocol says not to keep a component merely because it is novel.
+
+Known issues in the existing implementation to check for in ours: case_id derived from the filename instead of the folder; a hard cap of 24 candidates that saturated on subject001; a direction that disagreed with ostium-to-seed by 74° on one branch (consistent with the eigenvector sign problem above).
+
+---
+
+## 5. Timeline
 
 Day 1 (today): environment, repo, data contract agreed, every stage stubbed and integrated end to end with the dumbest version. run.py produces valid JSON for subject001 by end of day. Person 3 has the centreline with endpoints, then the clock map on fake ostia. Person 2 has scorer running on the dev references. triage.py run on all 25 cases, atlas table committed, hard cases identified.
 
-Day 2: replace stubs with real implementations in order of score weight: instances and ostium first, tracing second, filters third. Scorer run after every merge. Failure gallery reviewed together at end of day.
+Day 2: replace stubs with real implementations in order of score weight: instances and ostium first, tracing second, filters third. Scorer run after every merge. Failure gallery reviewed together at end of day. End of day: run both implementations (this spec and the existing package) on the regression set and the labelled dev cases with the shared scorer, review both failure ledgers, and choose the base for day three per section 4.
 
 Day 3: tuning against the dev set, invariant checks on all 25, runtime on the slowest case, report polish, README, demo run-through with a failure case.
 
 ---
 
-## 5. Open questions for the organisers
+## 6. Open questions for the organisers
 
 1. Is the JSON schema still required for scoring, given "or any format you find fit"? (We are producing it regardless.)
 2. What is the minimum origin size for eligibility? (Placeholder: 1.5 mm equivalent radius.)
@@ -299,6 +336,6 @@ Day 3: tuning against the dev set, invariant checks on all 25, runtime on the sl
 
 ---
 
-## 6. Environment
+## 7. Environment
 
 Python 3.10 or 3.11. `pip install SimpleITK numpy scipy scikit-image nibabel matplotlib plotly`. No torch. 3D Slicer for human inspection only (not a dependency). One setup command and one run command in the README. Input files may be gzipped regardless of extension; the reader handles both.

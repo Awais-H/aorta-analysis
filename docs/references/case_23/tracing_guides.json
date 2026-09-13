@@ -1,0 +1,26 @@
+[
+  {
+    "points_voxel": [[118.2,130.0,171.2],[117.5,130.8,169.5],[117.0,131.0,167.5],[116.5,131.0,165.5],[116.3,131.0,164.8],[116.0,131.0,163.2]],
+    "origin_diameter_estimate_mm": 2.8,
+    "confidence": "medium",
+    "notes": "Small anterior-negative-x direct branch curves inferiorly alongside aorta; multiplanar continuity seen around z170-172. Native1.5mm resolution limits precise diameter and wall boundary.",
+    "threshold_hu": 180,
+    "search_radius_mm": 2.1
+  },
+  {
+    "points_voxel": [[124.5,122.5,166.5],[126.0,121.0,167.0],[128.0,120.0,168.0],[130.0,119.0,169.5],[130.8,118.5,170.5]],
+    "origin_diameter_estimate_mm": 2.5,
+    "confidence": "low",
+    "notes": "Provisional posterior-positive-x branch with visible enhancing tubular continuation; close to vertebral cortex. Borderline2mm origin at1.5mm resolution requires expert review before scoring. Distinct from cropped inferior bifurcation.",
+    "threshold_hu": 180,
+    "search_radius_mm": 1.8
+  },
+  {
+    "points_voxel": [[122.5,120.5,168.0],[122.0,119.5,169.0],[121.0,119.0,170.0],[120.5,119.0,171.0],[120.0,119.0,172.0],[119.0,118.0,173.0],[118.5,117.5,174.0],[118.0,117.0,175.0]],
+    "origin_diameter_estimate_mm": 2.2,
+    "confidence": "low",
+    "notes": "Provisional posterior-negative-x branch with a distinct posterior-wall exit from positive-x branch. Tubular contrast continuation checked in three planes and voxel values. Native1.5mm resolution limits2mm diameter and separate-ostium assessment; requires expert adjudication. Close to vertebral cortex, search radius restricted to avoid bone.",
+    "threshold_hu": 180,
+    "search_radius_mm": 1.6
+  }
+]

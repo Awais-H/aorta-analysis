@@ -1,0 +1,7 @@
+# ITK-SNAP Label Description File
+# IDX R G B A VIS MSH LABEL
+0 0 0 0 0 0 0 "Background"
+1 0 210 235 0.35 1 1 "Parent aorta"
+2 255 87 87 1 1 1 "branch_001 - DRAFT"
+3 255 211 78 1 1 1 "branch_002 - DRAFT"
+4 92 206 120 1 1 1 "branch_003 - DRAFT"

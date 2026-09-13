@@ -1,0 +1,298 @@
+{
+  "dataset": "Branchseed draft daughter references",
+  "annotation_status": "expert_review_pending",
+  "authorship": "AI-assisted visual review and CT-guided annotation; no clinical expert sign-off",
+  "case_count": 5,
+  "provisional_daughter_instance_count": 19,
+  "all_cases_native_voxel_spacing_mm": [
+    1.5,
+    1.5,
+    1.5
+  ],
+  "structural_validation": "passed; separate from anatomical validation",
+  "eligibility_adjudication": "pending, especially near 2 mm; omissions and uncertain origins documented",
+  "case_counts": {
+    "19": 3,
+    "20": 4,
+    "21": 3,
+    "22": 6,
+    "23": 3
+  },
+  "files": [
+    {
+      "path": "case_19/annotations.json",
+      "bytes": 35271,
+      "sha256": "fa8a8f86c09a795f696eb8a016f9ff95cea4d238380413c51b0304f73fff31c8"
+    },
+    {
+      "path": "case_19/aorta19.nii.gz",
+      "bytes": 11634,
+      "sha256": "c18f4c8f43904e1658164e762984d042b1bc88e789494e6fdeec79ec95d82b0f"
+    },
+    {
+      "path": "case_19/aorta_and_daughters19_draft.nii.gz",
+      "bytes": 95563,
+      "sha256": "0fa03707d0eea722ba14a3c16d2a1dffb751f8c837f872bf90c6224f8efe7485"
+    },
+    {
+      "path": "case_19/combined_labels.txt",
+      "bytes": 251,
+      "sha256": "d1f12d57a0c1831055001144ae76a11fb5e4f2529cec619cd00109f2b5d09dbd"
+    },
+    {
+      "path": "case_19/daughter_labels.txt",
+      "bytes": 214,
+      "sha256": "c67036342b32f09556232da967c1fb08a72f7b62e4864aa889fda28a14e0348b"
+    },
+    {
+      "path": "case_19/daughters19_draft.nii.gz",
+      "bytes": 92547,
+      "sha256": "3e2d017e6653ee6482957641dea00435bff45572ddfffd9ec6a740bd799cd01f"
+    },
+    {
+      "path": "case_19/orig19.nii.gz",
+      "bytes": 12681000,
+      "sha256": "5e3140eeaa821b6c964620256c1696df6a228564896b1c66d3846f625b7c8c96"
+    },
+    {
+      "path": "case_19/review_notes.md",
+      "bytes": 710,
+      "sha256": "9f5347368b8a7c47c48b1ea0e7ed4aa7e702dcb0da6f68276c1b840233e14af8"
+    },
+    {
+      "path": "case_19/review_preview.png",
+      "bytes": 156178,
+      "sha256": "7dcf06cdd61e1add2c5296e19d422207f3f6dc014f366ec4781b8fa4a124aa89"
+    },
+    {
+      "path": "case_19/tracing_guides.json",
+      "bytes": 2528,
+      "sha256": "7ecebe3e74cabf1105cc7c4fb08de5c44a97378812dcbe6ff3050d002084da19"
+    },
+    {
+      "path": "case_20/annotations.json",
+      "bytes": 44104,
+      "sha256": "f4db1be36b1cffc7f1d7de77bfe31f9b7443fc69fdaf996ada51c6929d5b65d6"
+    },
+    {
+      "path": "case_20/aorta20.nii.gz",
+      "bytes": 80497,
+      "sha256": "dee54f9885040b24bf59e1e11843c4cf08992f12b4ac9479f622a79a279092ca"
+    },
+    {
+      "path": "case_20/aorta_and_daughters20_draft.nii.gz",
+      "bytes": 159992,
+      "sha256": "111bc20ef88ee72fb8139491d9bcb35a515a88a3567ab996845a899476840a0e"
+    },
+    {
+      "path": "case_20/combined_labels.txt",
+      "bytes": 293,
+      "sha256": "77b5c2a48e758d409c1213e1e2d34367a80ee582b2d225099c4d113fb76fbdb0"
+    },
+    {
+      "path": "case_20/daughter_labels.txt",
+      "bytes": 256,
+      "sha256": "90956bdbf0a71582254a28fb3f493f7fd99f6264866d5626c98fd1197a957832"
+    },
+    {
+      "path": "case_20/daughters20_draft.nii.gz",
+      "bytes": 157196,
+      "sha256": "629a945df3ad7ea4e5d6ae95f350d823aa77f2fdadcdc0f1bec09df7c76f1fea"
+    },
+    {
+      "path": "case_20/excluded_candidate.json",
+      "bytes": 723,
+      "sha256": "480175243fd276d42cc81ad99aa8516c81a36ae5bb91486385b210143d8726cf"
+    },
+    {
+      "path": "case_20/orig20.nii.gz",
+      "bytes": 20080961,
+      "sha256": "f9b0ff4e3af19ca8e63cddfcc1a5ec5d5d302b1f7d97e54b7d57b06680cc7d81"
+    },
+    {
+      "path": "case_20/review_notes.md",
+      "bytes": 719,
+      "sha256": "70c2a4a0780c09337ed699883b589df20c223eb7f2ea602d166ebaab4bdc7950"
+    },
+    {
+      "path": "case_20/review_preview.png",
+      "bytes": 211532,
+      "sha256": "081288e875065ba96dba4e47682d0cbc21a3e4ceff034e8687fc2c5a270e0c50"
+    },
+    {
+      "path": "case_20/tracing_guides.json",
+      "bytes": 2720,
+      "sha256": "eeb9c417404d6923745e3117ff761dd3122908b7a215d4058dcf70e79992bd6f"
+    },
+    {
+      "path": "case_21/annotations.json",
+      "bytes": 33110,
+      "sha256": "750d485212a81d0428f581cc18094236b9296338a02edc4e921dc6d94f369101"
+    },
+    {
+      "path": "case_21/aorta21.nii.gz",
+      "bytes": 11615,
+      "sha256": "0ef0d75f4a912a947ab566da3ef5e614f458f3ee5cba328cf1976b320e7f444b"
+    },
+    {
+      "path": "case_21/aorta_and_daughters21_draft.nii.gz",
+      "bytes": 88886,
+      "sha256": "8d82d14ec26566feae8b88a48bcacf315a333c5ca8d3ecdcf3f8f2cbcae2b8fa"
+    },
+    {
+      "path": "case_21/combined_labels.txt",
+      "bytes": 251,
+      "sha256": "d1f12d57a0c1831055001144ae76a11fb5e4f2529cec619cd00109f2b5d09dbd"
+    },
+    {
+      "path": "case_21/daughter_labels.txt",
+      "bytes": 214,
+      "sha256": "c67036342b32f09556232da967c1fb08a72f7b62e4864aa889fda28a14e0348b"
+    },
+    {
+      "path": "case_21/daughters21_draft.nii.gz",
+      "bytes": 83523,
+      "sha256": "9d0be595eb1181187baf3b64534406df4713b129857d550e3f4925d8d9bff6a5"
+    },
+    {
+      "path": "case_21/orig21.nii.gz",
+      "bytes": 12172260,
+      "sha256": "11e3ce094db5632f7f4df2dbe5849923e9f51a7a17eeeeaf1fa6a296abb48519"
+    },
+    {
+      "path": "case_21/review_notes.md",
+      "bytes": 824,
+      "sha256": "2cce7465aa035ac4de370f4f60b3a789b11fa7da730047a0379d50aecc633c56"
+    },
+    {
+      "path": "case_21/review_preview.png",
+      "bytes": 174040,
+      "sha256": "057e85d6fcebffbadea34b9d8b168fdc55b54a4d96f24fdce540be42583d3838"
+    },
+    {
+      "path": "case_21/tracing_guides.json",
+      "bytes": 1262,
+      "sha256": "fcd6c0872d73d1f51bc41918ab424dcf054e7d1d1622b22c2598b0df2c29be1f"
+    },
+    {
+      "path": "case_22/annotations.json",
+      "bytes": 67764,
+      "sha256": "85d0bde98437a944dbda15b21ad3bc4eb47ddb10f07f1b704cde07cacdef7254"
+    },
+    {
+      "path": "case_22/aorta22.nii.gz",
+      "bytes": 20884,
+      "sha256": "96fac7941744573e8e14f0e4402d60d00fdd9099f984df76514b929bd52b3d0d"
+    },
+    {
+      "path": "case_22/aorta_and_daughters22_draft.nii.gz",
+      "bytes": 160033,
+      "sha256": "ff65976a34b01da243d6ee5a7336719e40eeca8c973ff764b85e386aebeb29a3"
+    },
+    {
+      "path": "case_22/combined_labels.txt",
+      "bytes": 376,
+      "sha256": "f4df1d23968472624ba0215b7abb9c7e8ecf675fc3e7cafaee8f837cf0d7ad0e"
+    },
+    {
+      "path": "case_22/daughter_labels.txt",
+      "bytes": 339,
+      "sha256": "f1ebacef4f51d5b4c9b30b3df1ef177361818a21764dbca4e40b9ac02d3d00c3"
+    },
+    {
+      "path": "case_22/daughters22_draft.nii.gz",
+      "bytes": 150042,
+      "sha256": "b71adb9f6a4f576c2c139ca0764576ff75934cb813537264cc54a632b0cbae27"
+    },
+    {
+      "path": "case_22/excluded_candidate.json",
+      "bytes": 811,
+      "sha256": "c864a287ecc9e4bc6238a4f53656b937eb8fa499a1bc6d1d8f7f48475cce1efc"
+    },
+    {
+      "path": "case_22/orig22.nii.gz",
+      "bytes": 21014843,
+      "sha256": "56b888fd4a43396ea38d44c7f3ffa7f4f2972815e8173fa73e47d694f3a3ba81"
+    },
+    {
+      "path": "case_22/review_notes.md",
+      "bytes": 802,
+      "sha256": "4ad9286755be3b63e4ad12c5db3209b10e606f6d308fd20a1f77a84d9b06b98e"
+    },
+    {
+      "path": "case_22/review_preview.png",
+      "bytes": 285266,
+      "sha256": "da8eb100c7a669a0fe35f19dc219317b5968b5d22c76412c6b8af418415ae070"
+    },
+    {
+      "path": "case_22/tracing_guides.json",
+      "bytes": 3594,
+      "sha256": "e89876b056134129d7701997beb9aefed34a18b4416e22b5e3022e87df98d12f"
+    },
+    {
+      "path": "case_23/annotations.json",
+      "bytes": 34517,
+      "sha256": "53c36547dab8361d17ac4f3d0b8ecd5b91cd504463458c7a15918560cb26dcf0"
+    },
+    {
+      "path": "case_23/aorta23.nii.gz",
+      "bytes": 11323,
+      "sha256": "bb10d5cbe26775e76beddf2c3c7d9f447e39784e129fe40f9204e5d48be00cd8"
+    },
+    {
+      "path": "case_23/aorta_and_daughters23_draft.nii.gz",
+      "bytes": 95373,
+      "sha256": "6804861a20f220c3bcbf19823a1b982969f7ae4307984293cfdd46a75298049c"
+    },
+    {
+      "path": "case_23/combined_labels.txt",
+      "bytes": 251,
+      "sha256": "d1f12d57a0c1831055001144ae76a11fb5e4f2529cec619cd00109f2b5d09dbd"
+    },
+    {
+      "path": "case_23/daughter_labels.txt",
+      "bytes": 214,
+      "sha256": "c67036342b32f09556232da967c1fb08a72f7b62e4864aa889fda28a14e0348b"
+    },
+    {
+      "path": "case_23/daughters23_draft.nii.gz",
+      "bytes": 93360,
+      "sha256": "f33e7d7442299192c4d3dc0257a6b36524e54c9464a0e07525dabed3afdb2528"
+    },
+    {
+      "path": "case_23/orig23.nii.gz",
+      "bytes": 13102536,
+      "sha256": "9e2747d40b4f63ec23d4d4a99dd6d4f4cf0125d608c1e782df6f094af51cbb49"
+    },
+    {
+      "path": "case_23/review_notes.md",
+      "bytes": 781,
+      "sha256": "d51fd63ead541e4efee58a86d6d39d5c24ae72555c9c312fed87a79026eda801"
+    },
+    {
+      "path": "case_23/review_preview.png",
+      "bytes": 161738,
+      "sha256": "91611075f94c8256aae9bb2e4496e07175f6fce55df264c7a12895764844e432"
+    },
+    {
+      "path": "case_23/tracing_guides.json",
+      "bytes": 1648,
+      "sha256": "27f3a79fc3887476784a9103237f59cc1054cab9a1ce67c9e9583ee4987f50ce"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6757,
+      "sha256": "d3f5ba7b25cf6ba28b456200de82af15dc233fa3f092079dbb8da990d6afd0b3"
+    },
+    {
+      "path": "REVIEWER_CHECKLIST.md",
+      "bytes": 6147,
+      "sha256": "dc80f642d8dfb3b63e3cdf5ba9a37acde604a62d5568342fd4da077d204fe9c4"
+    },
+    {
+      "path": "validation_report.json",
+      "bytes": 15310,
+      "sha256": "b57c31b4269a0403917be19a890a34d32cf3b414ddc40682b72a8d5e7ce0b888"
+    }
+  ]
+}

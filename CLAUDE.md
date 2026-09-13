@@ -22,3 +22,4 @@ Expected: 4 to 6 branches, runtime under 10 s.
 
 ## Current status
 (update this line as modules land)
+Skeleton complete: every D9 module stubbed to the data contract, config.py holds every constant, tests/ has one fake-data test file per module, run.py runs end to end on subject 10. Real logic: io_utils, candidates, instances (wall patches + watershed), scorer. Stubs: ostium (centroid snap), tracing (straight line along the wall normal), filters (eligibility rule only), frame (slice centroids), report (PNG + table).

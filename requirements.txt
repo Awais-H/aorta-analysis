@@ -1,0 +1,9 @@
+# Branchseed challenge. SPEC.md section 6: Python 3.10+, no torch.
+SimpleITK>=2.3
+numpy>=1.24
+scipy>=1.10
+scikit-image>=0.21
+nibabel>=5.0
+matplotlib>=3.7
+plotly>=5.15
+pytest>=7.0

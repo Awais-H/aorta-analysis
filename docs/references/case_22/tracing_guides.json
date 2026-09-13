@@ -1,0 +1,205 @@
+[
+  {
+    "instance_id": "branch_001",
+    "points_voxel": [
+      [
+        117,
+        134.5,
+        169.5
+      ],
+      [
+        116,
+        135.5,
+        168.5
+      ],
+      [
+        115,
+        136,
+        167
+      ],
+      [
+        114.5,
+        136.5,
+        165
+      ],
+      [
+        114.2,
+        136.5,
+        163
+      ]
+    ],
+    "origin_diameter_estimate_mm": 3.0,
+    "confidence": "moderate",
+    "notes": "Small anterior origin. Multiplanar lumen continuity supports daughter status; origin around z169-170, not z161. Diameter estimate uncertain at 1.5 mm resolution."
+  },
+  {
+    "instance_id": "branch_002",
+    "points_voxel": [
+      [
+        111.5,
+        119.5,
+        212
+      ],
+      [
+        110.5,
+        119,
+        211.5
+      ],
+      [
+        108.5,
+        117.5,
+        211
+      ],
+      [
+        106.5,
+        116,
+        210.5
+      ],
+      [
+        105,
+        115,
+        210
+      ]
+    ],
+    "origin_diameter_estimate_mm": 4.5,
+    "confidence": "high",
+    "notes": "Direct lateral origin extending toward decreasing x and y; continuous enhanced lumen across z210-213."
+  },
+  {
+    "instance_id": "branch_003",
+    "points_voxel": [
+      [
+        123.5,
+        122,
+        216.5
+      ],
+      [
+        125,
+        122.2,
+        216
+      ],
+      [
+        127,
+        122.2,
+        214.5
+      ],
+      [
+        129,
+        122,
+        213.5
+      ],
+      [
+        131,
+        121,
+        212.5
+      ]
+    ],
+    "origin_diameter_estimate_mm": 5.0,
+    "confidence": "high",
+    "notes": "Direct opposite lateral origin; short descending lateral proximal segment."
+  },
+  {
+    "instance_id": "branch_004",
+    "points_voxel": [
+      [
+        115.8,
+        126.5,
+        222.5
+      ],
+      [
+        115.6,
+        128,
+        222
+      ],
+      [
+        115.4,
+        130,
+        221
+      ],
+      [
+        115.2,
+        132,
+        219.7
+      ],
+      [
+        115,
+        133.2,
+        219
+      ]
+    ],
+    "origin_diameter_estimate_mm": 6.0,
+    "confidence": "high",
+    "notes": "Direct anterior origin with caudal course. Boundary at y126.5; use actual lumen width."
+  },
+  {
+    "instance_id": "branch_005",
+    "points_voxel": [
+      [
+        115.2,
+        125.5,
+        232
+      ],
+      [
+        115,
+        127,
+        231.7
+      ],
+      [
+        115.2,
+        129,
+        231.3
+      ],
+      [
+        115.7,
+        131,
+        231
+      ],
+      [
+        116,
+        132.2,
+        230.7
+      ]
+    ],
+    "origin_diameter_estimate_mm": 6.5,
+    "confidence": "high",
+    "notes": "Separate superior anterior origin; common trunk counted once."
+  },
+  {
+    "instance_id": "branch_006",
+    "points_voxel": [
+      [
+        114.2,
+        129.7,
+        174.4
+      ],
+      [
+        112.8,
+        129.2,
+        174.3
+      ],
+      [
+        111.4,
+        128.4,
+        174
+      ],
+      [
+        110,
+        127,
+        173.7
+      ],
+      [
+        108.5,
+        125.7,
+        174
+      ],
+      [
+        107,
+        124.7,
+        174.5
+      ]
+    ],
+    "origin_diameter_estimate_mm": 3.5,
+    "confidence": "high",
+    "notes": "Additional direct inferolateral daughter found during contiguous-slice sweep. Continuous enhanced lumen at z173-175 from lateral aortic wall; not a downstream branch of branch_001."
+  }
+]
