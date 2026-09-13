@@ -1,0 +1,13 @@
+case,branch,wall_patch,where,what_the_views_show,anatomically
+21,branch_003,4,"posterior-left, hugging the wall",one contact of the looping vessel,real vessel; no aortic origin established; at most one of its three contacts can be an origin
+21,branch_004,5,"same vessel, 4 mm away",second contact of the looping vessel,same
+21,branch_007,10,same vessel,third contact,same
+21,branch_005,7,"right posterolateral, 3.0 mm","tube followed 7 mm, continues over 15 mm in the coronal",real vessel; the case notes list this voxel as unresolved
+21,branch_008,12,"posterior-right, 2.9 mm",round dot in every section to 10 mm,"real vessel, unannotated"
+21,branch_010,14,"posterior, 3.0 mm, 8 mm below the left renal",the cleanest of all,"real vessel, unannotated"
+21,branch_006,8,anterior corner of the inferior cut,vessel running down the anterior wall past the cut,"real vessel, wrong point: not an origin here"
+22,branch_008,23,"posterior-right, 3.2 mm",faint tube in the fat between aorta and vertebra,"real vessel, unannotated; least certain"
+22,branch_010,28,"anterior-left, 15 mm above the division",the inferior mesenteric artery 26 mm below its own origin (already reported),"real vessel, wrong point: second contact of a reported daughter"
+22,branch_009,26,"posterior-right, reads 2.0 mm","round dot in every section 2 to 10 mm, reaching lumen brightness",real vessel; 2.0 mm is partial volume at the origin
+22,branch_007,15,"anterior, reads 2.4 mm","small round dot to 6 mm, then lost",small vessel at the resolution limit; annotators withhold this band
+22,branch_011,30,"anterior, reads 2.2 mm","straight-line fallback into soft tissue at 100 to 120 HU, no tube",genuinely false: bowel or mesentery at the 105 HU threshold
