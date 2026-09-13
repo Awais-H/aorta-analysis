@@ -126,7 +126,7 @@ def challenge_daughter(d: dict) -> dict:
 
 
 def challenge_case(pred: dict) -> dict:
-    """The case-level challenge JSON (parent + daughters), for the copy-all control."""
+    """The case-level challenge JSON (parent + daughters), for the viewer and copy control."""
     return {
         "case_id": pred["case_id"],
         "parent": pred.get("parent") or {"instance_id": "aorta"},
@@ -288,12 +288,19 @@ a {{ color: inherit; }}
   .panel {{ position: static; max-height: none; border-left: 0; border-top: 1px solid {LINE}; }}
 }}
 .panel-head {{
-  display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-  margin: 0 0 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 0 0 12px; flex-wrap: wrap;
 }}
 .panel-head h3 {{
   font-size: 11px; text-transform: uppercase; letter-spacing: 0.09em; color: {MUTED};
   margin: 0; font-weight: 650;
+}}
+.panel-actions {{
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto;
+}}
+.panel-head .segmented {{ margin-bottom: 0; }}
+.jsonwrap.casejson pre {{
+  max-height: calc(100vh - 220px); padding-right: 12px;
 }}
 .copybtn {{
   font: inherit; font-size: 11px; font-weight: 600; color: {INK};
@@ -352,6 +359,7 @@ a {{ color: inherit; }}
 JS = """
 const CASES = __DATA__;
 let current = 0, view = '3d';
+let panelView = 'branches';       // 'branches' | 'casejson'
 let plotlyReady = null;           // promise, resolved once the shared bundle is in
 const figLoaded = {};             // case_id -> promise for that case's figure sidecar
 let renderToken = 0;              // guards against a slow 3D load painting over a newer case
@@ -537,7 +545,8 @@ function render3d(c, token) {
     });
 }
 
-function render() {
+function render(opts) {
+  const panelOnly = opts && opts.panelOnly;
   const c = CASES[current];
   const n = c.daughters.length;
   const radii = c.daughters.map((d) => d.radius_mm);
@@ -556,30 +565,39 @@ function render() {
   const link = $('#reportLink');
   if (c.report) { link.style.display = ''; link.href = c.report; } else { link.style.display = 'none'; }
 
-  // viewer
-  const token = ++renderToken;
-  const frame = $('#frame');
-  frame.classList.toggle('is3d', view === '3d');
-  if (view === '3d') {
-    render3d(c, token);
-    $('#caption').textContent = 'Drag to rotate. Red: supplied aorta. Black: centreline and 10 mm directions. Cyan: ostia.';
-  } else {
-    const src = view === 'clock' ? c.clock_png : c.check_png;
-    frame.innerHTML = src
-      ? `<img src="${src}" alt="${c.case_id} ${view === 'clock' ? 'clock map' : 'verification projections'}">`
-      : `<div class="empty">no ${view === 'clock' ? 'clock map' : 'verification'} image for this case</div>`;
-    $('#caption').textContent = view === 'clock'
-      ? 'Wall unrolled: 12 anterior, 3 patient left, 6 posterior. Height is from the superior cut. Marker size is radius.'
-      : 'Pink mask, cyan ostia, red 10 mm directions, blue centreline.';
+  // viewer — skip when only the branch/case-JSON toggle changed, so the 3D plot stays put
+  if (!panelOnly) {
+    const token = ++renderToken;
+    const frame = $('#frame');
+    frame.classList.toggle('is3d', view === '3d');
+    if (view === '3d') {
+      render3d(c, token);
+      $('#caption').textContent = 'Drag to rotate. Red: supplied aorta. Black: centreline and 10 mm directions. Cyan: ostia.';
+    } else {
+      const src = view === 'clock' ? c.clock_png : c.check_png;
+      frame.innerHTML = src
+        ? `<img src="${src}" alt="${c.case_id} ${view === 'clock' ? 'clock map' : 'verification projections'}">`
+        : `<div class="empty">no ${view === 'clock' ? 'clock map' : 'verification'} image for this case</div>`;
+      $('#caption').textContent = view === 'clock'
+        ? 'Wall unrolled: 12 anterior, 3 patient left, 6 posterior. Height is from the superior cut. Marker size is radius.'
+        : 'Pink mask, cyan ostia, red 10 mm directions, blue centreline.';
+    }
+    document.querySelectorAll('[data-view]').forEach((b) =>
+      b.setAttribute('aria-selected', String(b.dataset.view === view)));
   }
-  document.querySelectorAll('.segmented button').forEach((b) =>
-    b.setAttribute('aria-selected', String(b.dataset.view === view)));
 
   // branches — each card is the official challenge JSON for that instance
-  $('#branchCount').textContent = n ? `Detected branches (${n})` : 'Detected branches';
+  $('#branchCount').textContent = panelView === 'casejson'
+    ? 'Case JSON'
+    : (n ? `Detected branches (${n})` : 'Detected branches');
+  document.querySelectorAll('[data-panel]').forEach((b) =>
+    b.setAttribute('aria-selected', String(b.dataset.panel === panelView)));
   const copyCase = $('#copyCase');
-  copyCase.hidden = n === 0;
   copyCase.onclick = () => copyJson(copyCase, c.json);
+  $('#branches').hidden = panelView === 'casejson';
+  $('#caseJson').hidden = panelView === 'branches';
+  $('#caseJsonPre').innerHTML = prettyJson(c.json);
+  if (panelOnly && panelView === 'casejson') return;
   $('#branches').innerHTML = n === 0
     ? `<div class="empty-branches">No eligible daughters on the supplied segment.<br>
        Anatomy outside the supplied coverage cannot be assessed.</div>`
@@ -709,8 +727,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('#prev').addEventListener('click', () => go(current - 1));
   $('#next').addEventListener('click', () => go(current + 1));
-  document.querySelectorAll('.segmented button').forEach((b) =>
+  document.querySelectorAll('[data-view]').forEach((b) =>
     b.addEventListener('click', () => { view = b.dataset.view; render(); }));
+  document.querySelectorAll('[data-panel]').forEach((b) =>
+    b.addEventListener('click', () => {
+      if (panelView === b.dataset.panel) return;
+      panelView = b.dataset.panel;
+      render({ panelOnly: true });
+    }));
   document.addEventListener('keydown', (e) => {
     if (e.target === input) return;
     if (e.key === 'ArrowLeft') go(current - 1);
@@ -813,9 +837,20 @@ def build() -> str:
   <aside class="panel">
     <div class="panel-head">
       <h3 id="branchCount">Detected branches</h3>
-      <button type="button" class="copybtn" id="copyCase">Copy case JSON</button>
+      <div class="panel-actions">
+        <div class="segmented mini" role="tablist">
+          <button type="button" data-panel="branches" aria-selected="true">Branches</button>
+          <button type="button" data-panel="casejson" aria-selected="false">Case JSON</button>
+        </div>
+        <button type="button" class="copybtn" id="copyCase">Copy case JSON</button>
+      </div>
     </div>
     <div id="branches"></div>
+    <div id="caseJson" hidden>
+      <div class="jsonwrap casejson">
+        <pre id="caseJsonPre"></pre>
+      </div>
+    </div>
   </aside>
 </div>
 
