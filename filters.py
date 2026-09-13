@@ -10,9 +10,21 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    END_FACE_AREA_SHORTCUT x the aortic cross-section short-circuits the angle test.
 2. min_trace_mm    plaque / eligibility: traced path under MIN_TRACE_MM (Frangi secondary is
                    disabled while FRANGI_MIN_RESPONSE is 0).
-3. departure_mm    parallel or crossing vessel: the far end of the traced path is still within
-                   DEPARTURE_MM of the aorta surface. Secondary signals (tangency angle over
-                   TANGENCY_ANGLE_DEG, patch aspect ratio over PATCH_ASPECT_RATIO_MAX) are flags only.
+3. departure_mm    FLAG ONLY (no_departure): the far end of the traced path is still within
+                   DEPARTURE_MM of the aorta surface. Rethought against the anatomy and the
+                   references: a branch that leaves the aorta and then runs along it is still a
+                   branch. Two of the 19 reference daughters (subjects 20, 23) are wall-hugging
+                   lumbars whose own 10 mm guides end 1.8 and 2.5 mm from the mask, and the only
+                   contact strip on subjects 1 to 3 (the cases the rule was written for) is a
+                   2.9 mm vessel at 1 o'clock near the inferior end of subject 2 with a clear origin
+                   end, i.e. the inferior mesenteric artery, not the SMA or a vein. Veins in the
+                   arterial phase do not clear the threshold, so the rule had no demonstrated
+                   benefit and cost three real daughters. The biologically meaningful test is
+                   whether a contact strip HAS AN ORIGIN END (D4 strip_end: one end tighter, wider,
+                   brighter, no body beyond the wall; a vein touching in passing has two alike
+                   ends). That asymmetry is logged (strip_hug_ratio) so the rule can be re-armed on
+                   a negative example; none exists in the dev set. Tangency angle and patch aspect
+                   ratio stay as flags.
 4. proximal_volume_ml bowel, organ, bone: the branch's voxels within TRACE_MAX_MM of the ostium
                    (the proximal segment) exceed REGION_VOLUME_CAP_ML. The whole watershed basin is
                    not used: through the raw shell it floods every connected bright voxel (renals on
@@ -212,11 +224,14 @@ def apply(cand: Candidates, inst: Instances, ostia: dict, traces: dict, frame=No
                 elif ratio > config.END_FACE_AREA_FRACTION:
                     flags.append("large_patch_at_cut")
 
-        # 3: departure (primary) and its secondary signals (flags)
+        # 3: departure and its secondary signals (all flags, see module docstring)
         dep = departure_mm(cand, tr.path_mm)
         m["departure_mm"] = round(dep, 2)
         if dep < config.DEPARTURE_MM:
-            hits.append(("departure_mm", dep))
+            flags.append("no_departure")
+        if ost.method == "strip_end" and ost.strip_hug_mm is not None:
+            a, b = ost.strip_hug_mm
+            m["strip_hug_ratio"] = round(max(a, b) / max(min(a, b), 1e-6), 2)
         tang = _angle(tr.direction_xyz, ost.normal_mm)
         asp = patch_aspect_ratio(cand, wall_idx)
         m["tangency_deg"], m["aspect_ratio"] = round(tang, 1), round(asp, 2)

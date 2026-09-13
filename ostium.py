@@ -49,6 +49,7 @@ class Ostium:
     inscribed_idx: np.ndarray | None = None  # D estimate (float zyx), for the failure gallery
     axis_idx: np.ndarray | None = None       # C estimate (float zyx) or None if the fit failed
     agreement_mm: float | None = None        # |C - D| in mm, or None
+    strip_hug_mm: tuple | None = None        # strip_end only: mean distance from the mask in the two end windows (proximal first)
 
 
 def mask_boundary_voxels(mask: np.ndarray) -> np.ndarray:
@@ -146,13 +147,13 @@ def strip_end(cand: Candidates, wall_idx: np.ndarray):
     window = wall_idx[ends[k]]
     d_est = inscribed_centre(cand, window)
     direction = axis if k == 0 else -axis     # from the proximal end toward the far end
-    return d_est, direction, k
+    return d_est, direction, (hug[k], hug[1 - k])
 
 
 def locate_one(cand: Candidates, label: int, wall_idx: np.ndarray, region_idx: np.ndarray,
                boundary: np.ndarray, tree: cKDTree) -> Ostium:
     if patch_aspect_ratio(cand, wall_idx) > config.PATCH_ASPECT_RATIO_MAX and len(wall_idx) >= config.AXIS_FIT_MIN_VOXELS:
-        d_est, strip_axis, _ = strip_end(cand, wall_idx)
+        d_est, strip_axis, hug = strip_end(cand, wall_idx)
         _, j = tree.query(d_est * cand.spacing)
         b = boundary[j]
         n = _local_gradient(cand.distance_mm, d_est, cand.spacing)
@@ -162,7 +163,7 @@ def locate_one(cand: Candidates, label: int, wall_idx: np.ndarray, region_idx: n
         return Ostium(label=int(label), index_zyx=b.astype(int), mm=io_utils.index_to_mm(cand.image, b),
                       normal_zyx=n, normal_mm=io_utils.index_vector_to_mm(cand.image, b, n),
                       axis_zyx=strip_axis, axis_mm=io_utils.index_vector_to_mm(cand.image, b, strip_axis),
-                      method="strip_end", inscribed_idx=d_est)
+                      method="strip_end", inscribed_idx=d_est, strip_hug_mm=hug)
     d_est = inscribed_centre(cand, wall_idx)
     fit = axis_fit(cand, region_idx, d_est) if len(region_idx) else None
     chosen, method, axis_idx, agreement = d_est, "inscribed_circle", None, None

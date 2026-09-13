@@ -52,17 +52,27 @@ def test_aorta_continuing_past_the_mask_is_rejected(tmp_path):
         assert res.measurements[l]["area_ratio"] > config.END_FACE_AREA_SHORTCUT
 
 
-def test_parallel_vessel_is_rejected(tmp_path):
-    """Rule 3: a tube lying along the aorta never leaves it."""
+def test_parallel_vessel_is_flagged_not_rejected_by_departure(tmp_path):
+    """Rule 3 is a flag: a tube lying along the aorta for its full length gets no_departure and is
+    caught (if at all) by rule 1, since a full-length parallel tube touches both end faces."""
     ph = make_phantom(tmp_path / "par", parallel_vessel=True)
     cand, inst, ostia, traces, fr, res = _run(ph)
     b = _branch_label(inst, ostia, ph)
-    assert b in res.kept
+    assert b in res.kept and "no_departure" not in res.flags[b]
     others = [l for l in inst.labels_list if l != b]
     assert others
-    rules = {l: {r for ll, r, v in res.rejections if ll == l} for l in others}
     for l in others:
-        assert rules[l] & {"departure_mm", "end_face", "min_trace_mm"}, (l, rules[l], res.measurements[l])
+        assert "departure_mm" not in {r for ll, r, v in res.rejections if ll == l}
+        assert "no_departure" in res.flags[l] or res.measurements[l]["departure_mm"] >= config.DEPARTURE_MM
+
+
+def test_hugging_branch_survives_the_filters(tmp_path):
+    """A branch that leaves the aorta and runs along the wall is a daughter (references 20, 23)."""
+    ph = make_phantom(tmp_path / "hug", with_branch=False, hugging=True)
+    cand, inst, ostia, traces, fr, res = _run(ph)
+    assert inst.n == 1 and res.kept == [1]
+    assert ostia[1].method == "strip_end" and "strip_hug_ratio" in res.measurements[1]
+    assert res.measurements[1]["strip_hug_ratio"] > 1.0
 
 
 def test_bone_sized_blob_is_rejected(tmp_path):
