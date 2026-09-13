@@ -101,16 +101,25 @@ def build_output(
     }
 
 
+def _round_to_voxel(continuous_ijk: np.ndarray, size_xyz: Sequence[int]) -> List[int]:
+    """Nearest integer voxel index, clamped into the image - the convention
+    ITK-SNAP and similar viewers use for the cursor position, and what "voxel
+    coordinates" means to anyone pointing at a slice rather than doing
+    sub-voxel arithmetic. Never negative, never off the edge of the image."""
+    limit = np.asarray(size_xyz, dtype=np.float64) - 1.0
+    return [int(v) for v in np.clip(np.rint(continuous_ijk), 0.0, limit)]
+
+
 def daughter_voxel_record(candidate: Candidate, grid: CaseGrid, cfg: Config) -> Optional[dict]:
     """The same daughter, with coordinates in the *original* image's voxel
     units instead of physical millimetres.
 
     This is not the mandated output - the brief requires physical millimetres
     via ``TransformIndexToPhysicalPoint`` - but a voxel-space file is handy for
-    overlaying on the original NIfTI in a plain array viewer. Coordinates are
-    continuous indices (equivalent to
-    ``sitk_ref.TransformPhysicalPointToContinuousIndex``), not rounded to
-    integer voxels, so the mapping back to the mm output is exact.
+    pointing a viewer like ITK-SNAP at the result directly. The primary
+    coordinates are rounded, non-negative integer indices, matching what such
+    a viewer displays as the cursor position; the ``*_continuous`` variants
+    keep the sub-voxel precision for anyone doing further arithmetic.
     """
     decimals = cfg.output.round_decimals
     ostium_ijk = grid.physical_to_original_index(grid.to_physical(candidate.ostium_xyz_roi))
@@ -135,12 +144,15 @@ def daughter_voxel_record(candidate: Candidate, grid: CaseGrid, cfg: Config) -> 
     direction_ijk = direction_ijk / max(np.linalg.norm(direction_ijk), 1e-9)
 
     mean_spacing = float(np.mean(grid.orig_spacing_mm))
+    size_xyz = grid.sitk_ref.GetSize()
 
     return {
         "instance_id": candidate.instance_id,
         "parent_instance_id": "aorta",
-        "ostium_ijk_voxel": _round(ostium_ijk, decimals),
-        "seed_ijk_voxel": _round(seed_ijk, decimals),
+        "ostium_ijk_voxel": _round_to_voxel(ostium_ijk, size_xyz),
+        "seed_ijk_voxel": _round_to_voxel(seed_ijk, size_xyz),
+        "ostium_ijk_voxel_continuous": _round(ostium_ijk, decimals),
+        "seed_ijk_voxel_continuous": _round(seed_ijk, decimals),
         "radius_voxels": _round(candidate.radius_mm / max(mean_spacing, 1e-9), decimals),
         "direction_ijk": _round(direction_ijk, cfg.output.direction_decimals),
         # Kept for cross-reference against the mandated mm output.

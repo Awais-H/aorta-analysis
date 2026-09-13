@@ -144,9 +144,10 @@ def test_cli_writes_figures_when_asked(tmp_path, standard_phantom):
 
 
 def test_voxel_output_round_trips_against_sitk(standard_phantom, cfg):
-    """Voxel-unit coordinates must equal SimpleITK's own physical->index
-    transform on the original image, and converting them back must recover
-    the mandated mm output exactly."""
+    """Voxel-unit coordinates must match SimpleITK's own physical->index
+    transform on the original image (rounded to the nearest voxel, the
+    ITK-SNAP cursor-position convention), and the continuous variants must
+    recover the mandated mm output exactly, up to that rounding."""
     from branchseed.output import build_voxel_output
 
     result = process_images(standard_phantom.image, standard_phantom.mask, cfg, "v")
@@ -156,14 +157,29 @@ def test_voxel_output_round_trips_against_sitk(standard_phantom, cfg):
     assert voxel_payload["daughters"], "expected daughters on the standard phantom"
 
     image = standard_phantom.image
+    size = np.asarray(image.GetSize())
     for mm_daughter, voxel_daughter in zip(result.payload["daughters"], voxel_payload["daughters"]):
         assert voxel_daughter["instance_id"] == mm_daughter["instance_id"]
-        for mm_key, voxel_key in (("ostium_xyz_mm", "ostium_ijk_voxel"),
-                                  ("seed_xyz_mm", "seed_ijk_voxel")):
+        for mm_key, voxel_key, continuous_key in (
+            ("ostium_xyz_mm", "ostium_ijk_voxel", "ostium_ijk_voxel_continuous"),
+            ("seed_xyz_mm", "seed_ijk_voxel", "seed_ijk_voxel_continuous"),
+        ):
             expected = np.asarray(
                 image.TransformPhysicalPointToContinuousIndex(mm_daughter[mm_key])
             )
-            np.testing.assert_allclose(voxel_daughter[voxel_key], expected, atol=1e-2)
+            np.testing.assert_allclose(voxel_daughter[continuous_key], expected, atol=1e-2)
+            # The rounded field must be the nearest integer to *our own*
+            # continuous value - not independently re-derived from
+            # ``expected``, which can land on the opposite side of a .5
+            # boundary from a value that agrees with it to 1e-6.
+            np.testing.assert_allclose(
+                voxel_daughter[voxel_key], voxel_daughter[continuous_key], atol=0.500001
+            )
+            # Rounded voxel coordinates: integer, in-bounds, never negative.
+            for component in voxel_daughter[voxel_key]:
+                assert isinstance(component, int)
+            assert (np.asarray(voxel_daughter[voxel_key]) >= 0).all()
+            assert (np.asarray(voxel_daughter[voxel_key]) <= size - 1).all()
 
         # radius_voxels must convert back to (approximately) radius_mm.
         spacing = np.mean(image.GetSpacing())

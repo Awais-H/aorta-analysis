@@ -90,14 +90,16 @@ patient axial plane in the arch. This is stated on the figure.
 
 ## Optional voxel-unit output
 
-The mandated output reports physical millimetres, per the brief. For
-overlaying results on the source NIfTI in a plain array viewer,
-`--voxel-output PATH` writes a second, non-mandated file alongside it with
-the same daughters in the **original image's** continuous voxel indices
-(`ostium_ijk_voxel`, `seed_ijk_voxel`, `radius_voxels`, `direction_ijk`),
-equivalent to `sitk_ref.TransformPhysicalPointToContinuousIndex`. It never
-replaces `--output`, and a failure to write it never affects the mandated
-result.
+The mandated output reports physical millimetres, per the brief. For pointing
+a viewer such as ITK-SNAP at the result directly, `--voxel-output PATH` writes
+a second, non-mandated file alongside it with the same daughters in the
+**original image's** voxel grid: `ostium_ijk_voxel` and `seed_ijk_voxel` are
+integer, non-negative, in-bounds indices — the cursor-position convention
+ITK-SNAP uses — with `*_continuous` variants alongside them for anyone who
+wants the sub-voxel position instead (equivalent to
+`sitk_ref.TransformPhysicalPointToContinuousIndex`, unrounded). `radius_voxels`
+and `direction_ijk` are also included. This file never replaces `--output`,
+and a failure to write it never affects the mandated result.
 
 ```
 python run.py --image image.nii.gz --aorta-mask aorta_mask.nii.gz \
