@@ -30,11 +30,15 @@ def infer_case_id(image_path: str) -> str:
 
 
 def write_json(path: str, obj: dict) -> None:
+    """Atomic write (SPEC.md D9): dump to <path>.tmp, then os.replace onto the final name, so a
+    killed process never leaves a half-written file that looks valid."""
     d = os.path.dirname(os.path.abspath(path))
     os.makedirs(d, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(obj, f, indent=2)
         f.write("\n")
+    os.replace(tmp, path)
 
 
 def main(argv=None) -> int:

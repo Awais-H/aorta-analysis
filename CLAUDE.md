@@ -14,7 +14,7 @@ The challenge PDF is docs/Branchseed_challenge.pdf. SPEC.md wins if they conflic
 ## Data
 - data/subjectNNN/origN.nii and maskN.nii. Some are gzipped despite the extension. Subject 24 has a non-orthonormal header.
 - atlas_all.csv has per-case stats; expected wall-patch counts are in the wall_patches column.
-- Reference JSONs for the dev subset are in data/references/ (when available).
+- Draft reference annotations for cases 19 to 23 are in docs/references/case_NN/annotations.json; the per-case daughter label volumes are data/subjectNNN/daughtersNN_draft.nii.gz.
 
 ## Smoke test
 python run.py --image data/subject010/orig10.nii --aorta-mask data/subject010/mask10.nii --output /tmp/s10.json

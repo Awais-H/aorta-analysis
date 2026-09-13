@@ -33,7 +33,9 @@ SEED_DISTANCE_MM = 5.0      # PDF definition: the daughter seed is 5 mm outward 
 TRACE_MAX_MM = 10.0         # PDF: trace up to 10 mm beyond the ostium or until the first bifurcation
 TRACE_STEP_MM = 1.0         # march step: fine enough to follow a looping renal, coarse enough that one step spans more than one working voxel
 MIN_TRACE_MM = 5.0          # PDF eligibility: a branch must be followable for at least 5 mm beyond the wall
-RADIUS_PLANE_SPACING_MM = 0.25  # D5: radius = sqrt(area / pi) of the thresholded cross-section on a plane perpendicular to the path at the seed, interpolated at 0.25 mm; same definition and sampling as the reference radius_method, so radius errors are comparable. Interpolation adds no resolution
+RADIUS_PLANE_SPACING_MM = 0.25  # D5: radius = sqrt(area / pi) of the thresholded cross-section on a plane perpendicular to the chord at the seed, resampled at 0.25 mm; the reference package's own method, so radius errors are comparable. Interpolation adds no resolution
+RADIUS_CLAMP_MM = (0.5, 8.0)  # D5: reported radius is clamped to this range; below 0.5 mm nothing is resolvable, above 8 mm nothing but the iliacs leaves the abdominal aorta. Radius is low effort (16 of 19 reference radii are null) and is not tuned
+RADIUS_AORTA_FRACTION_MAX = 0.5  # D5 sanity: a daughter radius over half the local aortic radius means the cross-section grabbed adjacent tissue; report the inscribed circle instead and flag it
 
 # ------------------------------------------------------------------------ filters (D6)
 END_FACE_MM = 3.0           # rule 1: a wall patch within 3 mm of a centreline endpoint touches an end face (end faces are not axial planes, so this is a distance, not a slice index)
@@ -50,11 +52,12 @@ REGION_VOLUME_CAP_ML = 1.0  # rule 4: no proximal branch segment within 15 mm ap
 DUPLICATE_MM = 4.0          # rule 6: two ostia within 4 mm are one opening; separate lumbar pairs are further apart than that
 DUPLICATE_ANGLE_DEG = 20.0  # rule 6: and their directions within 20 deg; genuinely separate nearby origins diverge
 MIN_ORIGIN_DIAMETER_MM = 2.0  # rule 7: the reference policy's minimum estimated lumen diameter at the origin (docs/references, minimum_origin_diameter_mm); equivalent diameter of the wall patch
-BORDERLINE_ORIGIN_DIAMETER_MM = (1.5, 2.5)  # rule 7: at 1.5 mm voxels a 2 mm lumen is 1.3 voxels wide, so origins in this band are flagged borderline rather than trusted either way (the annotators flag the same band)
+BORDERLINE_ORIGIN_DIAMETER_MM = (1.5, 2.5)  # rule 7: at 1.5 mm voxels a 2 mm lumen is 1.3 voxels wide, so origins in this band are flagged borderline_diameter in the display; both excluded candidates in the reference package sit in this band
+MIN_WALL_PATCH_VOXELS = 3   # rule 7: a wall patch under 3 voxels on the 0.8 mm grid is smaller than any 2 mm origin can be and is pure noise
 
 # ------------------------------------------------------------------------ scorer (D7)
 LABELLED_CASES = (19, 20, 21, 22, 23)  # dev cases with draft reference annotations in docs/references (all 1.5 mm isotropic)
-REGRESSION_ORDER = (19, 20, 21, 22, 23, 16, 17, 18, 24)  # D7: labelled cases first, then the coarse unlabelled pair, then the allowed-to-fail unenhanced pair; 25 is out of scope
+REGRESSION_ORDER = (19, 20, 21, 22, 23, 16, 17, 18, 24, 1, 6, 8)  # D7 priority order: labelled coarse cases (scored), unlabelled coarse cases (invariants only), the allowed-to-fail unenhanced pair, then fine-resolution robustness cases (underfill, tortuous, uncropped field of view); 25 is out of scope
 MATCH_CUTOFFS_MM = (3.0, 5.0, 8.0)  # ostium-distance cutoffs reported; the organisers have not specified one
 MATCH_CUTOFF_MM = 5.0       # working cutoff for one-to-one matching (open question 3)
 INVARIANT_RADIUS_MIN_MM = 1.0  # invariant: nothing under 1 mm is resolvable at 0.8 mm voxels

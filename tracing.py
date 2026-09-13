@@ -3,9 +3,11 @@
 STUB. Current behaviour: a straight line from the ostium along the outward wall normal, stepped
 TRACE_STEP_MM at a time up to TRACE_MAX_MM and bounds-checked at the volume edge (a branch within
 5 mm of the boundary cannot be traced 5 mm and is ineligible by the PDF's own rule). Seed at
-SEED_DISTANCE_MM along the path; direction = the normal; radius = equivalent radius of the wall
-patch. The slice-and-centroid march with bifurcation stop and inscribed-circle radius per SPEC.md
-D5 replaces `trace_one` without changing the contract.
+SEED_DISTANCE_MM along the path; direction = the ostium-to-seed chord, normalised (the reference
+convention, D5); radius = equivalent radius of the wall patch, clamped to RADIUS_CLAMP_MM. The
+slice-and-centroid march through the raw thresholded shell with the bifurcation stop, and the
+area-equivalent radius on a 0.25 mm plane at the seed, per SPEC.md D5 replace `trace_one` without
+changing the contract. `chord_direction` is final and stays.
 
 Output contract (SPEC.md D9): per label, path points (mm), seed (mm), direction (unit), radius
 (mm), path length, bifurcation flag.
@@ -49,6 +51,13 @@ def point_along(path_mm: np.ndarray, s_mm: float) -> np.ndarray | None:
     return np.array([np.interp(s_mm, arc, path_mm[:, a]) for a in range(3)])
 
 
+def chord_direction(ostium_mm, seed_mm) -> np.ndarray:
+    """D5: the reported direction is normalise(seed - ostium), the answer key's convention."""
+    d = np.asarray(seed_mm, float) - np.asarray(ostium_mm, float)
+    n = np.linalg.norm(d)
+    return d / n if n > 0 else d
+
+
 def trace_one(cand: Candidates, ost: Ostium, wall_area_mm2: float) -> Trace:
     step_idx = ost.normal_zyx * (config.TRACE_STEP_MM / cand.spacing)
     n_steps = int(round(config.TRACE_MAX_MM / config.TRACE_STEP_MM))
@@ -62,8 +71,9 @@ def trace_one(cand: Candidates, ost: Ostium, wall_area_mm2: float) -> Trace:
     path_mm = io_utils.index_to_mm(cand.image, np.array(pts)) if pts else np.zeros((0, 3))
     length = float((len(pts) - 1) * config.TRACE_STEP_MM) if pts else 0.0
     seed = point_along(path_mm, config.SEED_DISTANCE_MM)
-    radius = float(np.sqrt(max(wall_area_mm2, 0.0) / np.pi))
-    return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=ost.normal_mm.copy(),
+    direction = chord_direction(ost.mm, seed) if seed is not None else ost.normal_mm.copy()
+    radius = float(np.clip(np.sqrt(max(wall_area_mm2, 0.0) / np.pi), *config.RADIUS_CLAMP_MM))
+    return Trace(label=ost.label, path_mm=path_mm, seed_mm=seed, direction_xyz=direction,
                  radius_mm=radius, path_length_mm=length, bifurcation=False)
 
 

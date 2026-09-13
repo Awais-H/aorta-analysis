@@ -31,5 +31,6 @@ def test_no_instances_gives_no_ostia(cand, inst):
     import instances
     import copy
     c = copy.copy(cand)
-    c.candidates = np.zeros_like(cand.candidates)
+    c.opened = np.zeros_like(cand.opened)
+    c.bright_shell = np.zeros_like(cand.bright_shell)
     assert ostium.locate(c, instances.build(c)) == {}

@@ -23,6 +23,13 @@ def test_seed_and_direction_near_truth(traces, phantom):
     assert np.dot(t.direction_xyz, phantom["direction"]) > 0.8
 
 
+def test_direction_is_the_ostium_to_seed_chord(traces, ostia):
+    t = traces[1]
+    assert np.allclose(t.direction_xyz, tracing.chord_direction(ostia[1].mm, t.seed_mm))
+    assert np.allclose(tracing.chord_direction([0, 0, 0], [0, 3, 4]), [0, 0.6, 0.8])
+    assert config.RADIUS_CLAMP_MM[0] <= t.radius_mm <= config.RADIUS_CLAMP_MM[1]
+
+
 def test_point_along():
     path = np.array([[0, 0, 0], [3, 0, 0], [3, 4, 0]], float)
     assert np.allclose(tracing.point_along(path, 0.0), [0, 0, 0])

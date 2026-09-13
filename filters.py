@@ -2,7 +2,9 @@
 
 STUB. Current behaviour: only the PDF's eligibility rule is applied (traced path length at least
 MIN_TRACE_MM, which is also the primary test of D6 rule 2). Rules 1 (cropped ends), 3 (parallel
-vessels), 4 (bowel/bone), 6 (duplicates) and 7 (minimum origin size) per SPEC.md D6 are added
+vessels), 4 (bowel/bone), 6 (duplicates) and 7 (origin diameter under MIN_ORIGIN_DIAMETER_MM
+measured perpendicular to the path just outside the mask, borderline_diameter flag for
+BORDERLINE_ORIGIN_DIAMETER_MM, wall patches under MIN_WALL_PATCH_VOXELS) per SPEC.md D6 are added
 here one function each. The rejection log format is final: (label, rule name, value); it is the
 tuning tool and the "known failure cases" slide.
 

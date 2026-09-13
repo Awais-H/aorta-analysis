@@ -41,6 +41,13 @@ def test_missing_file_exits_zero(tmp_path):
     assert json.load(open(out))["daughters"] == []
 
 
+def test_write_json_is_atomic(tmp_path):
+    out = tmp_path / "a" / "b.json"
+    run.write_json(str(out), {"x": 1})
+    assert json.load(open(out)) == {"x": 1}
+    assert not os.path.exists(str(out) + ".tmp")
+
+
 def test_infer_case_id():
     assert run.infer_case_id("data/subject010/orig10.nii") == "subject010"
     assert run.infer_case_id("/x/y/image.nii.gz") == "image"

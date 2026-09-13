@@ -9,8 +9,9 @@ from conftest import LUMEN_HU, TISSUE_HU, make_phantom
 
 def test_contract_shapes_and_types(cand):
     assert cand.ct.dtype == np.float32
-    assert cand.mask.dtype == bool and cand.candidates.dtype == bool
-    assert cand.ct.shape == cand.mask.shape == cand.candidates.shape == cand.distance_mm.shape
+    assert cand.mask.dtype == bool and cand.bright_shell.dtype == bool and cand.opened.dtype == bool
+    assert cand.ct.shape == cand.mask.shape == cand.bright_shell.shape == cand.opened.shape == cand.distance_mm.shape
+    assert (cand.opened <= cand.bright_shell).all(), "the opening only removes voxels"
     assert np.allclose(cand.spacing, config.ISO_SPACING_MM)
     assert tuple(cand.image.GetSize())[::-1] == cand.ct.shape
     assert cand.fragment_log["components"] == 1
@@ -32,16 +33,16 @@ def test_threshold_formula():
 
 
 def test_candidates_are_in_shell_and_outside_mask(cand):
-    assert not (cand.candidates & cand.mask).any()
-    assert cand.distance_mm[cand.candidates].max() <= config.SHELL_MM
+    assert not (cand.bright_shell & cand.mask).any()
+    assert cand.distance_mm[cand.bright_shell].max() <= config.SHELL_MM
     assert cand.distance_mm[cand.mask].max() == 0
 
 
 def test_branch_is_a_candidate_and_tissue_is_not(cand, phantom):
     idx = np.round(io_utils.mm_to_index(cand.image, phantom["seed_mm"])).astype(int)
-    assert cand.candidates[tuple(idx)]
+    assert cand.bright_shell[tuple(idx)] and cand.opened[tuple(idx)]
     off = np.round(io_utils.mm_to_index(cand.image, phantom["seed_mm"] + np.array([0.0, 8.0, 0.0]))).astype(int)
-    assert not cand.candidates[tuple(off)]
+    assert not cand.bright_shell[tuple(off)]
 
 
 def test_mask_fragment_removed_and_logged(tmp_path):
@@ -82,4 +83,4 @@ def test_anisotropic_input_is_resampled(phantom_aniso):
     assert cand.grid_info["resampled"] is True
     assert np.allclose(cand.spacing, config.ISO_SPACING_MM)
     idx = np.round(io_utils.mm_to_index(cand.image, phantom_aniso["seed_mm"])).astype(int)
-    assert cand.candidates[tuple(idx)]
+    assert cand.bright_shell[tuple(idx)]
