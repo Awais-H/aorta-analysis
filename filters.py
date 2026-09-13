@@ -44,6 +44,13 @@ soft signals for the display and the failure gallery. Default on borderline: kee
                    the path at the first plane clear of the wall layer (WALL_LAYER_MM out; closer
                    planes cut the partial-volume ring) under MIN_ORIGIN_DIAMETER_MM; the
                    BORDERLINE_ORIGIN_DIAMETER_MM band sets the borderline_diameter flag.
+                   Checked against the anatomy on reference 19/b2 (2.3 mm, one opened voxel, the
+                   only rule 7 loss): the voxel floor is not what loses it. The vessel is 1.5 native
+                   voxels wide, so the ring-removing opening erases it inside the wall layer and the
+                   march cannot start (it also fails rule 2). Dropping the floor to 1 voxel adds 15
+                   false positives and recovers nothing; an 'outward support' wall layer instead
+                   of the opening was prototyped and rejected (17 -> 12 true positives: the ring
+                   skirt it keeps merges neighbouring origins). Recorded as a resolution limit.
 
 Output contract (SPEC.md D9): surviving labels, rejection log of (label, rule, value).
 """
