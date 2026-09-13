@@ -10,8 +10,10 @@ what remains, and how to work.
 - Repository: fork `https://github.com/nikolakr7/aorta-analysis` (remote `fork`). The team origin
   is `https://github.com/Awais-H/aorta-analysis` (remote `origin`); nothing has been pushed there
   since the initial skeleton, by request.
-- Branch `skeleton` on the fork holds everything. The branches `ostium-tracing`, `filters` and
-  `instances-split` are earlier stops on the same line and are fully contained in `skeleton`.
+- `main` on the fork holds everything through 13 Sep (merged from `skeleton`, commit 091fdcd); work
+  continues on `precision-review` (adjudicating the remaining false positives by eye and the 1.5 mm
+  pseudo-labelled check on subjects 1 to 15). The branches `skeleton`, `ostium-tracing`, `filters` and
+  `instances-split` are earlier stops on the same line and are fully contained in `main`.
 - Data is in `data/subjectNNN/` (gitignored, 25 cases). Draft references for cases 19 to 23 are
   in `docs/references/` (committed), with the daughter label volumes in `data/`.
 - Every module lives flat at the repository root. `python run.py --image ... --aorta-mask ...
