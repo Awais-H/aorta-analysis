@@ -4,6 +4,7 @@ cases. The point is the shape of the curve, not the best value: flat means the c
 matter, a sharp peak is the dev set talking. Constants are NOT changed here.
 
     python sweeps.py --out results/sweeps.txt
+    python sweeps.py --loo --out results/leave_one_out.txt   (SPEC section 3, defence 3)
 """
 from __future__ import annotations
 
@@ -110,13 +111,72 @@ def evaluate(prepped):
     return tp, fp, fn, f1, per_case
 
 
+def _case_f1(t, f, n_ref):
+    fn = n_ref - t
+    p = t / (t + f) if t + f else 0.0
+    r = t / (t + fn) if t + fn else 0.0
+    return 2 * p * r / (p + r) if p + r else 0.0
+
+
+def leave_one_out(prepped, sweeps=SWEEPS) -> str:
+    """SPEC section 3, defence 3: for each constant, pick the value that scores best on the other
+    labelled cases (sum of F1) and apply it to the held-out case; rotate. If the held-out score at
+    the tuned value does not beat the held-out score at the config (physical) value, tuning the
+    constant to the dev set buys nothing and the physical value is not costing us. Reported per
+    constant: mean held-out F1 at the config value, at the tuned value, and how often the tuned
+    value differs from the config value."""
+    cases = sorted(prepped)
+    n_ref = {n: len(prepped[n][5]["daughters"]) for n in cases}
+    lines = [f"Leave-one-out over the labelled cases {cases} at the {config.MATCH_CUTOFF_MM:g} mm cutoff.",
+             "For each constant: the value that maximises the summed F1 of the other cases is applied to the held-out case.",
+             "Columns: constant, mean held-out F1 at the config value, at the tuned value, cases where the tuned value differs (value chosen).", ""]
+    grand_cfg, grand_tuned = [], []
+    for name, values in sweeps.items():
+        current = getattr(config, name)
+        table = {}   # value -> {case: (tp, fp)}
+        for v in values:
+            setattr(config, name, v)
+            _, _, _, _, pc = evaluate(prepped)
+            table[v] = pc
+        setattr(config, name, current)
+        cfg_scores, tuned_scores, diffs = [], [], []
+        for held in cases:
+            others = [c for c in cases if c != held]
+            def summed(v):
+                return sum(_case_f1(*table[v][c], n_ref[c]) for c in others)
+            # ties go to the config value, then to the value nearest it: the physical value wins a draw
+            best = max(values, key=lambda v: (round(summed(v), 6), v == current, -abs(v - current)))
+            f_cfg = _case_f1(*table[current][held], n_ref[held]) if current in table else float("nan")
+            f_tuned = _case_f1(*table[best][held], n_ref[held])
+            cfg_scores.append(f_cfg)
+            tuned_scores.append(f_tuned)
+            if best != current:
+                diffs.append(f"s{held}:{best:g}({f_tuned - f_cfg:+.2f})")
+        mc, mt = float(np.mean(cfg_scores)), float(np.mean(tuned_scores))
+        grand_cfg.append(mc)
+        grand_tuned.append(mt)
+        lines.append(f"{name:32s} config {current:>6g}  held-out F1 {mc:.3f}  tuned {mt:.3f}  {'differs in ' + ', '.join(diffs) if diffs else 'tuned value = config value on every fold'}")
+    lines += ["", f"Mean over constants: held-out F1 at config values {np.mean(grand_cfg):.3f}, at per-fold tuned values {np.mean(grand_tuned):.3f}.",
+              "In-sample reference: " + f"F1 {evaluate(prepped)[3]:.3f} at the config values on all five cases."]
+    return "\n".join(lines) + "\n"
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--cases", nargs="*", default=["labelled"])
     ap.add_argument("--out", default=None)
+    ap.add_argument("--loo", action="store_true", help="leave-one-out check of the filter constants instead of the sweeps")
     args = ap.parse_args(argv)
     cases = scorer._parse_cases(args.cases)
     prepped = prepare(cases)
+    if args.loo:
+        text = leave_one_out(prepped)
+        print(text)
+        if args.out:
+            os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+            with open(args.out, "w", encoding="utf-8") as f:
+                f.write(text)
+        return
     lines = [f"Sensitivity sweeps at the {config.MATCH_CUTOFF_MM:g} mm cutoff on cases {sorted(prepped)}, commit {scorer._git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
              "One constant varied at a time, all others at their config values. Current value marked with *.",
              "Columns: value, TP, FP, FN, F1, then (TP, FP) per case.", ""]

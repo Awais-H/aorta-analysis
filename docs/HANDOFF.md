@@ -38,9 +38,10 @@ branch 14 of 17 (the three misses and the 26 deg mean are explained in SPEC sect
 review: merged pair on 23, a bend on 19, a strip end on 20; not chased). Of the 13: three are one looping vessel on subject 21 that the annotators also
 could not tie to the aorta (known failure class), three are 2.0 to 2.4 mm borderline origins,
 two are at the cut faces, five are unflagged 3 mm vessels at lumbar positions (SPEC section 1,
-false-positive review). Invariants on all 25 cases: no crash, under 10 s per case. Files:
+false-positive review). Invariants on all 25 cases: no crash, 1.4 to 6.3 s wall per case, peak memory 190 MB to 1.2 GB (cap 4 GB). Files:
 `results/dev_scores.txt`, `results/reference_ledger.txt`, `results/sweeps.txt`,
-`results/invariants.txt`, `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
+`results/invariants.txt` (with peak memory per case), `results/leave_one_out.txt` (SPEC section 3, defence 3: the physical constants are
+the held-out optimum for eight of ten, and tuning the other two hurts held out), `results/dev_scores_skeleton_baseline.txt` for the before/after, `results/predictions/` (the
 JSON for all 25 dev cases) and `results/visual_checks/` (verification and clock-map PNGs for 3, 16, 17, 19 to 23).
 
 ## Decisions made against the spec's first draft, with the evidence
@@ -120,7 +121,8 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
    requirements.txt -d vendor/` on the right platform), the offline install test with networking
    off, and the README setup command switched to `--no-index --find-links vendor`. Everything
    else is in place: dev-set predictions in `results/predictions/`, visual checks in
-   `results/visual_checks/`, README setup and run commands checked.
+   `results/visual_checks/`, README setup and run commands checked, runtime and peak memory
+   measured on all 25 cases, leave-one-out done.
 2. Demo material: failure gallery sheets, the known-failure slide (subjects 18 and 24 are allowed
    to fail; 19/b2 and 23/b2 are the honest misses), runtime figure, and the clock maps and 3D
    views from `python run.py ... --report-dir` for three cases.
@@ -134,7 +136,8 @@ All of these are written into SPEC.md D4 to D7 and section 1; the one-line versi
   19-23`, `python scorer.py score --cases 19-23 --out results/dev_scores.txt`, `python scorer.py
   ledger --cases 19-23 --out results/reference_ledger.txt`, `python sweeps.py --out
   results/sweeps.txt`, `python scorer.py invariants --cases all --pred-dir out/predictions_all
-  --out results/invariants.txt`. Commit the results files with the change. A change must improve
+  --out results/invariants.txt`, and `python sweeps.py --loo --out results/leave_one_out.txt` when a constant
+  changed. Commit the results files with the change. A change must improve
   or hold every labelled case (SPEC section 3), or come with a written anatomical argument.
 - To look at a case: `python run.py ... --meta-output out/review/subjectNNN_meta.json --output
   out/review/subjectNNN.json --report-dir out/review` gives the clock map, the projections and the

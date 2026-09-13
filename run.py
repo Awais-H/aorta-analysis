@@ -18,6 +18,37 @@ import time
 import traceback
 
 
+def peak_memory_mb() -> float | None:
+    """Peak resident memory of this process in MB (D10: the organisers score peak memory on an
+    8 GB machine). Windows: PeakWorkingSetSize from psapi; elsewhere ru_maxrss. None if unknown.
+    No third-party dependency, and never raises."""
+    try:
+        if sys.platform == "win32":
+            import ctypes
+            import ctypes.wintypes as w
+
+            class PMC(ctypes.Structure):
+                _fields_ = [("cb", w.DWORD), ("PageFaultCount", w.DWORD), ("PeakWorkingSetSize", ctypes.c_size_t),
+                            ("WorkingSetSize", ctypes.c_size_t), ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                            ("QuotaPagedPoolUsage", ctypes.c_size_t), ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                            ("QuotaNonPagedPoolUsage", ctypes.c_size_t), ("PagefileUsage", ctypes.c_size_t),
+                            ("PeakPagefileUsage", ctypes.c_size_t)]
+            psapi, k32 = ctypes.WinDLL("psapi"), ctypes.WinDLL("kernel32")
+            k32.GetCurrentProcess.restype = w.HANDLE
+            psapi.GetProcessMemoryInfo.argtypes = [w.HANDLE, ctypes.POINTER(PMC), w.DWORD]
+            psapi.GetProcessMemoryInfo.restype = w.BOOL
+            pmc = PMC()
+            pmc.cb = ctypes.sizeof(PMC)
+            if not psapi.GetProcessMemoryInfo(k32.GetCurrentProcess(), ctypes.byref(pmc), pmc.cb):
+                return None
+            return round(pmc.PeakWorkingSetSize / 2 ** 20, 1)
+        import resource
+        rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss  # kB on Linux, bytes on macOS
+        return round(rss / (2 ** 20 if sys.platform == "darwin" else 1024), 1)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def infer_case_id(image_path: str) -> str:
     parent = os.path.basename(os.path.dirname(os.path.abspath(image_path)))
     if re.match(r"^subject\d+$", parent):
@@ -77,6 +108,7 @@ def main(argv=None) -> int:
         except Exception:
             traceback.print_exc(file=sys.stderr)
 
+    meta["peak_memory_mb"] = peak_memory_mb()
     if args.meta_output:
         try:
             write_json(args.meta_output, meta)
@@ -84,7 +116,8 @@ def main(argv=None) -> int:
             traceback.print_exc(file=sys.stderr)
 
     elapsed = time.perf_counter() - t0
-    print(f"{case_id}: {len(result['daughters'])} daughters, {elapsed:.1f} s, wrote {args.output}", file=sys.stderr)
+    mem = f", peak {meta['peak_memory_mb']:.0f} MB" if meta.get("peak_memory_mb") else ""
+    print(f"{case_id}: {len(result['daughters'])} daughters, {elapsed:.1f} s{mem}, wrote {args.output}", file=sys.stderr)
     return 0
 
 

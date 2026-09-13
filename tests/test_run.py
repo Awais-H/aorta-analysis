@@ -52,3 +52,14 @@ def test_infer_case_id():
     assert run.infer_case_id("data/subject010/orig10.nii") == "subject010"
     assert run.infer_case_id("/x/y/image.nii.gz") == "image"
     assert run.infer_case_id("case7.nii") == "case7"
+
+
+def test_meta_carries_peak_memory(phantom, tmp_path):
+    import json
+    import run
+    out = tmp_path / "p.json"
+    meta = tmp_path / "m.json"
+    assert run.main(["--image", phantom["image"], "--aorta-mask", phantom["mask"], "--output", str(out), "--meta-output", str(meta)]) == 0
+    m = json.load(open(meta, encoding="utf-8"))
+    assert m.get("peak_memory_mb") is None or 20.0 < m["peak_memory_mb"] < 8192.0
+    assert run.peak_memory_mb() is None or run.peak_memory_mb() > 20.0

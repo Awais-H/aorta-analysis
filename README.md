@@ -2,7 +2,7 @@
 
 Finds every artery that leaves the supplied abdominal aorta and reports each origin as a machine-readable branch instance (ostium, seed 5 mm in, direction, radius). Current state and what remains: [docs/HANDOFF.md](docs/HANDOFF.md). Design and reasoning: [SPEC.md](SPEC.md). Challenge text: [docs/Branchseed_challenge.pdf](docs/Branchseed_challenge.pdf).
 
-On the five labelled dev cases (19 to 23) at a 5 mm ostium cutoff: 17 of 19 reference branches found, 13 false positives (a looping vessel the annotators also could not place, borderline 2 mm origins, and small vessels the draft references do not cover), mean ostium error 1.35 mm, under 10 s per case on a laptop CPU. Details in `results/`: scores, ledger, sweeps, invariants, the predictions for all 25 dev cases (`results/predictions/`) and the visual checks (`results/visual_checks/`).
+On the five labelled dev cases (19 to 23) at a 5 mm ostium cutoff: 17 of 19 reference branches found, 13 false positives (a looping vessel the annotators also could not place, borderline 2 mm origins, and small vessels the draft references do not cover), mean ostium error 1.35 mm, under 7 s and 1.3 GB peak memory per case on a laptop CPU. Details in `results/`: scores, ledger, sweeps, invariants, the predictions for all 25 dev cases (`results/predictions/`) and the visual checks (`results/visual_checks/`).
 
 ## Setup
 
@@ -50,7 +50,7 @@ python scorer.py ledger --cases 19-23 --out results/reference_ledger.txt
 python sweeps.py --out results/sweeps.txt
 ```
 
-`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not. `ledger` writes, for every reference branch, the nearest wall patch, its fate in the filters and every measurement the rules saw, plus the surviving false positives. `sweeps.py` varies one constant at a time and reports the TP/FP curve (SPEC.md section 3: the shape matters, not the peak). All four result files are committed after every change to the pipeline.
+`predict` runs run.py per case into `out/predictions/`. `score` matches predictions one-to-one against the draft references in `docs/references` (Hungarian on ostium distance at 3, 5 and 8 mm) and reports precision, recall, F1, ostium distance, direction error, seed-on-branch (via the per-case daughter label volume) and radius error where the reference has one. `invariants` runs the SPEC.md D7 checks on any case, referenced or not, and records run.py's wall time and peak memory per case. `python sweeps.py --loo --out results/leave_one_out.txt` is the leave-one-out check of the constants (SPEC.md section 3). `ledger` writes, for every reference branch, the nearest wall patch, its fate in the filters and every measurement the rules saw, plus the surviving false positives. `sweeps.py` varies one constant at a time and reports the TP/FP curve (SPEC.md section 3: the shape matters, not the peak). All four result files are committed after every change to the pipeline.
 
 ## Clinician report
 

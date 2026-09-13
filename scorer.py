@@ -258,6 +258,8 @@ def check_invariants(result: dict, cand=None, inst=None, meta: dict | None = Non
                 reach = float(np.linalg.norm((vox - o_idx) * cand.spacing, axis=1).max())
                 if reach > config.INVARIANT_REGION_MAX_PATH_MM:
                     v.append(f"{bid}: watershed region reaches {reach:.1f} mm from its ostium")
+    if meta and meta.get("peak_memory_mb") is not None and meta["peak_memory_mb"] > config.PEAK_MEMORY_CAP_GB * 1024:
+        v.append(f"peak memory {meta['peak_memory_mb']:.0f} MB over the {config.PEAK_MEMORY_CAP_GB:g} GB cap")
     return v
 
 
@@ -342,7 +344,7 @@ def invariants_report(cases: list, pred_dir: str = PRED_DIR, data_dir: str = DAT
     import io_utils
     runs = predict(cases, pred_dir, data_dir)
     lines = [f"D7 invariant checks on {len(cases)} cases, commit {_git_head()}, {time.strftime('%Y-%m-%d %H:%M')}",
-             "Runtime is run.py wall time including interpreter start-up. Peak memory is not measured on this platform.",
+             f"Runtime is run.py wall time including interpreter start-up; peak is the run.py process's peak resident memory (cap {config.PEAK_MEMORY_CAP_GB:g} GB, D10).",
              "Region-reach violations are the raw watershed basin flooding neighbouring bright tissue (information only; rule 4 uses the proximal 10 mm).", ""]
     summary = []
     for n, rec in runs.items():
@@ -370,7 +372,8 @@ def invariants_report(cases: list, pred_dir: str = PRED_DIR, data_dir: str = DAT
                 lines.append(f"   (image-based checks skipped: {type(e).__name__}: {e})")
         v = check_invariants(result, cand, inst, meta)
         t = meta.get("timings_s", {}).get("total")
-        head += f" pipeline={t} s daughters={len(result['daughters'])} wall_patches={meta.get('wall_patches')}"
+        mem = meta.get("peak_memory_mb")
+        head += f" pipeline={t} s peak={'n/a' if mem is None else f'{mem:.0f} MB'} daughters={len(result['daughters'])} wall_patches={meta.get('wall_patches')}"
         if crashed:
             head += "  CRASHED (empty daughters written)"
             lines += [head, "   " + meta["error"].strip().splitlines()[-1], ""]
@@ -382,7 +385,23 @@ def invariants_report(cases: list, pred_dir: str = PRED_DIR, data_dir: str = DAT
         summary.append((cid, "OK" if not v else f"{len(v)} violations"))
     lines.append("SUMMARY")
     lines += [f"  {cid}: {s}" for cid, s in summary]
+    mems = [(rec["case_id"], m) for rec in runs.values() for m in [_meta_peak(rec)] if m is not None]
+    walls = [(rec["case_id"], rec["wall_s"]) for rec in runs.values() if rec.get("wall_s") is not None]
+    if mems:
+        worst = max(mems, key=lambda x: x[1])
+        lines.append(f"  peak memory: max {worst[1]:.0f} MB ({worst[0]}), median {np.median([m for _, m in mems]):.0f} MB over {len(mems)} cases; cap {config.PEAK_MEMORY_CAP_GB * 1024:.0f} MB")
+    if walls:
+        worst = max(walls, key=lambda x: x[1])
+        lines.append(f"  wall time: max {worst[1]:.1f} s ({worst[0]}), mean {np.mean([w for _, w in walls]):.1f} s; organiser target {config.RUNTIME_CAP_S:.0f} s average")
     return "\n".join(lines) + "\n"
+
+
+def _meta_peak(rec: dict):
+    try:
+        with open(rec["meta"], encoding="utf-8") as f:
+            return json.load(f).get("peak_memory_mb")
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def reference_ledger(cases: list, data_dir: str = DATA_DIR, reference_dir: str = REFERENCE_DIR) -> str:
