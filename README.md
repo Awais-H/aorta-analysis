@@ -1,6 +1,6 @@
 # Branchseed challenge
 
-Finds every artery that leaves the supplied abdominal aorta and reports each origin as a machine-readable branch instance (ostium, seed 5 mm in, direction, radius). Current state and what remains: [docs/HANDOFF.md](docs/HANDOFF.md). Design and reasoning: [SPEC.md](SPEC.md). Challenge text: [docs/Branchseed_challenge.pdf](docs/Branchseed_challenge.pdf).
+Finds every artery that leaves the supplied abdominal aorta and reports each origin as a machine-readable branch instance (ostium, seed 5 mm in, direction, radius). Demo: [https://www.youtube.com/watch?v=VaAdDUPIiio](https://www.youtube.com/watch?v=VaAdDUPIiio). Current state and what remains: [docs/HANDOFF.md](docs/HANDOFF.md). Design and reasoning: [SPEC.md](SPEC.md). Challenge text: [docs/Branchseed_challenge.pdf](docs/Branchseed_challenge.pdf).
 
 On the five labelled dev cases (19 to 23) at a 5 mm ostium cutoff: 17 of 19 reference branches found, 13 false positives (a looping vessel the annotators also could not place, borderline 2 mm origins, and small vessels the draft references do not cover), mean ostium error 1.35 mm, under 7 s and 1.3 GB peak memory per case on a laptop CPU. Details in `results/`: scores, ledger, sweeps, invariants, the predictions for all 25 dev cases (`results/predictions/`) and the visual checks (`results/visual_checks/`).
 
